@@ -11,5 +11,7 @@ export default {
     sshList: Object.prototype.hasOwnProperty.call(localStorage, 'sshList') ? localStorage.getItem('sshList') : null,
     termList: [],
     currentTab: {},
+    shouldValidToken: true,
+    token: '',
     language: getLanguage()
 }

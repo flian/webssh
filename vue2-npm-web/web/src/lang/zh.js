@@ -37,5 +37,7 @@ export default {
     clickSelectFile: '点击选择文件',
     clickSelectFolder: '点击选择文件夹',
     uploadFile: '上传文件',
-    uploadFolder: '上传文件夹'
+    uploadFolder: '上传文件夹',
+    login: '登录',
+    logout: '注销'
 }

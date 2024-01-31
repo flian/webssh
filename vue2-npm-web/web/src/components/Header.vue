@@ -11,13 +11,16 @@
                             <span @click="handleSetLanguage()">Host</span>
                         </el-tooltip>
                     </template>
-                    <el-input v-model="sshInfo.host" :placeholder="$t('hostTip')" @keyup.enter.native="$emit('ssh-select')"></el-input>
+                    <el-input v-model="sshInfo.host" :placeholder="$t('hostTip')"
+                              @keyup.enter.native="$emit('ssh-select')"></el-input>
                 </el-form-item>
                 <el-form-item label="Port" size="small" prop="port">
-                    <el-input v-model="sshInfo.port" :placeholder="$t('portTip')" @keyup.enter.native="$emit('ssh-select')" style="width: 100px"></el-input>
+                    <el-input v-model="sshInfo.port" :placeholder="$t('portTip')"
+                              @keyup.enter.native="$emit('ssh-select')" style="width: 100px"></el-input>
                 </el-form-item>
                 <el-form-item label="Username" size="small" prop="username">
-                    <el-input v-model="sshInfo.username" :placeholder="$t('nameTip')" @keyup.enter.native="$emit('ssh-select')" style="width: 110px"></el-input>
+                    <el-input v-model="sshInfo.username" :placeholder="$t('nameTip')"
+                              @keyup.enter.native="$emit('ssh-select')" style="width: 110px"></el-input>
                 </el-form-item>
                 <el-form-item size="small" prop="password">
                     <template slot="label">
@@ -25,25 +28,35 @@
                             <div slot="content">
                                 <p>{{ `Switch to ${this.privateKey ? 'Password' : 'PrivateKey'} login` }}</p>
                             </div>
-                            <span @click="sshInfo.logintype === 0 ? sshInfo.logintype=1: sshInfo.logintype=0">{{ privateKey?'PrivateKey':'Password' }}</span>
+                            <span @click="sshInfo.logintype === 0 ? sshInfo.logintype=1: sshInfo.logintype=0">{{
+                                    privateKey ? 'PrivateKey' : 'Password'
+                                }}</span>
                         </el-tooltip>
                     </template>
-                    <el-input v-model="sshInfo.password" @click.native="textareaVisible=privateKey" @keyup.enter.native="$emit('ssh-select')" :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`" show-password></el-input>
+                    <el-input v-model="sshInfo.password" @click.native="textareaVisible=privateKey"
+                              @keyup.enter.native="$emit('ssh-select')"
+                              :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
+                              show-password></el-input>
                 </el-form-item>
                 <el-dialog :title="$t('privateKey')" :visible.sync="textareaVisible" :close-on-click-modal="false">
-                    <el-input :rows="8" v-model="sshInfo.password" type="textarea" :placeholder="$t('keyTip')"></el-input>
+                    <el-input :rows="8" v-model="sshInfo.password" type="textarea"
+                              :placeholder="$t('keyTip')"></el-input>
                     <div slot="footer" class="dialog-footer">
                         <!-- 选择密钥文件 -->
-                        <input ref="pkFile" @change="handleChangePKFile" type="file" style="position: absolute;clip: rect(0 0 0 0)"/>
+                        <input ref="pkFile" @change="handleChangePKFile" type="file"
+                               style="position: absolute;clip: rect(0 0 0 0)"/>
                         <el-button type="primary" plain @click="$refs.pkFile.click()">{{ $t('SelectFile') }}</el-button>
                         <el-button @click="sshInfo.password=''">{{ $t('Clear') }}</el-button>
-                        <el-button type="primary" @click="textareaVisible = false; $emit('ssh-select')">{{ $t('Connect') }}</el-button>
+                        <el-button type="primary" @click="textareaVisible = false; $emit('ssh-select')">{{
+                                $t('Connect')
+                            }}
+                        </el-button>
                     </div>
                 </el-dialog>
-                <el-form-item  size="small">
+                <el-form-item size="small">
                     <el-button type="primary" @click="$emit('ssh-select')" plain>{{ $t('Connect') }}</el-button>
                 </el-form-item>
-                <el-form-item  size="small">
+                <el-form-item size="small">
                     <file-list></file-list>
                 </el-form-item>
                 <el-form-item size="small">
@@ -55,11 +68,17 @@
                             <el-dropdown-item
                                 v-for="item in sshList"
                                 :key="item.host" :command="item" style="padding:0 5px 0 10px">
-                                {{item.host}}
+                                {{ item.host }}
                                 <i @click="cleanHistory(item)" class="el-icon-close"></i>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
+                </el-form-item>
+                <el-form-item size="small">
+                    <el-button type="primary" v-show="showLogin" plain>{{ $t('login') }}</el-button>
+                </el-form-item>
+                <el-form-item size="small">
+                    <el-button type="primary" v-show="showLogout" plain>{{ $t('logout') }}</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -67,9 +86,9 @@
 </template>
 
 <script>
-import { getLanguage } from '@/lang/index'
+import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
     components: {
@@ -80,16 +99,20 @@ export default {
             textareaVisible: false,
             checkRules: {
                 host: [
-                    { required: true, trigger: 'blur' }
+                    {required: true, trigger: 'blur'}
                 ],
                 port: [
-                    { required: true, trigger: 'blur', type: 'number', transform(value) { return Number(value) } }
+                    {
+                        required: true, trigger: 'blur', type: 'number', transform(value) {
+                            return Number(value)
+                        }
+                    }
                 ],
                 username: [
-                    { required: true, trigger: 'blur' }
+                    {required: true, trigger: 'blur'}
                 ],
                 password: [
-                    { required: true, trigger: 'blur', message: 'value is required' }
+                    {required: true, trigger: 'blur', message: 'value is required'}
                 ]
             }
         }
@@ -129,6 +152,7 @@ export default {
                 reader.readAsText(file)
             }
         }
+
     },
     mounted() {
         if (this.sshList.length > 0) {
@@ -143,6 +167,22 @@ export default {
         ...mapState(['sshInfo']),
         privateKey() {
             return this.sshInfo.logintype === 1
+        },
+        showLogin() {
+            const shouldValidToken = this.$store.state.shouldValidToken;
+            const token = this.$store.state.token;
+            if (shouldValidToken && (token == "" || token == null || token == undefined)) {
+                return true;
+            }
+            return false;
+        },
+        showLogout() {
+            const shouldValidToken = this.$store.state.shouldValidToken;
+            const token = this.$store.state.token;
+            if (shouldValidToken && !(token == "" || token == null || token == undefined)) {
+                return true;
+            }
+            return false;
         },
         sshList() {
             const sshList = this.$store.state.sshList
