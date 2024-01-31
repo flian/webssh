@@ -3,7 +3,7 @@ const wsTarget = proxyTarget.replace('http', 'ws')
 
 module.exports = {
     publicPath: '/',
-    outputDir: 'dist',
+    outputDir: '../src/main/resources/dist',
 
     // 放置静态资源的地方 (js/css/img/font/...)
     assetsDir: 'static',
