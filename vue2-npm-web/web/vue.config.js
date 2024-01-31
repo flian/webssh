@@ -1,4 +1,4 @@
-const proxyTarget = 'http://127.0.0.1:5032'
+const proxyTarget = 'http://127.0.0.1:5032/webssh'
 const wsTarget = proxyTarget.replace('http', 'ws')
 
 module.exports = {
