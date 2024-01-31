@@ -18,6 +18,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <maven-compiler.version>3.10.0</maven-compiler.version>
+        <jsh.version>0.2.16</jsh.version>
+        <hutool.verison>5.8.11</hutool.verison>
+        <guavacache.version>31.0.1-jre</guavacache.version>
     </properties>
 
     <modules>
@@ -25,6 +28,26 @@
         <module>vue2-npm-web</module>
         <module>vue2-npm-sshserver</module>
     </modules>
+    <dependencyManagement>
+        <dependencies>
+            <!-- https://mvnrepository.com/artifact/com.github.mwiede/jsch -->
+            <dependency>
+                <groupId>com.github.mwiede</groupId>
+                <artifactId>jsch</artifactId>
+                <version>${jsh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.verison}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guavacache.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
     </dependencies>
     <build>
