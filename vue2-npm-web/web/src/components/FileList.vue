@@ -190,7 +190,7 @@ export default {
             if (this.currentPath === '') {
                 this.currentPath = '/'
             }
-            const result = await fileList(this.currentPath, this.$store.getters.sshReq)
+            const result = await fileList(this.currentPath, this.$store.getters.sshReq,this.$store.state.token)
             if (result.Msg === 'success') {
                 if (result.Data.list === null) {
                     this.fileList = []

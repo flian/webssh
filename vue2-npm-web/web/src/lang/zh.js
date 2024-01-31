@@ -39,5 +39,6 @@ export default {
     uploadFile: '上传文件',
     uploadFolder: '上传文件夹',
     login: '登录',
-    logout: '注销'
+    logout: '注销',
+    loginFormTitle: '请输入账号登录'
 }

@@ -11,5 +11,6 @@ export default {
     clickSelectFolder: 'click to select upload folder',
     uploadFinish: ' upload finish',
     login: 'login',
-    logout: 'logout'
+    logout: 'logout',
+    loginFormTitle: 'please login'
 }

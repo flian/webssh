@@ -151,7 +151,7 @@ export default {
             // 深度拷贝对象
             this.ssh = Object.assign({}, sshInfo)
             // 校验ssh连接信息是否正确
-            const result = await checkSSH(this.$store.getters.sshReq)
+            const result = await checkSSH(this.$store.getters.sshReq,this.$store.state.token)
             if (result.Msg !== 'success') {
                 return
             } else {

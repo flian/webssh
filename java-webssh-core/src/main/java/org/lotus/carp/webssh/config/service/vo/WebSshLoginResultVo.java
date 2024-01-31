@@ -11,6 +11,9 @@ import lombok.Data;
  **/
 @Data
 public class WebSshLoginResultVo {
+
+    private static WebSshLoginResultVo emptyOne = new WebSshLoginResultVo();
+
     /**
      * token username
      */
@@ -34,4 +37,8 @@ public class WebSshLoginResultVo {
      * expiration time the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this date.
      */
     private long expirationTms;
+
+    public static WebSshLoginResultVo emptyOne() {
+        return emptyOne;
+    }
 }

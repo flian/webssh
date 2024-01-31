@@ -1,88 +1,111 @@
 <template>
-    <el-row>
-        <el-col>
-            <el-form :inline="true" style="padding-top: 10px;" :model="sshInfo" :rules="checkRules">
-                <el-form-item size="small" prop="host">
-                    <template slot="label">
-                        <el-tooltip effect="dark" placement="left">
-                            <div slot="content">
-                                <p>Switch Language</p>
-                            </div>
-                            <span @click="handleSetLanguage()">Host</span>
-                        </el-tooltip>
-                    </template>
-                    <el-input v-model="sshInfo.host" :placeholder="$t('hostTip')"
-                              @keyup.enter.native="$emit('ssh-select')"></el-input>
+    <div>
+        <el-row>
+            <el-col>
+                <el-form :inline="true" style="padding-top: 10px;" :model="sshInfo" :rules="checkRules">
+                    <el-form-item size="small" prop="host">
+                        <template slot="label">
+                            <el-tooltip effect="dark" placement="left">
+                                <div slot="content">
+                                    <p>Switch Language</p>
+                                </div>
+                                <span @click="handleSetLanguage()">Host</span>
+                            </el-tooltip>
+                        </template>
+                        <el-input v-model="sshInfo.host" :placeholder="$t('hostTip')"
+                                  @keyup.enter.native="$emit('ssh-select')"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Port" size="small" prop="port">
+                        <el-input v-model="sshInfo.port" :placeholder="$t('portTip')"
+                                  @keyup.enter.native="$emit('ssh-select')" style="width: 100px"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Username" size="small" prop="username">
+                        <el-input v-model="sshInfo.username" :placeholder="$t('nameTip')"
+                                  @keyup.enter.native="$emit('ssh-select')" style="width: 110px"></el-input>
+                    </el-form-item>
+                    <el-form-item size="small" prop="password">
+                        <template slot="label">
+                            <el-tooltip effect="dark" placement="left">
+                                <div slot="content">
+                                    <p>{{ `Switch to ${this.privateKey ? 'Password' : 'PrivateKey'} login` }}</p>
+                                </div>
+                                <span @click="sshInfo.logintype === 0 ? sshInfo.logintype=1: sshInfo.logintype=0">{{
+                                        privateKey ? 'PrivateKey' : 'Password'
+                                    }}</span>
+                            </el-tooltip>
+                        </template>
+                        <el-input v-model="sshInfo.password" @click.native="textareaVisible=privateKey"
+                                  @keyup.enter.native="$emit('ssh-select')"
+                                  :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
+                                  show-password></el-input>
+                    </el-form-item>
+                    <el-dialog :title="$t('privateKey')" :visible.sync="textareaVisible" :close-on-click-modal="false">
+                        <el-input :rows="8" v-model="sshInfo.password" type="textarea"
+                                  :placeholder="$t('keyTip')"></el-input>
+                        <div slot="footer" class="dialog-footer">
+                            <!-- 选择密钥文件 -->
+                            <input ref="pkFile" @change="handleChangePKFile" type="file"
+                                   style="position: absolute;clip: rect(0 0 0 0)"/>
+                            <el-button type="primary" plain @click="$refs.pkFile.click()">{{
+                                    $t('SelectFile')
+                                }}
+                            </el-button>
+                            <el-button @click="sshInfo.password=''">{{ $t('Clear') }}</el-button>
+                            <el-button type="primary" @click="textareaVisible = false; $emit('ssh-select')">{{
+                                    $t('Connect')
+                                }}
+                            </el-button>
+                        </div>
+                    </el-dialog>
+                    <el-form-item size="small">
+                        <el-button type="primary" @click="$emit('ssh-select')" plain>{{ $t('Connect') }}</el-button>
+                    </el-form-item>
+                    <el-form-item size="small">
+                        <file-list></file-list>
+                    </el-form-item>
+                    <el-form-item size="small">
+                        <el-dropdown @command="handleCommand">
+                            <el-button type="primary">
+                                {{ $t('History') }}
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item
+                                    v-for="item in sshList"
+                                    :key="item.host" :command="item" style="padding:0 5px 0 10px">
+                                    {{ item.host }}
+                                    <i @click="cleanHistory(item)" class="el-icon-close"></i>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </el-form-item>
+                    <el-form-item size="small">
+                        <el-button type="primary" v-show="showLogin" plain>{{ $t('login') }}</el-button>
+                    </el-form-item>
+                    <el-form-item size="small">
+                        <el-button type="primary" v-show="showLogout" plain>{{ $t('logout') }}</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+        </el-row>
+        <!-- login popup -->
+        <el-dialog
+            :title="$t('loginFormTitle')"
+            :visible.sync="showLogin"
+            width="30%">
+            <el-form ref="loginForm" :model="login.form" :rules="login.checkRules">
+                <el-form-item label="用户名" prop="用户名">
+                    <el-input v-model="login.form.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
-                <el-form-item label="Port" size="small" prop="port">
-                    <el-input v-model="sshInfo.port" :placeholder="$t('portTip')"
-                              @keyup.enter.native="$emit('ssh-select')" style="width: 100px"></el-input>
-                </el-form-item>
-                <el-form-item label="Username" size="small" prop="username">
-                    <el-input v-model="sshInfo.username" :placeholder="$t('nameTip')"
-                              @keyup.enter.native="$emit('ssh-select')" style="width: 110px"></el-input>
-                </el-form-item>
-                <el-form-item size="small" prop="password">
-                    <template slot="label">
-                        <el-tooltip effect="dark" placement="left">
-                            <div slot="content">
-                                <p>{{ `Switch to ${this.privateKey ? 'Password' : 'PrivateKey'} login` }}</p>
-                            </div>
-                            <span @click="sshInfo.logintype === 0 ? sshInfo.logintype=1: sshInfo.logintype=0">{{
-                                    privateKey ? 'PrivateKey' : 'Password'
-                                }}</span>
-                        </el-tooltip>
-                    </template>
-                    <el-input v-model="sshInfo.password" @click.native="textareaVisible=privateKey"
-                              @keyup.enter.native="$emit('ssh-select')"
-                              :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
-                              show-password></el-input>
-                </el-form-item>
-                <el-dialog :title="$t('privateKey')" :visible.sync="textareaVisible" :close-on-click-modal="false">
-                    <el-input :rows="8" v-model="sshInfo.password" type="textarea"
-                              :placeholder="$t('keyTip')"></el-input>
-                    <div slot="footer" class="dialog-footer">
-                        <!-- 选择密钥文件 -->
-                        <input ref="pkFile" @change="handleChangePKFile" type="file"
-                               style="position: absolute;clip: rect(0 0 0 0)"/>
-                        <el-button type="primary" plain @click="$refs.pkFile.click()">{{ $t('SelectFile') }}</el-button>
-                        <el-button @click="sshInfo.password=''">{{ $t('Clear') }}</el-button>
-                        <el-button type="primary" @click="textareaVisible = false; $emit('ssh-select')">{{
-                                $t('Connect')
-                            }}
-                        </el-button>
-                    </div>
-                </el-dialog>
-                <el-form-item size="small">
-                    <el-button type="primary" @click="$emit('ssh-select')" plain>{{ $t('Connect') }}</el-button>
-                </el-form-item>
-                <el-form-item size="small">
-                    <file-list></file-list>
-                </el-form-item>
-                <el-form-item size="small">
-                    <el-dropdown @command="handleCommand">
-                        <el-button type="primary">
-                            {{ $t('History') }}
-                        </el-button>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item
-                                v-for="item in sshList"
-                                :key="item.host" :command="item" style="padding:0 5px 0 10px">
-                                {{ item.host }}
-                                <i @click="cleanHistory(item)" class="el-icon-close"></i>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </el-form-item>
-                <el-form-item size="small">
-                    <el-button type="primary" v-show="showLogin" plain>{{ $t('login') }}</el-button>
-                </el-form-item>
-                <el-form-item size="small">
-                    <el-button type="primary" v-show="showLogout" plain>{{ $t('logout') }}</el-button>
+                <el-form-item label="密码" prop="密码">
+                    <el-input v-model="login.form.password" placeholder="请输入密码"></el-input>
                 </el-form-item>
             </el-form>
-        </el-col>
-    </el-row>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="handleLogin" plain>{{ $t('login') }}</el-button>
+            </span>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -97,6 +120,17 @@ export default {
     data() {
         return {
             textareaVisible: false,
+            login:{
+                form:{
+                    username:"",
+                    password:""
+                },
+                checkRules: {
+                    username: [
+                        {required: true, trigger: 'blur'}
+                    ]
+                }
+            },
             checkRules: {
                 host: [
                     {required: true, trigger: 'blur'}
@@ -118,6 +152,20 @@ export default {
         }
     },
     methods: {
+        handleLogin(){
+            this.$refs.loginForm.validate((valid) =>{
+                if(valid){
+                    const result =  login(this.login.form);
+                    if(result.code == '200'){
+                        const token = result.Data.token;
+                        if(token){
+                            this.$store.state.token = token;
+                        }
+                    }
+                }
+            });
+
+        },
         handleSetLanguage() {
             const oldLang = getLanguage()
             const lang = oldLang === 'zh' ? 'en' : 'zh'
@@ -171,7 +219,7 @@ export default {
         showLogin() {
             const shouldValidToken = this.$store.state.shouldValidToken;
             const token = this.$store.state.token;
-            if (shouldValidToken && (token == "" || token == null || token == undefined)) {
+            if (shouldValidToken && (token == '' || token == null || token == undefined)) {
                 return true;
             }
             return false;
@@ -179,7 +227,7 @@ export default {
         showLogout() {
             const shouldValidToken = this.$store.state.shouldValidToken;
             const token = this.$store.state.token;
-            if (shouldValidToken && !(token == "" || token == null || token == undefined)) {
+            if (shouldValidToken && !(token == '' || token == null || token == undefined)) {
                 return true;
             }
             return false;
