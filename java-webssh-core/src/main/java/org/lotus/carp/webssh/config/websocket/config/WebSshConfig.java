@@ -1,7 +1,6 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +42,7 @@ public class WebSshConfig {
     /**
      * default user config
      */
-    private String allowedUsers = "root:changeit@123!";
+    private String allowedUsers = "root:changeit@123!:%,test:test@123!:127.0.0.1";
 
     /**
      * token tokenExpiration, default 6 hour.
