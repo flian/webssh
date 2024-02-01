@@ -11,6 +11,7 @@ import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshController;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.impl.DefaultWebSshLoginServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,16 +29,19 @@ import javax.annotation.Resource;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
+    @Value("${webSsh.webSshUri:/webssh}")
+    private String webSshUri;
+
     @Autowired
-    private HttpAuthHandler httpAuthHandler;
+    private WebSshHandler webSshHandler;
     @Autowired
-    private WebSocketHandshakeInterceptor myInterceptor;
+    private WebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
-                .addHandler(httpAuthHandler, "webssh")
-                .addInterceptors(myInterceptor)
+                .addHandler(webSshHandler, webSshUri)
+                .addInterceptors(webSocketHandshakeInterceptor)
                 .setAllowedOrigins("*");
     }
 

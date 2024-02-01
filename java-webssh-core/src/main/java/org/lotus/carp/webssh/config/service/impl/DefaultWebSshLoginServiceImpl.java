@@ -44,6 +44,10 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
      */
     private int tokenExpiration = 6;
 
+    @Value("${webSsh.shouldVerifyToken:true}")
+    private boolean shouldVerifyToken;
+
+
     /**
      * cache token and login object.
      */
@@ -122,6 +126,10 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     @Override
     public Boolean isTokenValid(String token) {
+        if(!shouldVerifyToken){
+            log.info("ignore token verify.");
+            return true;
+        }
         if(ObjectUtils.isEmpty(token)){
             return false;
         }

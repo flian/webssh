@@ -80,12 +80,13 @@ export default {
     computed: {
         ...mapState(['currentTab']),
         uploadUrl: () => {
-            return `${process.env.NODE_ENV === 'production' ? `${location.origin}` : 'api'}/file/upload`
+            return `${process.env.NODE_ENV === 'production' ? `${location.origin}` : 'api'}/webssh/file/upload`
         },
         uploadData: function() {
             return {
                 sshInfo: this.$store.getters.sshReq,
-                path: this.currentPath
+                path: this.currentPath,
+                token: this.$store.getters.token
             }
         }
     },
@@ -158,8 +159,9 @@ export default {
         uploadProgress(e, f) {
             e.percent = e.percent / 2
             f.percentage = f.percentage / 2
+            const token = this.$store.getters.token
             if (e.percent === 50) {
-                const ws = new WebSocket(`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${process.env.NODE_ENV === 'production' ? '' : '/ws'}/file/progress?id=${f.uid}`)
+                const ws = new WebSocket(`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${process.env.NODE_ENV === 'production' ? '' : '/ws'}/webssh/file/progress?token=${token}&id=${f.uid}`)
                 ws.onmessage = e1 => {
                     f.percentage = (f.size + Number(e1.data)) / (f.size * 2) * 100
                 }
@@ -218,8 +220,9 @@ export default {
             this.getFileList()
         },
         downloadFile() {
+            const token = this.$store.getters.token
             const prefix = process.env.NODE_ENV === 'production' ? `${location.origin}` : 'api'
-            const downloadUrl = `${prefix}/file/download?path=${this.downloadFilePath}&sshInfo=${this.$store.getters.sshReq}`
+            const downloadUrl = `${prefix}/webssh/file/download?path=${this.downloadFilePath}&sshInfo=${this.$store.getters.sshReq}&token=${token}`
             window.open(downloadUrl)
         },
         updatePath(path) {

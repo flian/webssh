@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 export function checkSSH(sshInfo,token) {
-    return request.get(`/check?sshInfo=${sshInfo}&token=${token}`)
+    return request.get(`/webssh/check?sshInfo=${sshInfo}&token=${token}`)
 }
 
 export function login(loginData){

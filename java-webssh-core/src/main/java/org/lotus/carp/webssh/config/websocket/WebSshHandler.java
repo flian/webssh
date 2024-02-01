@@ -15,7 +15,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.time.LocalDateTime;
+import static org.lotus.carp.webssh.config.websocket.WebSocketHandshakeInterceptor.CMD;
 
 /**
  * @author buhao
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
  */
 @Component
 @Slf4j
-public class HttpAuthHandler extends TextWebSocketHandler {
+public class WebSshHandler extends TextWebSocketHandler {
 
     /**
      * should verify token
@@ -45,11 +45,12 @@ public class HttpAuthHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        String sessionId = session.getId();
         Object token = session.getAttributes().get(tokenName);
-        if (token != null) {
-            WsSessionManager.add(token.toString(), session);
+        if (sessionId != null && token != null) {
+            WsSessionManager.add(sessionId, session);
         } else {
-            if(!shouldVerifyToken){
+            if (!shouldVerifyToken) {
                 log.info("skip token verify");
                 return;
             }
@@ -66,11 +67,25 @@ public class HttpAuthHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        WebSshUrlCommandEnum cmd = WebSshUrlCommandEnum.getByCode((String) session.getAttributes().get(CMD));
+        if (null == cmd) {
+            log.info("unknown command...");
+        }
         // 获得客户端传来的消息
         String payload = message.getPayload();
-        Object token = session.getAttributes().get("token");
-        System.out.println("server 接收到 " + token + " 发送的 " + payload);
-        session.sendMessage(new TextMessage("server 发送给 " + token + " 消息 " + payload + " " + LocalDateTime.now().toString()));
+        Object token = session.getAttributes().get(tokenName);
+        log.info("server 接收到 " + token + " 发送的 " + payload);
+        switch (cmd) {
+            case TERM: {
+                //term command get
+                break;
+            }
+            case FILE_UPLOAD_PROGRESS: {
+                //file upload
+                break;
+            }
+        }
+        //session.sendMessage(message);
     }
 
     /**
@@ -82,10 +97,11 @@ public class HttpAuthHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        Object token = session.getAttributes().get("token");
-        if (token != null) {
+        Object token = session.getAttributes().get(tokenName);
+        String sessionId = session.getId();
+        if (sessionId != null && token != null) {
             // 用户退出，移除缓存
-            WsSessionManager.remove(token.toString());
+            WsSessionManager.remove(sessionId);
         }
     }
 

@@ -19,6 +19,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,6 +29,20 @@ import java.util.Map;
 @Component
 @Slf4j
 public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
+
+    public static final String CMD = "CMD";
+
+    public static final String ID = "id";
+
+    public static final String SSH_INFO = "sshInfo";
+
+    public static final String ROWS = "rows";
+    public static final String COLS = "cols";
+    public static final String CLOSE_TIP = "closeTip";
+
+
+    @Value("${webSsh.webSshUri:/webssh}")
+    private String webSshUri;
 
     @Resource
     private WebSshLoginService webSshLoginService;
@@ -44,6 +59,20 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     @Value("${webSsh.tokenName:token}")
     private String tokenName;
 
+
+    public void setSessionParamIfPresent(String requestUri, Map<String, String> paramMap, Map<String, Object> attributes) {
+        String cmd = WebSshUrlCommandEnum.getCmdByUri(requestUri);
+        if (ObjectUtils.isEmpty(cmd)) {
+            log.info("can't find cmd, is request not right? requestUri：{}", requestUri);
+        }
+        attributes.put(CMD, cmd);
+        attributes.put(SSH_INFO, paramMap.get(SSH_INFO));
+        attributes.put(ID, paramMap.get(ID));
+        attributes.put(ROWS, paramMap.get(ROWS));
+        attributes.put(COLS, paramMap.get(COLS));
+        attributes.put(CLOSE_TIP, paramMap.get(CLOSE_TIP));
+    }
+
     /**
      * 握手前
      *
@@ -56,10 +85,16 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        log.info("握手开始");
+        if (!request.getURI().getPath().contains(webSshUri)) {
+            log.info("not webssh websocket.. contine..");
+            return true;
+        }
 
+        log.info("握手开始");
         // 获得请求参数
         Map<String, String> paramMap = HttpUtil.decodeParamMap(request.getURI().getQuery(), Charset.forName("utf-8"));
+        //set connection config.
+        setSessionParamIfPresent(request.getURI().getPath(), paramMap, attributes);
         String token = paramMap.get(tokenName);
         if (shouldVerifyToken) {
             if (!webSshLoginService.isTokenValid(token)) {
