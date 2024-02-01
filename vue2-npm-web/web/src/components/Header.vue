@@ -92,11 +92,11 @@
             :title="$t('loginFormTitle')"
             :visible.sync="showLogin"
             width="30%">
-            <el-form ref="loginForm" :model="login.form" :rules="login.checkRules">
-                <el-form-item label="用户名" prop="用户名">
+            <el-form :model="login.form" ref="loginForm" :rules="login.checkRules">
+                <el-form-item label="用户名" prop="username">
                     <el-input v-model="login.form.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="密码">
+                <el-form-item label="密码" prop="password">
                     <el-input v-model="login.form.password" placeholder="请输入密码"></el-input>
                 </el-form-item>
             </el-form>
