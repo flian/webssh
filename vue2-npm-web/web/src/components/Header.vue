@@ -161,7 +161,7 @@ export default {
                     if(result.code == '200'){
                         const token = result.Data.token;
                         if(token){
-                            this.$store.state.token = token;
+                            this.$store.dispatch('setToken', token);
                         }
                     }
                 }

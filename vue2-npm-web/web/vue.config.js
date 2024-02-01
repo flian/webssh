@@ -16,16 +16,20 @@ module.exports = {
     // 在多核机器下会默认开启。
     parallel: require('os').cpus().length > 1,
 
+
+
     // 配置 webpack-dev-server 行为。
     devServer: {
         disableHostCheck: false,
-        open: process.platform === 'darwin',
+        //open: process.platform === 'darwin',
+        //open: true,
+        //devtool: 'source-map',
         host: '0.0.0.0',
         port: 8257,
         https: false,
         hotOnly: false,
         // eslint-disable-next-line no-dupe-keys
-        open: true,
+
         // 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/cli-service.md#配置代理
         proxy: {
             '/api': {
