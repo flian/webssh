@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <start-class></start-class>
+        <start-class>org.lotus.carp.webssh.WebSshServerApplication</start-class>
     </properties>
 
     <dependencies>
