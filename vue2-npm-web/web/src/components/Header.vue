@@ -110,6 +110,7 @@
 
 <script>
 import { getShouldVerifyToken } from '@/api/common'
+import { login } from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'

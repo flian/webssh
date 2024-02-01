@@ -11,6 +11,6 @@ export function login(loginData){
     return request({
         url: '/webssh/login',
         method: 'post',
-        data: data
+        data: loginData
     });
 }

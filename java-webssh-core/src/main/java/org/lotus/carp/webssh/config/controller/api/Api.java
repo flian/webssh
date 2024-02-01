@@ -23,34 +23,37 @@ public interface Api {
 
     /**
      * check sshinfo and token etc。
+     *
      * @param checkRequestParamsVo
      * @return
      */
     @GetMapping("/check")
     @ResponseBody
-    default WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo){
+    default WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo) {
         throw new BusinessException("Please implements me!");
     }
 
     /**
      * should skip login
+     *
      * @return
      */
     @GetMapping("/shouldVerifyToken")
     @ResponseBody
-    default WebSshResponse<Boolean> shouldVerifyToken(){
+    default WebSshResponse<Boolean> shouldVerifyToken() {
         throw new BusinessException("Please implements me!");
     }
 
     /**
      * handle user login
+     *
      * @param loginVo
      * @param request
      * @return
      */
     @PostMapping("/login")
     @ResponseBody
-    default WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid @RequestBody LoginVo loginVo, HttpServletRequest request){
+    default WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid @RequestBody LoginVo loginVo, HttpServletRequest request) {
         throw new BusinessException("Please implements me!");
     }
 }

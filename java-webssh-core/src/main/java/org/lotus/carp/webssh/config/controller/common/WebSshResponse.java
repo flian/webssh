@@ -29,6 +29,7 @@ public class WebSshResponse<T> implements Serializable {
         this.code = resultCode;
         this.data = data;
         this.message = resultMsg;
+        this.msg = resultMsg;
     }
 
     public WebSshResponse(int resultCode, T data) {
@@ -39,6 +40,7 @@ public class WebSshResponse<T> implements Serializable {
     public WebSshResponse(int resultCode, String resultMsg) {
         this.code = resultCode;
         this.message = resultMsg;
+        this.msg = resultMsg;
     }
 
 

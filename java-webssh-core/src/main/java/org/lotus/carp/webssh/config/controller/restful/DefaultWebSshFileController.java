@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
  * @date : 2024-02-01 14:17
  **/
 @Slf4j
-public class DefaultWebSshFileController implements FileApi {
+public class DefaultWebSshFileController extends BaseController implements FileApi {
 
     @Resource
     private WebSshLoginService webSshLoginService;
