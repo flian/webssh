@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -30,7 +31,7 @@ public interface FileApi {
      * @return
      */
     @GetMapping("/list")
-    WebSshResponse<FileListVo> listFile(FileListRequestParamsVo requestParamsVo);
+    WebSshResponse<FileListVo> listFile(@Valid FileListRequestParamsVo requestParamsVo);
 
     /**
      * download file from remote server
@@ -38,7 +39,7 @@ public interface FileApi {
      * @param fileDownLoadParamsVo
      */
     @GetMapping("/download")
-    void downLoadFile(HttpServletResponse response, FileDownLoadParamsVo fileDownLoadParamsVo) throws IOException;
+    void downLoadFile(HttpServletResponse response, @Valid FileDownLoadParamsVo fileDownLoadParamsVo) throws IOException;
 
     /**
      * upload file to ssh server
@@ -47,5 +48,5 @@ public interface FileApi {
      * @return
      */
     @PostMapping("/upload")
-    WebSshResponse<Boolean> uploadFileToServer(FileUploadDataVo fileUploadDataVo,@RequestParam("file") MultipartFile file);
+    WebSshResponse<Boolean> uploadFileToServer(@Valid FileUploadDataVo fileUploadDataVo,@RequestParam("file") MultipartFile file);
 }

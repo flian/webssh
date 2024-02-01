@@ -8,6 +8,7 @@ import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -44,5 +45,5 @@ public interface Api {
      */
     @PostMapping("/login")
     @ResponseBody
-    WebSshResponse<WebSshLoginResultVo> handleLogin(@RequestBody LoginVo loginVo, HttpServletRequest request);
+    WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid @RequestBody LoginVo loginVo, HttpServletRequest request);
 }
