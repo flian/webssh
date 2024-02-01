@@ -1,7 +1,6 @@
 package org.lotus.carp.webssh.config.controller.restful;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lotus.carp.webssh.config.controller.api.Api;
 import org.lotus.carp.webssh.config.controller.api.FileApi;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
@@ -9,12 +8,9 @@ import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListVo;
 import org.lotus.carp.webssh.config.controller.vo.FileUploadDataVo;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -31,8 +27,6 @@ import java.nio.charset.StandardCharsets;
  * @date : 2024-02-01 14:17
  **/
 @Slf4j
-@Controller
-@ConditionalOnMissingBean(FileApi.class)
 public class DefaultWebSshFileController implements FileApi {
 
     @Resource

@@ -10,12 +10,6 @@ import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -30,9 +24,7 @@ import javax.validation.Valid;
  **/
 
 @Slf4j
-@ConditionalOnMissingBean(Api.class)
-@Controller
-public class DefaultWebSshController implements Api{
+public class DefaultWebSshController implements Api {
 
     @Resource
     private WebSshConfig webSshConfig;
