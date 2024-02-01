@@ -1,6 +1,9 @@
 package org.lotus.carp.webssh.config.controller.api;
 
+import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
+import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
+import org.lotus.carp.webssh.config.controller.vo.FileListVo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
  **/
 @RequestMapping("/webssh/file")
 public interface FileApi {
+
+    @GetMapping("/list")
+    WebSshResponse<FileListVo> listFile(FileListRequestParamsVo requestParamsVo);
 
     @GetMapping("/download")
     void downLoadFile(HttpServletResponse response, FileDownLoadParamsVo fileDownLoadParamsVo);

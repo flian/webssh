@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import { getShouldVerifyToken } from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
@@ -209,6 +210,11 @@ export default {
             if (latestSSH.password === undefined) {
                 this.$store.commit('SET_PASS', '')
             }
+        }
+        const shouldVerifyToken = getShouldVerifyToken();
+
+        if(shouldVerifyToken.code == '200'){
+            this.$store.state.shouldValidToken = shouldVerifyToken.Data;
         }
     },
     computed: {

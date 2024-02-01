@@ -7,10 +7,9 @@ import lombok.Data;
  * <p></p>
  *
  * @author : foy
- * @date : 2024-02-01 10:42
+ * @date : 2024-02-01 11:36
  **/
 @Data
-public class FileDownLoadParamsVo extends WebSshRequestBase {
-    private String path;
+public class CheckRequestParamsVo extends WebSshRequestBase {
 
 }
