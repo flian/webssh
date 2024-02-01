@@ -2,17 +2,17 @@ package org.lotus.carp.webssh.config.service.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.BusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.PropertiesConfigUser;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -27,26 +27,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, InitializingBean {
 
-    @Value("${webSsh.userDelimiter:,}")
-    private String userDelimiter = ",";
 
-    @Value("${webSsh.userDelimiter::}")
-    private String userFieldDelimiter = ":";
-
-    @Value("${webSsh.allowAnyIpChar:%}")
-    private String allowAnyIpChar = "%";
+    @Resource
+    private WebSshConfig webSshConfig;
 
     private List<PropertiesConfigUser> allowedUsers = new ArrayList<>();
-
-    @Value("${webSsh.tokenExpiration:6}")
-    /**
-     * token tokenExpiration, default 6 hour.
-     */
-    private int tokenExpiration = 6;
-
-    @Value("${webSsh.shouldVerifyToken:true}")
-    private boolean shouldVerifyToken;
-
 
     /**
      * cache token and login object.
@@ -82,7 +67,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
         if (ObjectUtils.isEmpty(userIpAddr)) {
             return true;
         }
-        if (ObjectUtils.isEmpty(allowedIps) || allowAnyIpChar.equals(allowedIps)) {
+        if (ObjectUtils.isEmpty(allowedIps) || webSshConfig.getAllowAnyIpChar().equals(allowedIps)) {
             return true;
         }
         if (allowedIps.contains(userIpAddr)) {
@@ -100,7 +85,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
         result.setExpired(formatNormalStr(expirationDate));
         result.setExpirationTms(expirationTms);
         result.setUserIpAddr(user.getRequestIp());
-        setCache(result.getToken(), result, tokenExpiration);
+        setCache(result.getToken(), result, webSshConfig.getTokenExpiration());
         return result;
     }
 
@@ -115,7 +100,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
     private Date genExpirationDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.HOUR, tokenExpiration);
+        calendar.add(Calendar.HOUR, webSshConfig.getTokenExpiration());
         return calendar.getTime();
     }
 
@@ -126,7 +111,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     @Override
     public Boolean isTokenValid(String token) {
-        if(!shouldVerifyToken){
+        if(!webSshConfig.isShouldVerifyToken()){
             log.info("ignore token verify.");
             return true;
         }
@@ -137,13 +122,13 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
         return null == cacheObject ? Boolean.FALSE : Boolean.TRUE;
     }
 
-    @Value("${webSsh.allowedUsers:root:changeit@123!}")
-    public void setAllowedUsers(String usersConfig) {
+
+    private void setAllowedUsers(String usersConfig) {
         if (!ObjectUtils.isEmpty(usersConfig)) {
-            String[] users = usersConfig.split(userDelimiter);
+            String[] users = usersConfig.split(webSshConfig.getUserDelimiter());
             if (!ObjectUtils.isEmpty(users)) {
                 Arrays.stream(users).forEach(u -> {
-                    String[] fields = u.split(userFieldDelimiter);
+                    String[] fields = u.split(webSshConfig.getUserFieldDelimiter());
                     if (!ObjectUtils.isEmpty(fields)) {
                         PropertiesConfigUser user = new PropertiesConfigUser();
                         user.setUsername(fields[0]);
@@ -162,6 +147,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        tokenCache = CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(tokenExpiration, TimeUnit.HOURS).build();
+        setAllowedUsers(webSshConfig.getAllowedUsers());
+        tokenCache = CacheBuilder.newBuilder().maximumSize(10000).expireAfterAccess(webSshConfig.getTokenExpiration(), TimeUnit.HOURS).build();
     }
 }

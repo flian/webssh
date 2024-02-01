@@ -9,11 +9,13 @@ import org.lotus.carp.webssh.config.controller.vo.LoginVo;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -26,8 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class DefaultWebSshController implements Api {
 
-    @Value("${webSsh.shouldVerifyToken:true}")
-    private boolean shouldVerifyToken;
+    @Resource
+    private WebSshConfig webSshConfig;
 
     @Resource
     private WebSshLoginService loginService;
@@ -35,18 +37,18 @@ public class DefaultWebSshController implements Api {
     @Override
     public WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo) {
         CheckResponseVo checkResponseVo = new CheckResponseVo();
-        checkResponseVo.setShouldVerifyToken(shouldVerifyToken);
+        checkResponseVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
         checkResponseVo.setSavePass(false);
         return WebSshResponse.ok(checkResponseVo);
     }
 
     @Override
     public WebSshResponse<Boolean> shouldVerifyToken() {
-        return WebSshResponse.ok(shouldVerifyToken);
+        return WebSshResponse.ok(webSshConfig.isShouldVerifyToken());
     }
 
     @Override
-    public WebSshResponse<WebSshLoginResultVo> handleLogin(LoginVo loginVo, HttpServletRequest request) {
+    public WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid LoginVo loginVo, HttpServletRequest request) {
         WebSshLoginVo webSshLoginVo = new WebSshLoginVo();
         webSshLoginVo.setUsername(loginVo.getUsername());
         webSshLoginVo.setPassword(loginVo.getPassword());
