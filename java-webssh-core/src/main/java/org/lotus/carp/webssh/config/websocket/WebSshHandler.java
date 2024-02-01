@@ -8,12 +8,15 @@ package org.lotus.carp.webssh.config.websocket;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import javax.annotation.Resource;
 
 import static org.lotus.carp.webssh.config.websocket.WebSocketHandshakeInterceptor.CMD;
 
@@ -25,17 +28,9 @@ import static org.lotus.carp.webssh.config.websocket.WebSocketHandshakeIntercept
 @Slf4j
 public class WebSshHandler extends TextWebSocketHandler {
 
-    /**
-     * should verify token
-     */
-    @Value("${webSsh.shouldVerifyToken:true}")
-    private boolean shouldVerifyToken;
 
-    /**
-     * token name from front
-     */
-    @Value("${webSsh.tokenName:token}")
-    private String tokenName;
+    @Resource
+    private WebSshConfig webSshConfig;
 
     /**
      * socket 建立成功事件
@@ -46,11 +41,11 @@ public class WebSshHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String sessionId = session.getId();
-        Object token = session.getAttributes().get(tokenName);
+        Object token = session.getAttributes().get(webSshConfig.getTokenName());
         if (sessionId != null && token != null) {
             WsSessionManager.add(sessionId, session);
         } else {
-            if (!shouldVerifyToken) {
+            if (!webSshConfig.isShouldVerifyToken()) {
                 log.info("skip token verify");
                 return;
             }
@@ -73,7 +68,7 @@ public class WebSshHandler extends TextWebSocketHandler {
         }
         // 获得客户端传来的消息
         String payload = message.getPayload();
-        Object token = session.getAttributes().get(tokenName);
+        Object token = session.getAttributes().get(webSshConfig.getTokenName());
         log.info("server 接收到 " + token + " 发送的 " + payload);
         switch (cmd) {
             case TERM: {
@@ -97,7 +92,7 @@ public class WebSshHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        Object token = session.getAttributes().get(tokenName);
+        Object token = session.getAttributes().get(webSshConfig.getTokenName());
         String sessionId = session.getId();
         if (sessionId != null && token != null) {
             // 用户退出，移除缓存

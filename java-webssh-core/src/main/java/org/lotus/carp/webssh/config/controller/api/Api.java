@@ -4,6 +4,7 @@ import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.CheckRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.CheckResponseVo;
 import org.lotus.carp.webssh.config.controller.vo.LoginVo;
+import org.lotus.carp.webssh.config.exception.BusinessException;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,9 @@ public interface Api {
      */
     @GetMapping("/check")
     @ResponseBody
-    WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo);
+    default WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo){
+        throw new BusinessException("Please implements me!");
+    }
 
     /**
      * should skip login
@@ -35,7 +38,9 @@ public interface Api {
      */
     @GetMapping("/shouldVerifyToken")
     @ResponseBody
-    WebSshResponse<Boolean> shouldVerifyToken();
+    default WebSshResponse<Boolean> shouldVerifyToken(){
+        throw new BusinessException("Please implements me!");
+    }
 
     /**
      * handle user login
@@ -45,5 +50,7 @@ public interface Api {
      */
     @PostMapping("/login")
     @ResponseBody
-    WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid @RequestBody LoginVo loginVo, HttpServletRequest request);
+    default WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid @RequestBody LoginVo loginVo, HttpServletRequest request){
+        throw new BusinessException("Please implements me!");
+    }
 }

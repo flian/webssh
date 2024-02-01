@@ -5,6 +5,7 @@ import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListVo;
 import org.lotus.carp.webssh.config.controller.vo.FileUploadDataVo;
+import org.lotus.carp.webssh.config.exception.BusinessException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,9 @@ public interface FileApi {
      * @return
      */
     @GetMapping("/list")
-    WebSshResponse<FileListVo> listFile(@Valid FileListRequestParamsVo requestParamsVo);
+    default WebSshResponse<FileListVo> listFile(@Valid FileListRequestParamsVo requestParamsVo){
+        throw new BusinessException("Please implements me!");
+    }
 
     /**
      * download file from remote server
@@ -39,7 +42,9 @@ public interface FileApi {
      * @param fileDownLoadParamsVo
      */
     @GetMapping("/download")
-    void downLoadFile(HttpServletResponse response, @Valid FileDownLoadParamsVo fileDownLoadParamsVo) throws IOException;
+    default void downLoadFile(HttpServletResponse response, @Valid FileDownLoadParamsVo fileDownLoadParamsVo) throws IOException{
+        throw new BusinessException("Please implements me!");
+    }
 
     /**
      * upload file to ssh server
@@ -48,5 +53,7 @@ public interface FileApi {
      * @return
      */
     @PostMapping("/upload")
-    WebSshResponse<Boolean> uploadFileToServer(@Valid FileUploadDataVo fileUploadDataVo,@RequestParam("file") MultipartFile file);
+    default WebSshResponse<Boolean> uploadFileToServer(@Valid FileUploadDataVo fileUploadDataVo,@RequestParam("file") MultipartFile file){
+        throw new BusinessException("Please implements me!");
+    }
 }

@@ -12,11 +12,13 @@ import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshController;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshFileController;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.impl.DefaultWebSshLoginServiceImpl;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -31,40 +33,19 @@ import javax.annotation.Resource;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    @Value("${webSsh.webSshUri:/webssh}")
-    private String webSshUri;
+    @Resource
+    private WebSshConfig webSshConfig;
 
-    @Autowired
+    @Resource
     private WebSshHandler webSshHandler;
-    @Autowired
+    @Resource
     private WebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry
-                .addHandler(webSshHandler, webSshUri)
+                .addHandler(webSshHandler, webSshConfig.getWebSshUri())
                 .addInterceptors(webSocketHandshakeInterceptor)
                 .setAllowedOrigins("*");
-    }
-
-    @ConditionalOnMissingBean(WebSshLoginService.class)
-    @Resource
-    @Bean
-    public WebSshLoginService defaultLoginService() {
-        return new DefaultWebSshLoginServiceImpl();
-    }
-
-    @ConditionalOnMissingBean(Api.class)
-    @Resource
-    @Bean
-    public Api defaultApiController() {
-        return new DefaultWebSshController();
-    }
-
-    @ConditionalOnMissingBean(FileApi.class)
-    @Resource
-    @Bean
-    public FileApi defaultFileApiController() {
-        return new DefaultWebSshFileController();
     }
 }

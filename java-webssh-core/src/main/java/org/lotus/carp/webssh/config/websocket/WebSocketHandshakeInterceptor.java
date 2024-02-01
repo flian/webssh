@@ -9,6 +9,7 @@ package org.lotus.carp.webssh.config.websocket;
 import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -41,23 +42,12 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     public static final String CLOSE_TIP = "closeTip";
 
 
-    @Value("${webSsh.webSshUri:/webssh}")
-    private String webSshUri;
-
     @Resource
     private WebSshLoginService webSshLoginService;
 
-    /**
-     * should verify token
-     */
-    @Value("${webSsh.shouldVerifyToken:true}")
-    private boolean shouldVerifyToken;
+    @Resource
+    private WebSshConfig webSshConfig;
 
-    /**
-     * token name from front
-     */
-    @Value("${webSsh.tokenName:token}")
-    private String tokenName;
 
 
     public void setSessionParamIfPresent(String requestUri, Map<String, String> paramMap, Map<String, Object> attributes) {
@@ -85,7 +75,7 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        if (!request.getURI().getPath().contains(webSshUri)) {
+        if (!request.getURI().getPath().contains(webSshConfig.getWebSshUri())) {
             log.info("not webssh websocket.. contine..");
             return true;
         }
@@ -95,8 +85,8 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
         Map<String, String> paramMap = HttpUtil.decodeParamMap(request.getURI().getQuery(), Charset.forName("utf-8"));
         //set connection config.
         setSessionParamIfPresent(request.getURI().getPath(), paramMap, attributes);
-        String token = paramMap.get(tokenName);
-        if (shouldVerifyToken) {
+        String token = paramMap.get(webSshConfig.getTokenName());
+        if (webSshConfig.isShouldVerifyToken()) {
             if (!webSshLoginService.isTokenValid(token)) {
                 log.info("token is invalid.token:{}", token);
                 return false;
@@ -104,12 +94,12 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
         }
         if (!ObjectUtils.isEmpty(token)) {
             // 放入属性域
-            attributes.put(tokenName, token);
+            attributes.put(webSshConfig.getTokenName(), token);
             log.info("token verify success,handshake success.");
             return true;
         }
 
-        if (!shouldVerifyToken) {
+        if (!webSshConfig.isShouldVerifyToken()) {
             log.info("ignore token verify.");
             return true;
         }
