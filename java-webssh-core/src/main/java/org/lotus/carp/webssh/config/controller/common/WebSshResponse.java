@@ -82,6 +82,9 @@ public class WebSshResponse<T> implements Serializable {
     public static <T> WebSshResponse<T> fail(String resultMsg) {
         return new WebSshResponse<T>(AppConst.FAIL, resultMsg);
     }
+    public static <T> WebSshResponse<T> fail(T data, String resultMsg) {
+        return new WebSshResponse<T>(AppConst.FAIL, data,resultMsg);
+    }
 
     public static <E> WebSshResponse<E> fail(int FAIL, E data, String resultMsg) {
         return new WebSshResponse<E>(FAIL, data, resultMsg);

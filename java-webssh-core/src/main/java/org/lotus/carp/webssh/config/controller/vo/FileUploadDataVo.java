@@ -9,10 +9,13 @@ import javax.validation.constraints.NotBlank;
  * <p></p>
  *
  * @author : foy
- * @date : 2024-02-01 11:28
+ * @date : 2024-02-01 14:11
  **/
 @Data
-public class FileListRequestParamsVo extends WebSshRequestBase {
+public class FileUploadDataVo extends WebSshRequestBase {
+    @NotBlank
+    private String id;
+    private String dir;
     @NotBlank
     private String path;
 }

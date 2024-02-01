@@ -4,10 +4,15 @@ import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListVo;
+import org.lotus.carp.webssh.config.controller.vo.FileUploadDataVo;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -19,9 +24,28 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/webssh/file")
 public interface FileApi {
 
+    /**
+     * list remote path files
+     * @param requestParamsVo
+     * @return
+     */
     @GetMapping("/list")
     WebSshResponse<FileListVo> listFile(FileListRequestParamsVo requestParamsVo);
 
+    /**
+     * download file from remote server
+     * @param response
+     * @param fileDownLoadParamsVo
+     */
     @GetMapping("/download")
-    void downLoadFile(HttpServletResponse response, FileDownLoadParamsVo fileDownLoadParamsVo);
+    void downLoadFile(HttpServletResponse response, FileDownLoadParamsVo fileDownLoadParamsVo) throws IOException;
+
+    /**
+     * upload file to ssh server
+     * @param fileUploadDataVo
+     * @param file
+     * @return
+     */
+    @PostMapping("/upload")
+    WebSshResponse<Boolean> uploadFileToServer(FileUploadDataVo fileUploadDataVo,@RequestParam("file") MultipartFile file);
 }
