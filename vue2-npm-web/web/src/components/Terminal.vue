@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import { checkSSH } from '@/api/common'
-import { Terminal } from 'xterm'
-import { FitAddon } from 'xterm-addon-fit'
-import { AttachAddon } from 'xterm-addon-attach'
+import {checkSSH} from '@/api/common'
+import {Terminal} from 'xterm'
+import {FitAddon} from 'xterm-addon-fit'
+import {AttachAddon} from 'xterm-addon-attach'
 
 export default {
     name: 'Terminal',
@@ -54,16 +54,19 @@ export default {
             this.term = new Terminal()
             this.term.loadAddon(fitAddon)
             this.term.open(document.getElementById(this.id))
-            try { fitAddon.fit() } catch (e) {/**/}
+            try {
+                fitAddon.fit()
+            } catch (e) {/**/
+            }
             const self = this
             const heartCheck = {
                 timeout: 15000, // 15s发一次心跳
                 intervalObj: null,
-                stop: function() {
+                stop: function () {
                     clearInterval(this.intervalObj)
                 },
-                start: function() {
-                    this.intervalObj = setInterval(function() {
+                start: function () {
+                    this.intervalObj = setInterval(function () {
                         if (self.ws !== null && self.ws.readyState === 1) {
                             self.ws.send('ping')
                         }
@@ -104,6 +107,7 @@ export default {
             }
             const attachAddon = new AttachAddon(this.ws)
             this.term.loadAddon(attachAddon)
+
             this.term.attachCustomKeyEventHandler((e) => {
                 const keyArray = ['F5', 'F11', 'F12']
                 if (keyArray.indexOf(e.key) > -1) {
@@ -133,7 +137,10 @@ export default {
                     } else {
                         self.term.setOption('fontSize', --this.fontSize)
                     }
-                    try { fitAddon.fit() } catch (e) {/**/}
+                    try {
+                        fitAddon.fit()
+                    } catch (e) {/**/
+                    }
                     if (self.ws !== null && self.ws.readyState === 1) {
                         self.ws.send(`resize:${self.term.rows}:${self.term.cols}`)
                     }
@@ -141,18 +148,52 @@ export default {
             })
             window.addEventListener('resize', () => {
                 self.resizeTerm(termWeb)
-                try { fitAddon.fit() } catch (e) {/**/}
+                try {
+                    fitAddon.fit()
+                } catch (e) {/**/
+                }
                 if (self.ws !== null && self.ws.readyState === 1) {
                     self.ws.send(`resize:${self.term.rows}:${self.term.cols}`)
                 }
             })
+            this.term.focus();
+            let _this = this;
+            this.term.prompt = () => {
+                this.term.write('\r\n$ ');
+            }
+            this.term.prompt();
+
+            function runFakeTerminal(_this) {
+                if (this.term._initialized) {
+                    return;
+                }
+                this.term._initialized = true;
+                this.term.writeln();
+                this.term.prompt();
+            }
+
+            this.term.onData(key => {
+                let order = {
+                    Data: key,
+                    Op: 'stdin'
+                }
+                _this.onSend(order);
+            });
+            _this.term = this.term;
+            runFakeTerminal(_this);
+        },
+        onSend(data) {
+            data = this.base.isObject(data) ? JSON.stringify(data) : data;
+            data = this.base.isArray(data) ? data.toString() : data;
+            data = data.replace(/\\\\/, '\\');
+            this.ws.onSend(data);
         },
         async connected() {
             const sshInfo = this.$store.state.sshInfo
             // 深度拷贝对象
             this.ssh = Object.assign({}, sshInfo)
             // 校验ssh连接信息是否正确
-            const result = await checkSSH(this.$store.getters.sshReq,this.$store.state.token)
+            const result = await checkSSH(this.$store.getters.sshReq, this.$store.state.token)
             if (result.Msg !== 'success') {
                 return
             } else {

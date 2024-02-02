@@ -100,15 +100,17 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
         //send message back
         webSocketSession.sendMessage(message);
-
+        //https://blog.csdn.net/xincang_/article/details/129054940
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
         //then send cmd to ssh term
         Channel channel = cachedObj.getSshChannel();
         StringBuffer sb = cachedObj.getCommand();
         String msgGet = message.getPayload();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
+        printWriter.write(msgGet);
+        printWriter.flush();
         //cache cmd
-        sb.append(msgGet);
+        /*sb.append(msgGet);
         if (sb.length() > 10000) {
             //close it.
             webSocketSession.close();
@@ -118,7 +120,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
             sb.delete(0, sb.length());
             printWriter.write(cmd);
             printWriter.flush();
-        }
+        }*/
         return true;
     }
 
