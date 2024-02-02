@@ -101,6 +101,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         //send message back
         webSocketSession.sendMessage(message);
         //https://blog.csdn.net/xincang_/article/details/129054940
+        //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
         //then send cmd to ssh term
         Channel channel = cachedObj.getSshChannel();

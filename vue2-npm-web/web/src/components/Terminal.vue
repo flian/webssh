@@ -51,7 +51,10 @@ export default {
             this.close()
             const prefix = process.env.NODE_ENV === 'production' ? '' : '/ws'
             const fitAddon = new FitAddon()
-            this.term = new Terminal()
+            this.term = new Terminal({
+                convertEol: true, //启用时，光标将设置为下一行的开头
+                disableStdin: false, //是否应禁用输入。
+            })
             this.term.loadAddon(fitAddon)
             this.term.open(document.getElementById(this.id))
             try {
@@ -107,7 +110,46 @@ export default {
             }
             const attachAddon = new AttachAddon(this.ws)
             this.term.loadAddon(attachAddon)
-
+            let term = this.term;
+            term.focus();
+            let _this = this;
+            //限制和后端交互，只有输入回车键才显示结果
+            term.prompt = () => {
+                term.write('\r\n$ ');
+            };
+            term.prompt();
+            function runFakeTerminal (_this) {
+                if (term._initialized) {
+                    return;
+                }
+                // 初始化
+                term._initialized = true;
+                term.writeln();//控制台初始化报错处
+                term.prompt();
+                // / **
+                //     *添加事件监听器，用于按下键时的事件。事件值包含
+                //     *将在data事件以及DOM事件中发送的字符串
+                //     *触发了它。
+                //     * @返回一个IDisposable停止监听。
+                //  * /
+                //   / ** 更新：xterm 4.x（新增）
+                //  *为数据事件触发时添加事件侦听器。发生这种情况
+                //  *用户输入或粘贴到终端时的示例。事件值
+                //  *是`string`结果的结果，在典型的设置中，应该通过
+                //  *到支持pty。
+                //  * @返回一个IDisposable停止监听。
+                //  * /
+                // 支持输入与粘贴方法
+                term.onData(function (key) {
+                    let order = {
+                        Data: key,
+                        Op: 'stdin'
+                    };
+                    _this.onSend(order);
+                });
+                _this.term = term;
+            }
+            runFakeTerminal(_this);
             this.term.attachCustomKeyEventHandler((e) => {
                 const keyArray = ['F5', 'F11', 'F12']
                 if (keyArray.indexOf(e.key) > -1) {
@@ -156,33 +198,10 @@ export default {
                     self.ws.send(`resize:${self.term.rows}:${self.term.cols}`)
                 }
             })
-            this.term.focus();
-            let _this = this;
-            this.term.prompt = () => {
-                this.term.write('\r\n$ ');
-            }
-            this.term.prompt();
 
-            function runFakeTerminal(_this) {
-                if (this.term._initialized) {
-                    return;
-                }
-                this.term._initialized = true;
-                this.term.writeln();
-                this.term.prompt();
-            }
-
-            this.term.onData(key => {
-                let order = {
-                    Data: key,
-                    Op: 'stdin'
-                }
-                _this.onSend(order);
-            });
-            _this.term = this.term;
-            runFakeTerminal(_this);
         },
-        onSend(data) {
+        //特殊处理
+        onSend (data) {
             data = this.base.isObject(data) ? JSON.stringify(data) : data;
             data = this.base.isArray(data) ? data.toString() : data;
             data = data.replace(/\\\\/, '\\');
