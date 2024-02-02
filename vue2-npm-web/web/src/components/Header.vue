@@ -218,6 +218,7 @@ export default {
 
     },
     mounted() {
+
         if (this.sshList.length > 0) {
             const latestSSH = this.sshList[this.sshList.length - 1]
             this.$store.commit('SET_SSH', latestSSH)
@@ -225,11 +226,10 @@ export default {
                 this.$store.commit('SET_PASS', '')
             }
         }
-        const shouldVerifyToken = getShouldVerifyToken();
-
-        if (shouldVerifyToken.code == '200') {
-            this.$store.state.shouldValidToken = shouldVerifyToken.Data;
-        }
+        const self = this;
+        getShouldVerifyToken().then(function (shouldVerifyToken){
+            self.$store.state.shouldValidToken = shouldVerifyToken.Data;
+        });
     },
     computed: {
         ...mapState(['sshInfo']),
