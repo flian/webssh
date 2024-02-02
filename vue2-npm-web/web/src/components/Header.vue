@@ -97,7 +97,7 @@
                     <el-input v-model="login.form.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input v-model="login.form.password" placeholder="请输入密码"></el-input>
+                    <el-input v-model="login.form.password" placeholder="请输入密码" type="password"></el-input>
                 </el-form-item>
             </el-form>
 
@@ -125,8 +125,8 @@ export default {
             textareaVisible: false,
             login: {
                 form: {
-                    username: "",
-                    password: ""
+                    username: "test",
+                    password: "test@123!"
                 },
                 checkRules: {
                     username: [
@@ -168,7 +168,7 @@ export default {
                         if (result.code == '200') {
                             const token = result.Data.token;
                             if (token) {
-                                this.$store.dispatch('setToken', token);
+                                self.$store.dispatch('setToken', token);
                             }
                         }
 
