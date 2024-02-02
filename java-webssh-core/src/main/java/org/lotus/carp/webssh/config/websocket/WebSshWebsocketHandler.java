@@ -18,7 +18,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.annotation.Resource;
-
 import java.io.IOException;
 
 import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.CMD;
@@ -52,22 +51,20 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         if (sessionId != null && token != null) {
             WebSshWsSessionManager.add(sessionId, session);
         } else {
-            if (!webSshConfig.isShouldVerifyToken()) {
-                log.info("skip token verify");
-                return;
+            if (webSshConfig.isShouldVerifyToken()) {
+                throw new RuntimeException("user not exist,please reLogin!");
             }
-            throw new RuntimeException("user not exist,please reLogin!");
         }
         WebSshUrlCommandEnum cmd = WebSshUrlCommandEnum.getByCode((String) session.getAttributes().get(CMD));
-        switch (cmd){
-            case TERM:{
+        switch (cmd) {
+            case TERM: {
                 //term websocket connection should connect to jsch
-                String sshInfo = (String)session.getAttributes().get(SSH_INFO);
-                if(ObjectUtils.isEmpty(sshInfo)){
+                String sshInfo = (String) session.getAttributes().get(SSH_INFO);
+                if (ObjectUtils.isEmpty(sshInfo)) {
                     session.sendMessage(new TextMessage("ssh connection info error, empty sshinfo."));
                     session.close();
                 }
-                if(!webSshTermService.initTermWebShhConnect(sshInfo,session)){
+                if (!webSshTermService.initTermWebShhConnect(sshInfo, session)) {
                     //connect error,close session.
                     session.close();
                 }
@@ -95,12 +92,12 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         switch (cmd) {
             case TERM: {
                 //term command get
-                if("ping".equalsIgnoreCase(message.getPayload())){
+                if ("ping".equalsIgnoreCase(message.getPayload())) {
                     //ping,should ignore
                     break;
                 }
                 //session.sendMessage(message);
-                webSshTermService.handleTermWebSshMsg(session,message);
+                webSshTermService.handleTermWebSshMsg(session, message);
                 break;
             }
             case FILE_UPLOAD_PROGRESS: {
