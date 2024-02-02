@@ -51,18 +51,23 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
     private WebSshConfig webSshConfig;
 
 
+    private void setIfNotNull(String key, String val, Map<String, Object> attributes) {
+        if (null != key && null != val) {
+            attributes.put(key, val);
+        }
+    }
 
     public void setSessionParamIfPresent(String requestUri, Map<String, String> paramMap, Map<String, Object> attributes) {
         String cmd = WebSshUrlCommandEnum.getCmdByUri(requestUri);
         if (ObjectUtils.isEmpty(cmd)) {
             log.info("can't find cmd, is request not right? requestUri：{}", requestUri);
         }
-        attributes.put(CMD, cmd);
-        attributes.put(SSH_INFO, paramMap.get(SSH_INFO));
-        attributes.put(ID, paramMap.get(ID));
-        attributes.put(ROWS, paramMap.get(ROWS));
-        attributes.put(COLS, paramMap.get(COLS));
-        attributes.put(CLOSE_TIP, paramMap.get(CLOSE_TIP));
+        setIfNotNull(CMD, cmd, attributes);
+        setIfNotNull(SSH_INFO, paramMap.get(SSH_INFO), attributes);
+        setIfNotNull(ID, paramMap.get(ID), attributes);
+        setIfNotNull(ROWS, paramMap.get(ROWS), attributes);
+        setIfNotNull(COLS, paramMap.get(COLS), attributes);
+        setIfNotNull(CLOSE_TIP, paramMap.get(CLOSE_TIP), attributes);
     }
 
     /**
@@ -92,14 +97,14 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
             if (!webSshLoginService.isTokenValid(token)) {
                 log.info("token is invalid.token:{}", token);
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
-                response.getBody().write(String.format("token is invalid.token:%s",token).getBytes(StandardCharsets.UTF_8));
+                response.getBody().write(String.format("token is invalid.token:%s", token).getBytes(StandardCharsets.UTF_8));
                 response.flush();
                 return false;
             }
         }
         if (!ObjectUtils.isEmpty(token)) {
             // 放入属性域
-            attributes.put(webSshConfig.getTokenName(), token);
+            setIfNotNull(webSshConfig.getTokenName(), token, attributes);
             log.info("token verify success,handshake success.");
             return true;
         }
