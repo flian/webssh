@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,6 +91,9 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
         if (webSshConfig.isShouldVerifyToken()) {
             if (!webSshLoginService.isTokenValid(token)) {
                 log.info("token is invalid.token:{}", token);
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                response.getBody().write(String.format("token is invalid.token:%s",token).getBytes(StandardCharsets.UTF_8));
+                response.flush();
                 return false;
             }
         }
