@@ -67,7 +67,10 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     session.sendMessage(new TextMessage("ssh connection info error, empty sshinfo."));
                     session.close();
                 }
-                webSshTermService.initTermWebShhConnect(sshInfo,session);
+                if(!webSshTermService.initTermWebShhConnect(sshInfo,session)){
+                    //connect error,close session.
+                    session.close();
+                }
             }
         }
     }
@@ -96,7 +99,8 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     //ping,should ignore
                     break;
                 }
-                session.sendMessage(message);
+                //session.sendMessage(message);
+                webSshTermService.handleTermWebSshMsg(session,message);
                 break;
             }
             case FILE_UPLOAD_PROGRESS: {
@@ -122,6 +126,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
             // 用户退出，移除缓存
             WebSshWsSessionManager.remove(sessionId);
         }
+        webSshTermService.onSessionClose(session);
     }
 
 

@@ -90,6 +90,10 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
     @Override
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
+        //send message back
+        webSocketSession.sendMessage(message);
+
+        //then send cmd to ssh term
         Channel channel = cachedObjMap.get(webSocketSession.getId()).getSshChannel();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         printWriter.write(message.getPayload());
@@ -99,7 +103,9 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
     @Override
     public boolean onSessionClose(WebSocketSession webSocketSession) {
-        cachedObjMap.get(webSocketSession.getId()).close();
-        return false;
+        if(cachedObjMap.containsKey(webSocketSession.getId())){
+            cachedObjMap.get(webSocketSession.getId()).close();
+        }
+        return true;
     }
 }
