@@ -109,8 +109,8 @@
 </template>
 
 <script>
-import { getShouldVerifyToken } from '@/api/common'
-import { login } from '@/api/common'
+import {getShouldVerifyToken} from '@/api/common'
+import {login} from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
@@ -121,15 +121,19 @@ export default {
     },
     data() {
         return {
+            loginLoading: false,
             textareaVisible: false,
-            login:{
-                form:{
-                    username:"",
-                    password:""
+            login: {
+                form: {
+                    username: "",
+                    password: ""
                 },
                 checkRules: {
                     username: [
                         {required: true, trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true, trigger: 'blur', message: 'password is required'}
                     ]
                 }
             },
@@ -154,19 +158,28 @@ export default {
         }
     },
     methods: {
-        handleLogin(){
-            this.$refs.loginForm.validate((valid) =>{
-                if(valid){
-                    const result =  login(this.login.form);
-                    if(result.code == '200'){
-                        const token = result.Data.token;
-                        if(token){
-                            this.$store.dispatch('setToken', token);
+        handleLogin() {
+            const self = this;
+            this.$refs.loginForm.validate((valid) => {
+                if (valid && !self.loginLoading) {
+                    self.loginLoading = true;
+                    login(self.login.form).then(function (result) {
+                        self.loginLoading = false;
+                        if (result.code == '200') {
+                            const token = result.Data.token;
+                            if (token) {
+                                this.$store.dispatch('setToken', token);
+                            }
                         }
-                    }
+
+                    })
                 }
             });
-
+            setTimeout(function () {
+                if (self.loginLoading) {
+                    self.loginLoading = false;
+                }
+            }, 10);
         },
         handleSetLanguage() {
             const oldLang = getLanguage()
@@ -214,7 +227,7 @@ export default {
         }
         const shouldVerifyToken = getShouldVerifyToken();
 
-        if(shouldVerifyToken.code == '200'){
+        if (shouldVerifyToken.code == '200') {
             this.$store.state.shouldValidToken = shouldVerifyToken.Data;
         }
     },
