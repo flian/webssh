@@ -4,7 +4,7 @@ export function checkSSH(sshInfo,token) {
 }
 
 export function getShouldVerifyToken(){
-    return request.get("/webssh/shouldVerifyToken")
+    return request.get('/webssh/shouldVerifyToken')
 }
 
 export function login(loginData){

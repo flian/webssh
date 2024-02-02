@@ -125,8 +125,8 @@ export default {
             textareaVisible: false,
             login: {
                 form: {
-                    username: "test",
-                    password: "test@123!"
+                    username: 'test',
+                    password: 'test@123!'
                 },
                 checkRules: {
                     username: [

@@ -14,10 +14,10 @@ import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,17 +39,19 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private Map<String, CachedWebSocketSessionObject> cachedObjMap = new ConcurrentHashMap<>();
 
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
-        try {
-            InputStreamReader inputStreamReader = null;
-            inputStreamReader = new InputStreamReader(channel.getInputStream());
-            BufferedReader input = new BufferedReader(inputStreamReader);
-            String line;
-            while ((line = input.readLine()) != null) {
-                webSocketSession.sendMessage(new TextMessage(line));
+        threadPool.submit(() -> {
+            try {
+                InputStream inputStreamReader = channel.getInputStream();
+                //循环读取
+                byte[] buffer = new byte[1024];
+                //如果没有数据来，线程会一直阻塞在这个地方等待数据。
+                while (inputStreamReader.read(buffer) != -1) {
+                    webSocketSession.sendMessage(new TextMessage(buffer));
+                }
+            } catch (IOException e) {
+                log.error("error while send term message back to websocket.", e);
             }
-        } catch (IOException e) {
-            log.error("error while send term message back to websocket.", e);
-        }
+        });
     }
 
     private String deCodeBase64Str(String sshInfo) {
@@ -63,16 +65,22 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
             if (null == cachedObj) {
                 SshInfo sshInfoObject = objectMapper.readValue(deCodeBase64Str(sshInfo), SshInfo.class);
                 JSch jsch = new JSch();
+                Hashtable<String, String> config = new Hashtable();
+                config.put("StrictHostKeyChecking", "no");
+                config.put("PreferredAuthentications", "password");
+                jsch.setConfig(config);
                 Session session = jsch.getSession(sshInfoObject.getUsername(), sshInfoObject.getIpaddress(), sshInfoObject.getPort());
+
                 session.setPassword(sshInfoObject.getPassword());
+                session.connect(30 * 1000);
                 Channel channel = session.openChannel("shell");
-                channel.connect(3 * 1000);
+                channel.connect(30 * 1000);
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfoObject);
+                cachedObj.setSshChannel(channel);
+                cachedObj.setSshSession(session);
                 cachedObjMap.put(webSocketSession.getId(), cachedObj);
-                threadPool.submit(() -> {
-                    sendSshMessageBack(webSocketSession, channel);
-                });
+                sendSshMessageBack(webSocketSession, channel);
             }
             return true;
         } catch (JsonProcessingException e) {
@@ -97,13 +105,12 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         Channel channel = cachedObjMap.get(webSocketSession.getId()).getSshChannel();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         printWriter.write(message.getPayload());
-        //sendSshMessageBack(webSocketSession, channel);
         return true;
     }
 
     @Override
     public boolean onSessionClose(WebSocketSession webSocketSession) {
-        if(cachedObjMap.containsKey(webSocketSession.getId())){
+        if (cachedObjMap.containsKey(webSocketSession.getId())) {
             cachedObjMap.get(webSocketSession.getId()).close();
         }
         return true;

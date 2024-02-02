@@ -2,10 +2,10 @@ import { getLanguage } from '@/lang/index'
 
 export default {
     sshInfo: {
-        host: '',
+        host: '192.168.2.100',
         username: 'root',
         port: 22,
-        password: '',
+        password: 'Admin123',
         logintype: 0
     },
     sshList: Object.prototype.hasOwnProperty.call(localStorage, 'sshList') ? localStorage.getItem('sshList') : null,
