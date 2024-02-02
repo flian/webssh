@@ -65,4 +65,8 @@ public class WebSshConfig {
      */
     private String tokenName = "token";
 
+    /**
+     * front will save password
+     */
+    private Boolean savePass = false;
 }

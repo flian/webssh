@@ -37,7 +37,7 @@ public class DefaultWebSshController extends BaseController implements Api {
     public WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo) {
         CheckResponseVo checkResponseVo = new CheckResponseVo();
         checkResponseVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
-        checkResponseVo.setSavePass(false);
+        checkResponseVo.setSavePass(webSshConfig.getSavePass());
         return WebSshResponse.ok(checkResponseVo);
     }
 
