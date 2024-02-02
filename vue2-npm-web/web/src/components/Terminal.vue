@@ -57,7 +57,7 @@ export default {
             try { fitAddon.fit() } catch (e) {/**/}
             const self = this
             const heartCheck = {
-                timeout: 5000, // 5s发一次心跳
+                timeout: 15000, // 15s发一次心跳
                 intervalObj: null,
                 stop: function() {
                     clearInterval(this.intervalObj)
