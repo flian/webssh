@@ -9,7 +9,6 @@ package org.lotus.carp.webssh.config.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -18,7 +17,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.annotation.Resource;
 
-import static org.lotus.carp.webssh.config.websocket.WebSocketHandshakeInterceptor.CMD;
+import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.CMD;
 
 /**
  * @author buhao
@@ -26,7 +25,7 @@ import static org.lotus.carp.webssh.config.websocket.WebSocketHandshakeIntercept
  */
 @Component
 @Slf4j
-public class WebSshHandler extends TextWebSocketHandler {
+public class WebSshWebsocketHandler extends TextWebSocketHandler {
 
 
     @Resource
@@ -43,7 +42,7 @@ public class WebSshHandler extends TextWebSocketHandler {
         String sessionId = session.getId();
         Object token = session.getAttributes().get(webSshConfig.getTokenName());
         if (sessionId != null && token != null) {
-            WsSessionManager.add(sessionId, session);
+            WebSshWsSessionManager.add(sessionId, session);
         } else {
             if (!webSshConfig.isShouldVerifyToken()) {
                 log.info("skip token verify");
@@ -96,7 +95,7 @@ public class WebSshHandler extends TextWebSocketHandler {
         String sessionId = session.getId();
         if (sessionId != null && token != null) {
             // 用户退出，移除缓存
-            WsSessionManager.remove(sessionId);
+            WebSshWsSessionManager.remove(sessionId);
         }
     }
 

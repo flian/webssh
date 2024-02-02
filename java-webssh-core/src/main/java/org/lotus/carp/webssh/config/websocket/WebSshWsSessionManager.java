@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version WsSessionManager.java, v 0.1 2019-10-22 10:24 buhao
  */
 @Slf4j
-public class WsSessionManager {
+public class WebSshWsSessionManager {
     /**
      * 保存连接 session 的地方
      */

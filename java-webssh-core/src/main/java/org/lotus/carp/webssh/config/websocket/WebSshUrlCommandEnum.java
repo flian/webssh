@@ -1,5 +1,8 @@
 package org.lotus.carp.webssh.config.websocket;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.Arrays;
 
 /**
@@ -9,6 +12,7 @@ import java.util.Arrays;
  * @author : foy
  * @date : 2024-02-01 10:06
  **/
+@Getter
 public enum WebSshUrlCommandEnum {
 
     TERM("TERM", "/term", "终端命令行输入"),

@@ -1,7 +1,6 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -51,9 +50,15 @@ public class WebSshConfig {
     private int tokenExpiration = 6;
 
     /**
-     * web ssh url prefix
+     * webssh websocket prefix
      */
-    private String webSshUri = "/webssh";
+    private String webSshWebsocketPrefix = "/webssh";
+
+    /**
+     * web ssh websocket uri pattern
+     */
+    @Deprecated
+    private String webSshWebsocketUri = "/webssh/**";
 
     /**
      * token name from front

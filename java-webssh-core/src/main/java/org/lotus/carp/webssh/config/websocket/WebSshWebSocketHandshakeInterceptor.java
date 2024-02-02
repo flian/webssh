@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
+public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor {
 
     public static final String CMD = "CMD";
 
@@ -75,7 +75,7 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        if (!request.getURI().getPath().contains(webSshConfig.getWebSshUri())) {
+        if (!request.getURI().getPath().contains(webSshConfig.getWebSshWebsocketPrefix())) {
             log.info("not webssh websocket.. contine..");
             return true;
         }
