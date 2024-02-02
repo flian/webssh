@@ -31,6 +31,11 @@ public class CachedWebSocketSessionObject {
      */
     private Session sshSession;
 
+    /**
+     * command current user typed.
+     */
+    private StringBuffer command = new StringBuffer();
+
     public boolean close() {
 
         if (null != sshChannel) {

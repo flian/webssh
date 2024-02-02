@@ -101,10 +101,24 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         //send message back
         webSocketSession.sendMessage(message);
 
+        CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
         //then send cmd to ssh term
-        Channel channel = cachedObjMap.get(webSocketSession.getId()).getSshChannel();
+        Channel channel = cachedObj.getSshChannel();
+        StringBuffer sb = cachedObj.getCommand();
+        String msgGet = message.getPayload();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
-        printWriter.write(message.getPayload());
+        //cache cmd
+        sb.append(msgGet);
+        if (sb.length() > 10000) {
+            //close it.
+            webSocketSession.close();
+        }
+        if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
+            String cmd = sb.toString();
+            sb.delete(0, sb.length());
+            printWriter.write(cmd);
+            printWriter.flush();
+        }
         return true;
     }
 
@@ -112,6 +126,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     public boolean onSessionClose(WebSocketSession webSocketSession) {
         if (cachedObjMap.containsKey(webSocketSession.getId())) {
             cachedObjMap.get(webSocketSession.getId()).close();
+            cachedObjMap.remove(webSocketSession.getId());
         }
         return true;
     }
