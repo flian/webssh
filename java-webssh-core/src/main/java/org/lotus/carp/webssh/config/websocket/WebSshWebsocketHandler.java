@@ -8,8 +8,10 @@ package org.lotus.carp.webssh.config.websocket;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,7 +19,10 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.annotation.Resource;
 
+import java.io.IOException;
+
 import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.CMD;
+import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.SSH_INFO;
 
 /**
  * @author buhao
@@ -31,6 +36,9 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
     @Resource
     private WebSshConfig webSshConfig;
 
+    @Resource
+    private WebSshTermService webSshTermService;
+
     /**
      * socket 建立成功事件
      *
@@ -38,7 +46,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
      * @throws Exception
      */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public void afterConnectionEstablished(WebSocketSession session) throws IOException {
         String sessionId = session.getId();
         Object token = session.getAttributes().get(webSshConfig.getTokenName());
         if (sessionId != null && token != null) {
@@ -49,6 +57,18 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                 return;
             }
             throw new RuntimeException("user not exist,please reLogin!");
+        }
+        WebSshUrlCommandEnum cmd = WebSshUrlCommandEnum.getByCode((String) session.getAttributes().get(CMD));
+        switch (cmd){
+            case TERM:{
+                //term websocket connection should connect to jsch
+                String sshInfo = (String)session.getAttributes().get(SSH_INFO);
+                if(ObjectUtils.isEmpty(sshInfo)){
+                    session.sendMessage(new TextMessage("ssh connection info error, empty sshinfo."));
+                    session.close();
+                }
+                webSshTermService.initTermWebShhConnect(sshInfo,session);
+            }
         }
     }
 
@@ -72,6 +92,11 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         switch (cmd) {
             case TERM: {
                 //term command get
+                if("ping".equalsIgnoreCase(message.getPayload())){
+                    //ping,should ignore
+                    break;
+                }
+                session.sendMessage(message);
                 break;
             }
             case FILE_UPLOAD_PROGRESS: {

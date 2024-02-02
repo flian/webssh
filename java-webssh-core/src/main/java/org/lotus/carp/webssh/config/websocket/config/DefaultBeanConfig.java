@@ -5,6 +5,8 @@ import org.lotus.carp.webssh.config.controller.api.FileApi;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshController;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshFileController;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
+import org.lotus.carp.webssh.config.service.WebSshTermService;
+import org.lotus.carp.webssh.config.service.impl.DefaultJschWebSshTermServiceImpl;
 import org.lotus.carp.webssh.config.service.impl.DefaultWebSshLoginServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,13 @@ public class DefaultBeanConfig {
     @Bean
     public WebSshLoginService defaultLoginService() {
         return new DefaultWebSshLoginServiceImpl();
+    }
+
+    @ConditionalOnMissingBean
+    @Resource
+    @Bean
+    public WebSshTermService defaultWebSshTermService(){
+        return new DefaultJschWebSshTermServiceImpl();
     }
 
     @ConditionalOnMissingBean
