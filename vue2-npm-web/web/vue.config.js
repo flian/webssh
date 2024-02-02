@@ -1,5 +1,13 @@
 const proxyTarget = 'http://127.0.0.1:5032'
 const wsTarget = proxyTarget.replace('http', 'ws')
+const path = require("path");
+
+const name= 'Java Web SSH';
+
+function resolve(dir){
+    return path.join(__dirname,dir);
+}
+
 
 module.exports = {
     publicPath: '/',
@@ -17,7 +25,15 @@ module.exports = {
     parallel: require('os').cpus().length > 1,
 
 
-
+    configureWebpack: {
+        name: name,
+        devtool: 'source-map',
+        resolve: {
+            alias :{
+                "@": resolve("src")
+            }
+        }
+    },
     // 配置 webpack-dev-server 行为。
     devServer: {
         disableHostCheck: false,
@@ -29,7 +45,6 @@ module.exports = {
         https: false,
         hotOnly: false,
         // eslint-disable-next-line no-dupe-keys
-
         // 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/cli-service.md#配置代理
         proxy: {
             '/api': {
