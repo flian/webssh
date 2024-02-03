@@ -1,4 +1,4 @@
-const proxyTarget = 'http://127.0.0.1:5032'
+const proxyTarget = 'http://127.0.0.1:5132'
 const wsTarget = proxyTarget.replace('http', 'ws')
 const path = require("path");
 
@@ -41,7 +41,7 @@ module.exports = {
         //open: true,
         //devtool: 'source-map',
         host: '0.0.0.0',
-        port: 8257,
+        port: 8357,
         https: false,
         hotOnly: false,
         // eslint-disable-next-line no-dupe-keys

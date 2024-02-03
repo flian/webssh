@@ -3,10 +3,7 @@ package org.lotus.carp.webssh.config.service.impl;
 import cn.hutool.core.codec.Base64Decoder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
+import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
@@ -73,7 +70,10 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
                 session.setPassword(sshInfoObject.getPassword());
                 session.connect(30 * 1000);
+                //FIXME seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
+                ((ChannelShell)channel).setPtyType("xterm");
+                ((ChannelShell)channel).setPty(true);
                 channel.connect(30 * 1000);
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfoObject);
@@ -99,7 +99,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     @Override
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
         //send message back
-        webSocketSession.sendMessage(message);
+        //webSocketSession.sendMessage(message);
         //https://blog.csdn.net/xincang_/article/details/129054940
         //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
@@ -109,7 +109,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         String msgGet = message.getPayload();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         printWriter.write(msgGet);
-        printWriter.flush();
+        //printWriter.flush();
         //cache cmd
         /*sb.append(msgGet);
         if (sb.length() > 10000) {
