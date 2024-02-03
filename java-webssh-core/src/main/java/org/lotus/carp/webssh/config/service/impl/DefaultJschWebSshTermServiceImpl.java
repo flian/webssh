@@ -75,6 +75,8 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 ((ChannelShell)channel).setPtyType("xterm");
                 ((ChannelShell)channel).setPty(true);
                 //FIXME should set mode
+                //SEE
+                // JschSshClient.createShell
                 ((ChannelShell)channel).setTerminalMode(null);
                 channel.connect(30 * 1000);
                 cachedObj = new CachedWebSocketSessionObject();
