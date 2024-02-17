@@ -55,6 +55,20 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         return Base64Decoder.decodeStr(sshInfo);
     }
 
+
+    //@see https://stackoverflow.com/questions/24623170/an-example-of-how-to-specify-terminal-modes-pty-req-string-for-ssh-client?rq=1
+    private byte[] composeTerminalModes(){
+        byte[] terminalModes = {
+                (byte)35,                       //ECHO 53
+                1,                              //1
+                (byte)80,                       // TTY_OP_ISPEED 128
+                0, 0, (byte)0x36, (byte)0xb0,   // 14400 = 00008ca0
+                (byte)81,                       // TTY_OP_OSPEED 129
+                0, 0, (byte)0x36, (byte)0xb0,   // 14400 again
+                0,                              // TTY_OP_END
+        };
+        return terminalModes;
+    }
     @Override
     public boolean initTermWebShhConnect(String sshInfo, WebSocketSession webSocketSession) throws IOException {
         try {
@@ -77,8 +91,9 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 //FIXME should set mode
                 //SEE
                 // JschSshClient.createShell
-                ((ChannelShell)channel).setTerminalMode(null);
+                ((ChannelShell)channel).setTerminalMode(composeTerminalModes());
                 channel.connect(30 * 1000);
+
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfoObject);
                 cachedObj.setSshChannel(channel);

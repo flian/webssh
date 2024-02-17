@@ -23,12 +23,7 @@
             <groupId>com.github.mwiede</groupId>
             <artifactId>jsch</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sf.sshapi/sshapi-jsch -->
-        <dependency>
-            <groupId>net.sf.sshapi</groupId>
-            <artifactId>sshapi-jsch</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+
 
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -56,10 +51,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>javaSSH</id>
-            <url>http://artifactory.javassh.com/opensource-releases/</url>
-        </repository>
-    </repositories>
 </project>
