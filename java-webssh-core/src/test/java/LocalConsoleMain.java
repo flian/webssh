@@ -1,5 +1,6 @@
 import com.jcraft.jsch.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 
 /**
@@ -24,28 +25,36 @@ public class LocalConsoleMain {
 
         session.setPassword(password);
         session.connect(30 * 1000);
-        //FIXME seems need to set... try set model....
+        //session.connect();
         Channel channel = session.openChannel("shell");
         channel.setInputStream(System.in);
         channel.setOutputStream(System.out);
-        ((ChannelShell)channel).setPtyType("xterm");
+        //((ChannelShell)channel).setPtyType("xterm");
         ((ChannelShell)channel).setPty(true);
-        //FIXME should set mode
-        //SEE
-        // JschSshClient.createShell
+        //com.jcraft.jsch.JSchSessionDisconnectException: SSH_MSG_DISCONNECT: 2 Packet integrity error.
         ((ChannelShell)channel).setTerminalMode(composeTerminalModes());
+        //((ChannelShell)channel).setTerminalMode("ECHO".getBytes(StandardCharsets.UTF_8));
         channel.connect(30 * 1000);
+        //channel.connect();
     }
 
     private static byte[] composeTerminalModes(){
         byte[] terminalModes = {
-                (byte)0x35,                      //ECHO 53
-                1,                              //1
-                (byte)0x80,                       // TTY_OP_ISPEED 128
-                0, 0, (byte)0x36, (byte)0xb0,   // 14400 = 00008ca0
-                (byte)0x81,                       // TTY_OP_OSPEED 129
-                0, 0, (byte)0x36, (byte)0xb0,   // 14400 again
-                0,                              // TTY_OP_END
+                0,0,0,
+                //ECHO 53
+                53,
+                1,
+               // 1,
+               /* // TTY_OP_ISPEED 128
+                (byte)0x80,
+                // 14400 = 00008ca0
+                0, 0, (byte)0x36, (byte)0xb0,
+                // TTY_OP_OSPEED 129
+                (byte)0x81,
+                // 14400 again
+                0, 0, (byte)0x36, (byte)0xb0,*/
+                // TTY_OP_END
+                0,
         };
         return terminalModes;
     }
