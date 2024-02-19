@@ -9,6 +9,7 @@ import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -47,7 +48,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
     private int getTcol(WebSocketSession webSocketSession){
         String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
-        if(StringUtils.isEmpty(tmp)){
+        if(ObjectUtils.isEmpty(tmp)){
             return DEFAULT_TCOL;
         }
         return Integer.parseInt(tmp);
@@ -55,7 +56,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
     private int getTRow(WebSocketSession webSocketSession){
         String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.ROWS);
-        if(StringUtils.isEmpty(tmp)){
+        if(ObjectUtils.isEmpty(tmp)){
             return DEFAULT_TROW;
         }
         return Integer.parseInt(tmp);
@@ -67,6 +68,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private int getTHp(WebSocketSession webSocketSession){
         return DEFAULT_THP;
     }
+
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
         threadPool.submit(() -> {
             try {
