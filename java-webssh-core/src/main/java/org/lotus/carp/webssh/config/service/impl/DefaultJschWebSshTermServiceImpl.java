@@ -58,6 +58,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
     //@see https://stackoverflow.com/questions/24623170/an-example-of-how-to-specify-terminal-modes-pty-req-string-for-ssh-client?rq=1
     private byte[] composeTerminalModes(){
+        //can see "tail -f /var/log/secure" in your linux server for more login error detail.
         byte[] terminalModes = {
                 (byte)0x35,                           //ECHO 53
                 0,0,0,1,                             //1
