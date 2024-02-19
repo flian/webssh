@@ -32,7 +32,7 @@ public class LocalConsoleMain {
         channel.setInputStream(System.in);
         channel.setOutputStream(System.out);
 
-        //((ChannelShell)channel).setPtyType("xterm");
+        ((ChannelShell)channel).setPtyType("xterm");
         ((ChannelShell)channel).setPty(true);
         //com.jcraft.jsch.JSchSessionDisconnectException: SSH_MSG_DISCONNECT: 2 Packet integrity error.
         //java.io.IOException: End of IO Stream Read

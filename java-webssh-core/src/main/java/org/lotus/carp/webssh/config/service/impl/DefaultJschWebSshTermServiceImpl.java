@@ -88,7 +88,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 session.connect(30 * 1000);
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
-                //((ChannelShell)channel).setPtyType("xterm");
+                ((ChannelShell)channel).setPtyType("xterm");
                 ((ChannelShell)channel).setPty(true);
                 // should set mode
                 //SEE JschSshClient.createShell
@@ -129,7 +129,9 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         String msgGet = message.getPayload();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         printWriter.write(msgGet);
-        printWriter.flush();
+        if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
+            printWriter.flush();
+        }
         //cache cmd
         /*sb.append(msgGet);
         if (sb.length() > 10000) {
