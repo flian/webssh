@@ -41,32 +41,32 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private Map<String, CachedWebSocketSessionObject> cachedObjMap = new ConcurrentHashMap<>();
 
 
-    private static int DEFAULT_TCOL = 80;
-    private static int DEFAULT_TROW = 24;
-    private static int DEFAULT_TWP = 640;
-    private static int DEFAULT_THP = 480;
+    private static final int DEFAULT_COL = 80;
+    private static final int DEFAULT_ROW = 24;
+    private static final int DEFAULT_WP = 640;
+    private static final int DEFAULT_HP = 480;
 
-    private int getTCol(WebSocketSession webSocketSession){
+    private int getCol(WebSocketSession webSocketSession){
         String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
         if(ObjectUtils.isEmpty(tmp)){
-            return DEFAULT_TCOL;
+            return DEFAULT_COL;
         }
         return Integer.parseInt(tmp);
     }
 
-    private int getTRow(WebSocketSession webSocketSession){
+    private int getRow(WebSocketSession webSocketSession){
         String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.ROWS);
         if(ObjectUtils.isEmpty(tmp)){
-            return DEFAULT_TROW;
+            return DEFAULT_ROW;
         }
         return Integer.parseInt(tmp);
     }
-    private int getTWp(WebSocketSession webSocketSession){
-        return DEFAULT_TWP;
+    private int getWp(WebSocketSession webSocketSession){
+        return DEFAULT_WP;
     }
 
-    private int getTHp(WebSocketSession webSocketSession){
-        return DEFAULT_THP;
+    private int getHp(WebSocketSession webSocketSession){
+        return DEFAULT_HP;
     }
 
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
@@ -124,7 +124,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
                 ((ChannelShell) channel).setPtyType("xterm");
-                ((ChannelShell) channel).setPtySize(getTCol(webSocketSession),getTRow(webSocketSession),getTWp(webSocketSession),getTHp(webSocketSession));
+                ((ChannelShell) channel).setPtySize(getCol(webSocketSession),getRow(webSocketSession),getWp(webSocketSession),getHp(webSocketSession));
                 ((ChannelShell) channel).setPty(true);
 
                 // should set mode

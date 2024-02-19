@@ -49,6 +49,9 @@ public class LocalConsoleMain {
                 //ECHO 53
                 53,
                 0,0,0,1,
+                //Translate uppercase characters to lowercase.
+                37,
+                0,0,0,1,
                // 1,
                // TTY_OP_ISPEED 128
                 (byte)0x80,
