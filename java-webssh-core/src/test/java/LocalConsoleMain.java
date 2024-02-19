@@ -50,14 +50,14 @@ public class LocalConsoleMain {
                 53,
                 0,0,0,1,
                // 1,
-               /* // TTY_OP_ISPEED 128
+               // TTY_OP_ISPEED 128
                 (byte)0x80,
-                // 14400 = 00008ca0
-                0, 0, (byte)0x36, (byte)0xb0,
+                // 14400 = 00003840
+                0, 0, (byte)0x38, (byte)0x40,
                 // TTY_OP_OSPEED 129
                 (byte)0x81,
                 // 14400 again
-                0, 0, (byte)0x36, (byte)0xb0,*/
+                0, 0, (byte)0x38, (byte)0x40,
                 // TTY_OP_END
                 0,
         };

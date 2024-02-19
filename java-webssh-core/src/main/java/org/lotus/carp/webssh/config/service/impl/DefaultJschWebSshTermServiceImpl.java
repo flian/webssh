@@ -59,12 +59,12 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     //@see https://stackoverflow.com/questions/24623170/an-example-of-how-to-specify-terminal-modes-pty-req-string-for-ssh-client?rq=1
     private byte[] composeTerminalModes(){
         byte[] terminalModes = {
-                (byte)0x35,                      //ECHO 53
-                1,                              //1
-                (byte)0x80,                       // TTY_OP_ISPEED 128
-                0, 0, (byte)0x36, (byte)0xb0,   // 14400 = 00008ca0
+                (byte)0x35,                           //ECHO 53
+                0,0,0,1,                             //1
+                /*(byte)0x80,                       // TTY_OP_ISPEED 128
+                0, 0, (byte)0x38, (byte)0x40,      // 14400 = 00003840
                 (byte)0x81,                       // TTY_OP_OSPEED 129
-                0, 0, (byte)0x36, (byte)0xb0,   // 14400 again
+                0, 0, (byte)0x38, (byte)0x40,    // 14400 again*/
                 0,                              // TTY_OP_END
         };
         return terminalModes;
@@ -75,6 +75,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
             CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
             if (null == cachedObj) {
                 SshInfo sshInfoObject = objectMapper.readValue(deCodeBase64Str(sshInfo), SshInfo.class);
+                JSch.setLogger(new JschLogger());
                 JSch jsch = new JSch();
                 Hashtable<String, String> config = new Hashtable();
                 config.put("StrictHostKeyChecking", "no");
@@ -84,13 +85,12 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
                 session.setPassword(sshInfoObject.getPassword());
                 session.connect(30 * 1000);
-                //FIXME seems need to set... try set model....
+                // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
-                ((ChannelShell)channel).setPtyType("xterm");
+                //((ChannelShell)channel).setPtyType("xterm");
                 ((ChannelShell)channel).setPty(true);
-                //FIXME should set mode
-                //SEE
-                // JschSshClient.createShell
+                // should set mode
+                //SEE JschSshClient.createShell
                 ((ChannelShell)channel).setTerminalMode(composeTerminalModes());
                 channel.connect(30 * 1000);
 
@@ -128,7 +128,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         String msgGet = message.getPayload();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         printWriter.write(msgGet);
-        //printWriter.flush();
+        printWriter.flush();
         //cache cmd
         /*sb.append(msgGet);
         if (sb.length() > 10000) {
