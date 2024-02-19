@@ -92,8 +92,16 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         switch (cmd) {
             case TERM: {
                 //term command get
+                //ping
                 if ("ping".equalsIgnoreCase(message.getPayload())) {
                     //ping,should ignore
+                    break;
+                }
+                //resize
+                if(message.getPayload().contains("resize")){
+                    String[] temps = message.getPayload().split(":");
+                    webSshTermService.handleTermWebSShResize(session,message,
+                            Integer.parseInt(temps[1]),Integer.parseInt(temps[2]));
                     break;
                 }
                 //session.sendMessage(message);

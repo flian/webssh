@@ -94,13 +94,32 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private byte[] composeTerminalModes() {
         //can see "tail -f /var/log/secure" in your linux server for more login error detail.
         byte[] terminalModes = {
-                53,                                  //ECHO 53
-                0, 0, 0, 1,                             //1
-                /*(byte)0x80,                       // TTY_OP_ISPEED 128
-                0, 0, (byte)0x38, (byte)0x40,      // 14400 = 00003840
-                (byte)0x81,                       // TTY_OP_OSPEED 129
-                0, 0, (byte)0x38, (byte)0x40,    // 14400 again*/
-                0,                              // TTY_OP_END
+                //ECHO 53
+                53,
+                0,0,0,0,
+                //ECHOE Visually erase chars.
+                54,
+                0,0,0,1,
+                //ECHOK Kill character discards current line.
+                55,
+                0,0,0,1,
+                //ECHONL Echo NL even if ECHO is off
+                56,
+                0,0,0,1,
+                //ECHOCTL Echo control characters as ^(Char).
+                60,
+                0,0,0,1,
+                // 1,
+                // TTY_OP_ISPEED 128
+                (byte)0x80,
+                // 14400 = 00003840
+                0, 0, (byte)0x38, (byte)0x40,
+                // TTY_OP_OSPEED 129
+                (byte)0x81,
+                // 14400 again
+                0, 0, (byte)0x38, (byte)0x40,
+                // TTY_OP_END
+                0,
         };
         return terminalModes;
     }
@@ -167,7 +186,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         OutputStream outputStream = channel.getOutputStream();
         outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
-        outputStream.flush();
+        //outputStream.flush();
         //printWriter.write(msgGet);
         //printWriter.flush();
        /* if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
@@ -185,6 +204,21 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
             printWriter.write(cmd);
             printWriter.flush();
         }*/
+        return true;
+    }
+
+    @Override
+    public boolean handleTermWebSShResize(WebSocketSession webSocketSession, TextMessage message, int rows, int cols) {
+        int row = rows > 0 ? rows : DEFAULT_ROW;
+        int col = cols > 0 ? cols : DEFAULT_COL;
+        int wp = row * 8;
+        int hp = col * 20;
+        log.info("handler resize,row:{},col;{},wp:{},hp:{}",row,col,wp,hp);
+        CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
+        //then send cmd to ssh term
+        Channel channel = cachedObj.getSshChannel();
+        ((ChannelShell)channel).setPtySize(row,col,wp,hp);
+        log.info("handler resize success!");
         return true;
     }
 

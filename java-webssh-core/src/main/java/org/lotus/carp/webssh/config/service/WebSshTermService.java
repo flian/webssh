@@ -30,6 +30,16 @@ public interface WebSshTermService {
     boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException;
 
     /**
+     * handle resize
+     * @param webSocketSession
+     * @param message
+     * @param rows
+     * @param cols
+     * @return
+     */
+    boolean handleTermWebSShResize(WebSocketSession webSocketSession, TextMessage message,int rows, int cols);
+
+    /**
      * should invoke when session close
      * @param webSocketSession
      * @return
