@@ -46,7 +46,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private static int DEFAULT_TWP = 640;
     private static int DEFAULT_THP = 480;
 
-    private int getTcol(WebSocketSession webSocketSession){
+    private int getTCol(WebSocketSession webSocketSession){
         String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
         if(ObjectUtils.isEmpty(tmp)){
             return DEFAULT_TCOL;
@@ -124,7 +124,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
                 ((ChannelShell) channel).setPtyType("xterm");
-                ((ChannelShell) channel).setPtySize(getTcol(webSocketSession),getTRow(webSocketSession),getTWp(webSocketSession),getTHp(webSocketSession));
+                ((ChannelShell) channel).setPtySize(getTCol(webSocketSession),getTRow(webSocketSession),getTWp(webSocketSession),getTHp(webSocketSession));
                 ((ChannelShell) channel).setPty(true);
 
                 // should set mode
