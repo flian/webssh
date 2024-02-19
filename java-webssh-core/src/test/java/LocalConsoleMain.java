@@ -1,4 +1,5 @@
 import com.jcraft.jsch.*;
+import org.lotus.carp.webssh.config.service.impl.JschLogger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
@@ -12,10 +13,11 @@ import java.util.Hashtable;
  **/
 public class LocalConsoleMain {
     public static void main(String[] args) throws JSchException {
+        JSch.setLogger(new JschLogger());
         JSch jsch = new JSch();
         String userName="root";
         String password="Admin123";
-        String ipaddress="192.168.59.66";
+        String ipaddress="192.168.202.66";
         int port = 22;
         Hashtable<String, String> config = new Hashtable();
         config.put("StrictHostKeyChecking", "no");
@@ -32,6 +34,7 @@ public class LocalConsoleMain {
         //((ChannelShell)channel).setPtyType("xterm");
         ((ChannelShell)channel).setPty(true);
         //com.jcraft.jsch.JSchSessionDisconnectException: SSH_MSG_DISCONNECT: 2 Packet integrity error.
+        //java.io.IOException: End of IO Stream Read
         ((ChannelShell)channel).setTerminalMode(composeTerminalModes());
         //((ChannelShell)channel).setTerminalMode("ECHO".getBytes(StandardCharsets.UTF_8));
         channel.connect(30 * 1000);
@@ -40,7 +43,7 @@ public class LocalConsoleMain {
 
     private static byte[] composeTerminalModes(){
         byte[] terminalModes = {
-                0,0,0,
+                //0,0,0,
                 //ECHO 53
                 53,
                 1,
