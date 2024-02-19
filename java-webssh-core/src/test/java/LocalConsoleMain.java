@@ -45,12 +45,24 @@ public class LocalConsoleMain {
     private static byte[] composeTerminalModes(){
         //https://stackoverflow.com/questions/24623170/an-example-of-how-to-specify-terminal-modes-pty-req-string-for-ssh-client?rq=1
         byte[] terminalModes = {
+                //Translate uppercase characters to lowercase.
+                37,
+                0,0,0,1,
                 //0,0,0,
                 //ECHO 53
                 53,
                 0,0,0,1,
-                //Translate uppercase characters to lowercase.
-                37,
+                //ECHOE Visually erase chars.
+                54,
+                0,0,0,1,
+                //ECHOK Kill character discards current line.
+                55,
+                0,0,0,1,
+                //ECHONL Echo NL even if ECHO is off
+                56,
+                0,0,0,1,
+               //ECHOCTL Echo control characters as ^(Char).
+                60,
                 0,0,0,1,
                // 1,
                // TTY_OP_ISPEED 128
