@@ -95,9 +95,12 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private byte[] composeTerminalModes() {
         //can see "tail -f /var/log/secure" in your linux server for more login error detail.
         byte[] terminalModes = {
+                //Translate uppercase characters to lowercase.
+                37,
+                0,0,0,0,
                 //ECHO 53
                 53,
-                0,0,0,0,
+                0,0,0,1,
                 //ECHOE Visually erase chars.
                 54,
                 0,0,0,0,
@@ -188,7 +191,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     @Override
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
         //send message back
-        webSocketSession.sendMessage(message);
+        //webSocketSession.sendMessage(message);
         //https://blog.csdn.net/xincang_/article/details/129054940
         //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
