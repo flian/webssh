@@ -96,19 +96,19 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         byte[] terminalModes = {
                 //ECHO 53
                 53,
-                0,0,0,0,
+                0,0,0,1,
                 //ECHOE Visually erase chars.
                 54,
-                0,0,0,1,
+                0,0,0,0,
                 //ECHOK Kill character discards current line.
                 55,
-                0,0,0,1,
+                0,0,0,0,
                 //ECHONL Echo NL even if ECHO is off
                 56,
-                0,0,0,1,
+                0,0,0,0,
                 //ECHOCTL Echo control characters as ^(Char).
                 60,
-                0,0,0,1,
+                0,0,0,0,
                 // 1,
                 // TTY_OP_ISPEED 128
                 (byte)0x80,
@@ -151,6 +151,11 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 ((ChannelShell) channel).setTerminalMode(composeTerminalModes());
                 channel.connect(30 * 1000);
 
+                //init shell
+                /*OutputStream outputStream = channel.getOutputStream();
+                outputStream.write("pwd".getBytes(StandardCharsets.UTF_8));
+                outputStream.flush();*/
+
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfoObject);
                 cachedObj.setSshChannel(channel);
@@ -185,8 +190,12 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         String msgGet = message.getPayload();
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         OutputStream outputStream = channel.getOutputStream();
-        outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
-        outputStream.flush();
+        outputStream.write((msgGet+"\r").getBytes(StandardCharsets.UTF_8));
+        /*outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
+        if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
+            outputStream.flush();
+        }*/
+        //outputStream.flush();
         //printWriter.write(msgGet);
         //printWriter.flush();
        /* if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {

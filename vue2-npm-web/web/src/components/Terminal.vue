@@ -52,8 +52,14 @@ export default {
             const prefix = process.env.NODE_ENV === 'production' ? '' : '/ws'
             const fitAddon = new FitAddon()
             this.term = new Terminal({
+                rendererType: 'canvas', //渲染类型
                 convertEol: true, //启用时，光标将设置为下一行的开头
                 disableStdin: false, //是否应禁用输入。
+                cursorBlink: true,
+                cursorStyle: 'block',
+                logLevel: 'debug',
+                scrollback: 800,
+                windowsMode: true
             })
             this.term.loadAddon(fitAddon)
             this.term.open(document.getElementById(this.id))
@@ -161,13 +167,6 @@ export default {
                 }
             })
 
-        },
-        //特殊处理
-        onSend (data) {
-            data = this.base.isObject(data) ? JSON.stringify(data) : data;
-            data = this.base.isArray(data) ? data.toString() : data;
-            data = data.replace(/\\\\/, '\\');
-            this.ws.onSend(data);
         },
         async connected() {
             const sshInfo = this.$store.state.sshInfo
