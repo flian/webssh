@@ -151,18 +151,11 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 ((ChannelShell) channel).setPty(true);
 
                 // should set mode
-                //SEE JschSshClient.createShell
                 ((ChannelShell) channel).setTerminalMode(composeTerminalModes());
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setChannelInputStream(channel.getInputStream());
                 channel.connect(30 * 1000);
                 cachedObj.setChannelOutputStream(channel.getOutputStream());
-
-                //init shell
-                /*OutputStream outputStream = channel.getOutputStream();
-                outputStream.write("pwd".getBytes(StandardCharsets.UTF_8));
-                outputStream.flush();*/
-
 
                 cachedObj.setSshInfo(sshInfoObject);
                 cachedObj.setSshChannel(channel);
@@ -195,38 +188,13 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
         //then send cmd to ssh term
-        Channel channel = cachedObj.getSshChannel();
-        StringBuffer sb = cachedObj.getCommand();
         String msgGet = message.getPayload();
         OutputStream outputStream = cachedObjMap.get(webSocketSession.getId()).getChannelOutputStream();
-        //PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
+
         //write cmd to jsch
         outputStream.write(msgGet.getBytes());
         outputStream.flush();
-    /*    OutputStream outputStream = channel.getOutputStream();
-        outputStream.write((msgGet+"\r").getBytes(StandardCharsets.UTF_8));*/
-        //outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
-        /*if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
-            outputStream.flush();
-        }*/
-        //outputStream.flush();
-        //printWriter.write(msgGet);
-        //printWriter.flush();
-       /* if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
-            printWriter.flush();
-        }*/
-        //cache cmd
-        /*sb.append(msgGet);
-        if (sb.length() > 10000) {
-            //close it.
-            webSocketSession.close();
-        }
-        if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
-            String cmd = sb.toString();
-            sb.delete(0, sb.length());
-            printWriter.write(cmd);
-            printWriter.flush();
-        }*/
+
         return true;
     }
 
