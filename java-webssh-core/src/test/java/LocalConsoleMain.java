@@ -17,7 +17,7 @@ public class LocalConsoleMain {
         JSch jsch = new JSch();
         String userName="root";
         String password="Admin123";
-        String ipaddress="192.168.202.66";
+        String ipaddress="192.168.29.66";
         int port = 22;
         Hashtable<String, String> config = new Hashtable();
         config.put("StrictHostKeyChecking", "no");

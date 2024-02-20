@@ -146,7 +146,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 session.connect(30 * 1000);
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
-               // ((ChannelShell) channel).setPtyType("xterm");
+                ((ChannelShell) channel).setPtyType("xterm");
                 ((ChannelShell) channel).setPtySize(getCol(webSocketSession),getRow(webSocketSession),getWp(webSocketSession),getHp(webSocketSession));
                 ((ChannelShell) channel).setPty(true);
 
@@ -155,9 +155,8 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 ((ChannelShell) channel).setTerminalMode(composeTerminalModes());
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setChannelInputStream(channel.getInputStream());
-                cachedObj.setChannelOutputStream(channel.getOutputStream());
                 channel.connect(30 * 1000);
-
+                cachedObj.setChannelOutputStream(channel.getOutputStream());
 
                 //init shell
                 /*OutputStream outputStream = channel.getOutputStream();
