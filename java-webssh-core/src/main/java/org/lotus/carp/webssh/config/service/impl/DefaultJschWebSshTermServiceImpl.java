@@ -190,7 +190,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     @Override
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
         //send message back
-        //webSocketSession.sendMessage(message);
+        webSocketSession.sendMessage(message);
         //https://blog.csdn.net/xincang_/article/details/129054940
         //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
