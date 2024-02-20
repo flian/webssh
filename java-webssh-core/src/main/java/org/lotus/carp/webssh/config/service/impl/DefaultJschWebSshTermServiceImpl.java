@@ -46,33 +46,35 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private static final int DEFAULT_WP = 640;
     private static final int DEFAULT_HP = 480;
 
-    private int getCol(WebSocketSession webSocketSession){
-        String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
-        if(ObjectUtils.isEmpty(tmp)){
+    private int getCol(WebSocketSession webSocketSession) {
+        String tmp = (String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
+        if (ObjectUtils.isEmpty(tmp)) {
             return DEFAULT_COL;
         }
         return Integer.parseInt(tmp);
     }
 
-    private int getRow(WebSocketSession webSocketSession){
-        String tmp =(String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.ROWS);
-        if(ObjectUtils.isEmpty(tmp)){
+    private int getRow(WebSocketSession webSocketSession) {
+        String tmp = (String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.ROWS);
+        if (ObjectUtils.isEmpty(tmp)) {
             return DEFAULT_ROW;
         }
         return Integer.parseInt(tmp);
     }
-    private int getWp(WebSocketSession webSocketSession){
+
+    private int getWp(WebSocketSession webSocketSession) {
         return DEFAULT_WP;
     }
 
-    private int getHp(WebSocketSession webSocketSession){
+    private int getHp(WebSocketSession webSocketSession) {
         return DEFAULT_HP;
     }
 
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
         threadPool.submit(() -> {
             try {
-                InputStream inputStreamReader = cachedObjMap.get(webSocketSession.getId()).getChannelInputStream();;
+                InputStream inputStreamReader = cachedObjMap.get(webSocketSession.getId()).getChannelInputStream();
+                ;
                 //循环读取
                 byte[] buffer = new byte[1024];
                 //如果没有数据来，线程会一直阻塞在这个地方等待数据。
@@ -97,31 +99,31 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         byte[] terminalModes = {
                 //Translate uppercase characters to lowercase.
                 37,
-                0,0,0,0,
+                0, 0, 0, 0,
                 //ECHO 53
                 53,
-                0,0,0,1,
+                0, 0, 0, 1,
                 //ECHOE Visually erase chars.
                 54,
-                0,0,0,0,
+                0, 0, 0, 0,
                 //ECHOK Kill character discards current line.
                 55,
-                0,0,0,0,
+                0, 0, 0, 0,
                 //ECHONL Echo NL even if ECHO is off
                 56,
-                0,0,0,0,
+                0, 0, 0, 0,
                 //ECHOCTL Echo control characters as ^(Char).
                 60,
-                0,0,0,0,
+                0, 0, 0, 0,
                 // 1,
                 // TTY_OP_ISPEED 128
-                (byte)0x80,
+                (byte) 0x80,
                 // 14400 = 00003840
-                0, 0, (byte)0x38, (byte)0x40,
+                0, 0, (byte) 0x38, (byte) 0x40,
                 // TTY_OP_OSPEED 129
-                (byte)0x81,
+                (byte) 0x81,
                 // 14400 again
-                0, 0, (byte)0x38, (byte)0x40,
+                0, 0, (byte) 0x38, (byte) 0x40,
                 // TTY_OP_END
                 0,
         };
@@ -147,7 +149,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
                 ((ChannelShell) channel).setPtyType("xterm");
-                ((ChannelShell) channel).setPtySize(getCol(webSocketSession),getRow(webSocketSession),getWp(webSocketSession),getHp(webSocketSession));
+                ((ChannelShell) channel).setPtySize(getCol(webSocketSession), getRow(webSocketSession), getWp(webSocketSession), getHp(webSocketSession));
                 ((ChannelShell) channel).setPty(true);
 
                 // should set mode
@@ -204,11 +206,11 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         int col = cols > 0 ? cols : DEFAULT_COL;
         int wp = row * 8;
         int hp = col * 20;
-        log.info("handler resize,row:{},col;{},wp:{},hp:{}",row,col,wp,hp);
+        log.info("handler resize,row:{},col;{},wp:{},hp:{}", row, col, wp, hp);
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
         //then send cmd to ssh term
         Channel channel = cachedObj.getSshChannel();
-        ((ChannelShell)channel).setPtySize(row,col,wp,hp);
+        ((ChannelShell) channel).setPtySize(row, col, wp, hp);
         log.info("handler resize success!");
         return true;
     }
