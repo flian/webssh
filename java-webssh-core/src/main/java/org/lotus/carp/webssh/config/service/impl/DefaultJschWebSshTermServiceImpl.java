@@ -190,7 +190,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     @Override
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
         //send message back
-        webSocketSession.sendMessage(message);
+        //webSocketSession.sendMessage(message);
         //https://blog.csdn.net/xincang_/article/details/129054940
         //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
@@ -201,13 +201,14 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         OutputStream outputStream = cachedObjMap.get(webSocketSession.getId()).getChannelOutputStream();
         //PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         //write cmd to jsch
-        outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
+        outputStream.write(msgGet.getBytes());
+        outputStream.flush();
     /*    OutputStream outputStream = channel.getOutputStream();
         outputStream.write((msgGet+"\r").getBytes(StandardCharsets.UTF_8));*/
         //outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
-        if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
+        /*if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
             outputStream.flush();
-        }
+        }*/
         //outputStream.flush();
         //printWriter.write(msgGet);
         //printWriter.flush();
