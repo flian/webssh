@@ -186,7 +186,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
         OutputStream outputStream = channel.getOutputStream();
         outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
-        //outputStream.flush();
+        outputStream.flush();
         //printWriter.write(msgGet);
         //printWriter.flush();
        /* if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
