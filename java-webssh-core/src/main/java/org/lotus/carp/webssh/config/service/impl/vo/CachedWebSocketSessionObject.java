@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * <h3>javaWebSSH</h3>
  * <p></p>
@@ -26,6 +29,7 @@ public class CachedWebSocketSessionObject {
      */
     private Channel sshChannel;
 
+
     /**
      * ssh session
      */
@@ -35,6 +39,17 @@ public class CachedWebSocketSessionObject {
      * command current user typed.
      */
     private StringBuffer command = new StringBuffer();
+
+    /**
+     * channel InputStream cache
+     */
+    private InputStream channelInputStream;
+
+    /**
+     * channel OutputStream cache
+     */
+    private OutputStream channelOutputStream;
+
 
     public boolean close() {
 

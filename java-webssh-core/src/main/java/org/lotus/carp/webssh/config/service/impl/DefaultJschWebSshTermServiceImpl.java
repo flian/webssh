@@ -72,12 +72,13 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
         threadPool.submit(() -> {
             try {
-                InputStream inputStreamReader = channel.getInputStream();
+                InputStream inputStreamReader = cachedObjMap.get(webSocketSession.getId()).getChannelInputStream();;
                 //循环读取
                 byte[] buffer = new byte[1024];
                 //如果没有数据来，线程会一直阻塞在这个地方等待数据。
                 while (inputStreamReader.read(buffer) != -1) {
                     webSocketSession.sendMessage(new TextMessage(buffer));
+                    buffer = new byte[1024];
                 }
             } catch (IOException e) {
                 log.error("error while send term message back to websocket.", e);
@@ -96,7 +97,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         byte[] terminalModes = {
                 //ECHO 53
                 53,
-                0,0,0,1,
+                0,0,0,0,
                 //ECHOE Visually erase chars.
                 54,
                 0,0,0,0,
@@ -142,26 +143,33 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 session.connect(30 * 1000);
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
-                ((ChannelShell) channel).setPtyType("xterm");
+               // ((ChannelShell) channel).setPtyType("xterm");
                 ((ChannelShell) channel).setPtySize(getCol(webSocketSession),getRow(webSocketSession),getWp(webSocketSession),getHp(webSocketSession));
                 ((ChannelShell) channel).setPty(true);
 
                 // should set mode
                 //SEE JschSshClient.createShell
                 ((ChannelShell) channel).setTerminalMode(composeTerminalModes());
+                cachedObj = new CachedWebSocketSessionObject();
+                cachedObj.setChannelInputStream(channel.getInputStream());
+                cachedObj.setChannelOutputStream(channel.getOutputStream());
                 channel.connect(30 * 1000);
+
 
                 //init shell
                 /*OutputStream outputStream = channel.getOutputStream();
                 outputStream.write("pwd".getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();*/
 
-                cachedObj = new CachedWebSocketSessionObject();
+
                 cachedObj.setSshInfo(sshInfoObject);
                 cachedObj.setSshChannel(channel);
                 cachedObj.setSshSession(session);
+
                 cachedObjMap.put(webSocketSession.getId(), cachedObj);
                 sendSshMessageBack(webSocketSession, channel);
+
+
             }
             return true;
         } catch (JsonProcessingException e) {
@@ -180,7 +188,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     @Override
     public boolean handleTermWebSshMsg(WebSocketSession webSocketSession, TextMessage message) throws IOException {
         //send message back
-        //webSocketSession.sendMessage(message);
+        webSocketSession.sendMessage(message);
         //https://blog.csdn.net/xincang_/article/details/129054940
         //https://www.jianshu.com/p/db8a860b286c
         CachedWebSocketSessionObject cachedObj = cachedObjMap.get(webSocketSession.getId());
@@ -188,13 +196,16 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         Channel channel = cachedObj.getSshChannel();
         StringBuffer sb = cachedObj.getCommand();
         String msgGet = message.getPayload();
-        PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
-        OutputStream outputStream = channel.getOutputStream();
-        outputStream.write((msgGet+"\r").getBytes(StandardCharsets.UTF_8));
-        /*outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
+        OutputStream outputStream = cachedObjMap.get(webSocketSession.getId()).getChannelOutputStream();
+        //PrintWriter printWriter = new PrintWriter(channel.getOutputStream());
+        //write cmd to jsch
+        outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
+    /*    OutputStream outputStream = channel.getOutputStream();
+        outputStream.write((msgGet+"\r").getBytes(StandardCharsets.UTF_8));*/
+        //outputStream.write(msgGet.getBytes(StandardCharsets.UTF_8));
         if ("\r".equals(msgGet) || "\n".equals(msgGet) || "\r\n".equals(msgGet)) {
             outputStream.flush();
-        }*/
+        }
         //outputStream.flush();
         //printWriter.write(msgGet);
         //printWriter.flush();
