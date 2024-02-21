@@ -31,7 +31,7 @@ public interface FileApi {
      */
     @GetMapping("/list")
     @ResponseBody
-    default WebSshResponse<FileListVo> listFile(@Valid FileListRequestParamsVo requestParamsVo) {
+    default WebSshResponse<FileListVo> listFiles(@Valid FileListRequestParamsVo requestParamsVo) {
         throw new BusinessException("Please implements me!");
     }
 

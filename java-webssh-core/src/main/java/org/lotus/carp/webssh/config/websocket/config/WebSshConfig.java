@@ -69,4 +69,14 @@ public class WebSshConfig {
      * front will save password
      */
     private Boolean savePass = false;
+
+    /**
+     * debug jsch log to system error.
+     */
+    private Boolean debugJsch2SystemError = true;
+
+    /**
+     * default jsch connect timeout,default is 30s
+     */
+    private int defaultConnectTimeOut = 30*1000;
 }

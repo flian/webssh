@@ -15,9 +15,34 @@ import java.util.Date;
 @Data
 public class FileMetaVo {
     //File{Name: mFile.Name(), IsDir: mFile.IsDir(), Size: fileSize, ModifyTime: mFile.ModTime().Format("2006-01-02 15:04:05")}
+    /**
+     * file name
+     */
     private String name;
+
+    /**
+     * is file folder
+     */
     private boolean isDir;
+
+    /**
+     * file human readable size
+     */
     private String size;
+
+    /**
+     * file last modify time
+     */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date ModifyTime;
+    private Date modifyTime;
+
+    /**
+     * file add time
+     */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date addTime;
+    /**
+     * file permissions string
+     */
+    private String permissionsString;
 }

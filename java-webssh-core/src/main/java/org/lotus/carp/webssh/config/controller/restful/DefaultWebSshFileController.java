@@ -7,10 +7,12 @@ import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListVo;
 import org.lotus.carp.webssh.config.controller.vo.FileUploadDataVo;
+import org.lotus.carp.webssh.config.service.WebSshFileService;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -32,13 +34,18 @@ public class DefaultWebSshFileController extends BaseController implements FileA
     @Resource
     private WebSshLoginService webSshLoginService;
 
+    @Resource
+    private WebSshFileService webSshFileService;
+
+
+
+
     @Override
-    public WebSshResponse<FileListVo> listFile(@Valid FileListRequestParamsVo requestParamsVo) {
+    public WebSshResponse<FileListVo> listFiles(@Valid FileListRequestParamsVo requestParamsVo) {
         if (!webSshLoginService.isTokenValid(requestParamsVo.getToken())) {
             return WebSshResponse.fail("token is invalid.");
         }
-        FileListVo result = new FileListVo();
-        return WebSshResponse.ok(result);
+        return WebSshResponse.ok(webSshFileService.listFiles(requestParamsVo));
     }
 
     @Override

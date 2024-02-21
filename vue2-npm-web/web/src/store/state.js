@@ -2,7 +2,7 @@ import { getLanguage } from '@/lang/index'
 
 export default {
     sshInfo: {
-        host: '192.168.29.66',
+        host: '192.168.109.66',
         username: 'root',
         port: 22,
         password: 'Admin123',
