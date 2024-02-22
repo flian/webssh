@@ -12,6 +12,7 @@ import java.util.List;
  * @date : 2024-02-01 11:23
  **/
 @Data
+//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class FileListVo {
     private String path;
     private List<FileMetaVo> list;

@@ -1,6 +1,9 @@
 package org.lotus.carp.webssh.config.controller.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +16,7 @@ import java.util.Date;
  * @date : 2024-02-01 11:24
  **/
 @Data
+@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class FileMetaVo {
     //File{Name: mFile.Name(), IsDir: mFile.IsDir(), Size: fileSize, ModifyTime: mFile.ModTime().Format("2006-01-02 15:04:05")}
     /**
@@ -23,6 +27,7 @@ public class FileMetaVo {
     /**
      * is file folder
      */
+    @JsonProperty("IsDir")
     private boolean isDir;
 
     /**

@@ -45,7 +45,7 @@ public class DefaultWebSshFileController extends BaseController implements FileA
         if (!webSshLoginService.isTokenValid(requestParamsVo.getToken())) {
             return WebSshResponse.fail("token is invalid.");
         }
-        return WebSshResponse.ok(webSshFileService.listFiles(requestParamsVo));
+        return WebSshResponse.ok(webSshFileService.listFiles(requestParamsVo),"success");
     }
 
     @Override
