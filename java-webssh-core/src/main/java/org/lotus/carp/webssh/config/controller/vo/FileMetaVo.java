@@ -1,5 +1,6 @@
 package org.lotus.carp.webssh.config.controller.vo;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -27,7 +28,6 @@ public class FileMetaVo {
     /**
      * is file folder
      */
-    @JsonProperty("IsDir")
     private boolean isDir;
 
     /**
@@ -50,4 +50,13 @@ public class FileMetaVo {
      * file permissions string
      */
     private String permissionsString;
+
+    public boolean getDir(){
+        return this.isDir;
+    }
+
+    @JsonProperty("IsDir")
+    public boolean getIsDir(){
+        return this.isDir;
+    }
 }

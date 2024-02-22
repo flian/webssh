@@ -66,7 +66,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
 
                     fileMeta.setPermissionsString(f.getAttrs().getPermissionsString());
                     fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
-                    if (fileMeta.isDir()) {
+                    if (fileMeta.getIsDir()) {
                         fileMeta.setSize("" + f.getAttrs().getSize());
                     } else {
                         fileMeta.setSize(transFileSize(f.getAttrs().getSize()));
