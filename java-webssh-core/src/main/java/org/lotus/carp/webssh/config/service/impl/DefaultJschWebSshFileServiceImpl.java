@@ -54,7 +54,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
      */
     @Override
     public void downloadFile(FileDownLoadParamsVo downLoadRequest, OutputStream outputStream) {
-        ensureCreateChannelSftpAndExec(downLoadRequest.getSshInfo(), sftp -> {
+        ensureChannelSftpAndExec(downLoadRequest.getSshInfo(),downLoadRequest.getToken(), sftp -> {
             try {
                 sftp.get(downLoadRequest.getPath(), outputStream);
             } catch (SftpException e) {
@@ -79,7 +79,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         List<FileMetaVo> fileList = new ArrayList<>();
         result.setList(fileList);
         try {
-            ensureCreateChannelSftpAndExec(requestParamsVo.getSshInfo(), sftp -> {
+            ensureChannelSftpAndExec(requestParamsVo.getSshInfo(),requestParamsVo.getToken(), sftp -> {
 
                 Vector<ChannelSftp.LsEntry> list = null;
                 try {

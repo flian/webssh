@@ -1,7 +1,11 @@
 package org.lotus.carp.webssh.config.service.impl;
 
 import cn.hutool.core.codec.Base64Decoder;
+import cn.hutool.crypto.digest.MD5;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
@@ -9,10 +13,14 @@ import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -30,38 +38,72 @@ public class JschBase implements InitializingBean {
 
     private ObjectMapper baseObjectMapper = new ObjectMapper();
 
+    private MD5 md5 = MD5.create();
+
+    Cache<String, Session> sessionCache;
+
     /**
      * create jsch sftp
      *
      * @param sshInfo
+     * @param token
      * @return
      * @throws IOException
      * @throws JSchException
      */
-    void ensureCreateChannelSftpAndExec(String sshInfo, EnsureCloseSftpCall sftpCallFunc) {
+    void ensureChannelSftpAndExec(String sshInfo, String token, EnsureCloseSftpCall sftpCallFunc) {
         if (ObjectUtils.isEmpty(sshInfo) || null == sftpCallFunc) {
             throw new WebSshBusinessException("sshInfo and sftpCallFunc should not be null.");
         }
-        ensureCreateChannelSftpAndExec(sshInfo, webSshConfig.getDefaultConnectTimeOut(), sftpCallFunc);
+        ensureChannelSftpAndExec(sshInfo, token, webSshConfig.getDefaultConnectTimeOut(), sftpCallFunc);
+    }
+
+    private Session ensureGetOrCreateSession(String sshInfo, String token) throws IOException, JSchException {
+
+        String preFix = token;
+        if (ObjectUtils.isEmpty(preFix)) {
+            preFix = clientRemoteHost();
+        }
+
+        String cacheSessionKey = md5.digestHex16(String.format("%s:%s", preFix, sshInfo));
+        Session result = sessionCache.getIfPresent(cacheSessionKey);
+        if (null != result) {
+            return result;
+        }
+        return createAndCacheOne(sshInfo, cacheSessionKey);
+    }
+
+    private synchronized Session createAndCacheOne(String sshInfo, String cacheKey) throws IOException, JSchException {
+        Session session = createSessionFromSshInfo(sshInfo);
+        if (null != session) {
+            sessionCache.put(cacheKey, session);
+        }
+        return session;
+    }
+
+    private String clientRemoteHost() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        return request.getRemoteHost();
     }
 
     /**
      * create jsch sftp
      *
      * @param sshInfo
+     * @param token
      * @param connectTimeout
      * @return
      * @throws IOException
      * @throws JSchException
      */
-    void ensureCreateChannelSftpAndExec(String sshInfo, int connectTimeout, EnsureCloseSftpCall sftpCallFunc) {
+    void ensureChannelSftpAndExec(String sshInfo, String token, int connectTimeout, EnsureCloseSftpCall sftpCallFunc) {
         if (ObjectUtils.isEmpty(sshInfo) || null == sftpCallFunc) {
             throw new WebSshBusinessException("sshInfo and sftpCallFunc should not be null.");
         }
-        Session session = null;
         ChannelSftp sftp = null;
         try {
-            session = createSessionFromSshInfo(sshInfo);
+            Session session = ensureGetOrCreateSession(sshInfo, token);
             Channel channel = session.openChannel("sftp");
             channel.connect(connectTimeout);
             sftp = (ChannelSftp) channel;
@@ -73,16 +115,17 @@ public class JschBase implements InitializingBean {
             if (null != sftp)
                 try {
                     sftp.exit();
-                }catch (Exception e){
-                    log.error("error close sftp.",e);
+                } catch (Exception e) {
+                    log.error("error close sftp.", e);
                 }
-            if (null != session) {
-                try{
+            //session maybe cached,don't close it.
+            /*if (null != session) {
+                try {
                     session.disconnect();
-                }catch (Exception e){
-                    log.error("error clsoe jsch session.",e);
+                } catch (Exception e) {
+                    log.error("error clsoe jsch session.", e);
                 }
-            }
+            }*/
         }
     }
 
@@ -108,7 +151,7 @@ public class JschBase implements InitializingBean {
      * @throws JSchException
      */
     Session createSessionFromSshInfo(String sshInfo, int connectTimeout) throws IOException, JSchException {
-        SshInfo sshInfoObject = baseObjectMapper.readValue(deCodeBase64Str(sshInfo), SshInfo.class);
+        SshInfo sshInfoObject = composeSshInfo(sshInfo);
         JSch jsch = new JSch();
         Hashtable<String, String> config = new Hashtable();
         config.put("StrictHostKeyChecking", "no");
@@ -121,6 +164,10 @@ public class JschBase implements InitializingBean {
         session.connect(connectTimeout);
 
         return session;
+    }
+
+    private SshInfo composeSshInfo(String sshInfo) throws JsonProcessingException {
+        return baseObjectMapper.readValue(deCodeBase64Str(sshInfo), SshInfo.class);
     }
 
     /**
@@ -203,5 +250,16 @@ public class JschBase implements InitializingBean {
         if (!jschLoggerInitialized && webSshConfig.getDebugJsch2SystemError()) {
             JSch.setLogger(new JschLogger());
         }
+        sessionCache = CacheBuilder.newBuilder()
+                .maximumSize(10000)
+                .expireAfterAccess(webSshConfig.getTokenExpiration(), TimeUnit.HOURS)
+                .removalListener(rmItem -> {
+                    //close session to ensure jsch close normally.
+                    log.info("remove session key cache,key:{},reason:{}", rmItem.getKey(), rmItem.getCause());
+                    if (rmItem.getValue() instanceof Session) {
+                        ((Session) rmItem.getValue()).disconnect();
+                    }
+                })
+                .build();
     }
 }
