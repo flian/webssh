@@ -16,4 +16,8 @@ public class WebSshAppConst {
 
     //默认成功消息
     public static final String DEFAULT_WEBSSH_SUCCESS_MSG = "success";
+
+    //front progress websocket send init commoand message
+    public static final String PROGRESS_COMMAND_MSG = "PROGRESS";
+
 }

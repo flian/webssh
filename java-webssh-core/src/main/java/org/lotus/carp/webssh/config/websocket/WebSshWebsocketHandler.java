@@ -69,7 +69,43 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     //connect error,close session.
                     session.close();
                 }
+                break;
             }
+            case FILE_UPLOAD_PROGRESS: {
+                //file upload
+                //process file upload message.
+                String fileUid = (String) session.getAttributes().get(ID);
+                int maxCnt = webSshConfig.getCloseWebSocketBeforeCheckCount();
+                int checkCnt = 0;
+                if (ObjectUtils.isEmpty(fileUid)) {
+                    //file id is null. not a valid websocket connection.
+                    session.close();
+                }
+                boolean isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
+                while (true) {
+                    isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
+                    if (isFileUploading) {
+                        //file is uploading.. send uploaded size back.
+                        session.sendMessage(new TextMessage("" + JschSftpUploadProcessMonitor.uploadedSize(fileUid)));
+                    } else {
+                        //file upload is not start or is finished.
+                        //wait maxCnt (3) iterator times.
+                        if (checkCnt >= maxCnt) {
+                            break;
+                        }
+                        checkCnt++;
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        log.error("FILE_UPLOAD_PROGRESS error",e);
+                        break;
+                    }
+                }
+
+                break;
+            }
+
         }
     }
 
@@ -110,32 +146,6 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                 break;
             }
             case FILE_UPLOAD_PROGRESS: {
-                //file upload
-                //process file upload message.
-                String fileUid = (String) session.getAttributes().get(ID);
-                int maxCnt = webSshConfig.getCloseWebSocketBeforeCheckCount();
-                int checkCnt = 0;
-                if (ObjectUtils.isEmpty(fileUid)) {
-                    //file id is null. not a valid websocket connection.
-                    session.close();
-                }
-                boolean isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
-                while (true) {
-                    isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
-                    if (isFileUploading) {
-                        //file is uploading.. send uploaded size back.
-                        session.sendMessage(new TextMessage("" + JschSftpUploadProcessMonitor.uploadedSize(fileUid)));
-                    } else {
-                        //file upload is not start or is finished.
-                        //wait maxCnt (3) iterator times.
-                        if (checkCnt >= maxCnt) {
-                            break;
-                        }
-                        checkCnt++;
-                    }
-                    Thread.sleep(500);
-                }
-
                 break;
             }
         }

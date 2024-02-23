@@ -162,6 +162,7 @@ export default {
             const token = this.$store.getters.token
             if (e.percent === 50) {
                 const ws = new WebSocket(`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${process.env.NODE_ENV === 'production' ? '' : '/ws'}/webssh/file/progress?token=${token}&id=${f.uid}`)
+                ws.send('PROGRESS');
                 ws.onmessage = e1 => {
                     f.percentage = (f.size + Number(e1.data)) / (f.size * 2) * 100
                 }
