@@ -81,9 +81,8 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     //file id is null. not a valid websocket connection.
                     session.close();
                 }
-                boolean isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
                 while (true) {
-                    isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
+                    boolean isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
                     if (isFileUploading) {
                         //file is uploading.. send uploaded size back.
                         session.sendMessage(new TextMessage("" + JschSftpUploadProcessMonitor.uploadedSize(fileUid)));
@@ -98,7 +97,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
-                        log.error("FILE_UPLOAD_PROGRESS error",e);
+                        log.error("FILE_UPLOAD_PROGRESS error", e);
                         break;
                     }
                 }
