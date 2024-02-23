@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-import static org.lotus.carp.webssh.config.controller.common.AppConst.DEFAULT_WEBSSH_SUCCESS_MSG;
+import static org.lotus.carp.webssh.config.controller.common.WebSshAppConst.DEFAULT_WEBSSH_SUCCESS_MSG;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -49,24 +49,24 @@ public class WebSshResponse<T> implements Serializable {
     }
 
     public static <E> WebSshResponse<E> ok(E data, String resultMsg) {
-        return new WebSshResponse<E>(AppConst.OK, data, resultMsg);
+        return new WebSshResponse<E>(WebSshAppConst.OK, data, resultMsg);
     }
 
     public static <E> WebSshResponse<E> ok(E data) {
-        return new WebSshResponse<E>(AppConst.OK, data, "操作成功");
+        return new WebSshResponse<E>(WebSshAppConst.OK, data, "操作成功");
     }
 
     public static <E> WebSshResponse<E> ok(int OK, E data) {
-        return new WebSshResponse<E>(AppConst.OK, data);
+        return new WebSshResponse<E>(WebSshAppConst.OK, data);
     }
 
     public static <E> WebSshResponse<E> ok(String resultMsg) {
-        return new WebSshResponse<E>(AppConst.OK, resultMsg);
+        return new WebSshResponse<E>(WebSshAppConst.OK, resultMsg);
     }
 
 
     public static <E> WebSshResponse<E> ok() {
-        return new WebSshResponse<E>(AppConst.OK, "ok");
+        return new WebSshResponse<E>(WebSshAppConst.OK, "ok");
     }
 
     public static <T> WebSshResponse<T> ok(int OK, String resultMsg) {
@@ -78,14 +78,14 @@ public class WebSshResponse<T> implements Serializable {
     }
 
     public static <E> WebSshResponse<E> fail() {
-        return new WebSshResponse<E>(AppConst.FAIL, "fail");
+        return new WebSshResponse<E>(WebSshAppConst.FAIL, "fail");
     }
 
     public static <T> WebSshResponse<T> fail(String resultMsg) {
-        return new WebSshResponse<T>(AppConst.FAIL, resultMsg);
+        return new WebSshResponse<T>(WebSshAppConst.FAIL, resultMsg);
     }
     public static <T> WebSshResponse<T> fail(T data, String resultMsg) {
-        return new WebSshResponse<T>(AppConst.FAIL, data,resultMsg);
+        return new WebSshResponse<T>(WebSshAppConst.FAIL, data,resultMsg);
     }
 
     public static <E> WebSshResponse<E> fail(int FAIL, E data, String resultMsg) {

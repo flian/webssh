@@ -4,7 +4,7 @@ import cn.hutool.core.codec.Base64Decoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
-import org.lotus.carp.webssh.config.exception.BusinessException;
+import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
@@ -40,7 +40,7 @@ public class JschBase implements InitializingBean {
      */
     void ensureCreateChannelSftpAndExec(String sshInfo, EnsureCloseSftpCall sftpCallFunc) {
         if (ObjectUtils.isEmpty(sshInfo) || null == sftpCallFunc) {
-            throw new BusinessException("sshInfo and sftpCallFunc should not be null.");
+            throw new WebSshBusinessException("sshInfo and sftpCallFunc should not be null.");
         }
         ensureCreateChannelSftpAndExec(sshInfo, webSshConfig.getDefaultConnectTimeOut(), sftpCallFunc);
     }
@@ -56,7 +56,7 @@ public class JschBase implements InitializingBean {
      */
     void ensureCreateChannelSftpAndExec(String sshInfo, int connectTimeout, EnsureCloseSftpCall sftpCallFunc) {
         if (ObjectUtils.isEmpty(sshInfo) || null == sftpCallFunc) {
-            throw new BusinessException("sshInfo and sftpCallFunc should not be null.");
+            throw new WebSshBusinessException("sshInfo and sftpCallFunc should not be null.");
         }
         Session session = null;
         ChannelSftp sftp = null;

@@ -4,7 +4,7 @@ import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.CheckRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.CheckResponseVo;
 import org.lotus.carp.webssh.config.controller.vo.LoginVo;
-import org.lotus.carp.webssh.config.exception.BusinessException;
+import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,7 @@ import javax.validation.Valid;
  * @date : 2024-01-31 17:27
  **/
 @RequestMapping("/webssh")
-public interface Api {
+public interface WebSshApi {
 
     /**
      * check sshinfo and token etc。
@@ -30,7 +30,7 @@ public interface Api {
     @GetMapping("/check")
     @ResponseBody
     default WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo) {
-        throw new BusinessException("Please implements me!");
+        throw new WebSshBusinessException("Please implements me!");
     }
 
     /**
@@ -41,7 +41,7 @@ public interface Api {
     @GetMapping("/shouldVerifyToken")
     @ResponseBody
     default WebSshResponse<Boolean> shouldVerifyToken() {
-        throw new BusinessException("Please implements me!");
+        throw new WebSshBusinessException("Please implements me!");
     }
 
     /**
@@ -54,6 +54,6 @@ public interface Api {
     @PostMapping("/login")
     @ResponseBody
     default WebSshResponse<WebSshLoginResultVo> handleLogin(@Valid @RequestBody LoginVo loginVo, HttpServletRequest request) {
-        throw new BusinessException("Please implements me!");
+        throw new WebSshBusinessException("Please implements me!");
     }
 }

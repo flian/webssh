@@ -1,7 +1,7 @@
 package org.lotus.carp.webssh.config.controller.restful;
 
 import lombok.extern.slf4j.Slf4j;
-import org.lotus.carp.webssh.config.controller.api.Api;
+import org.lotus.carp.webssh.config.controller.api.WebSshApi;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.CheckRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.CheckResponseVo;
@@ -25,7 +25,7 @@ import javax.validation.Valid;
  **/
 
 @Slf4j
-public class DefaultWebSshController extends BaseController implements Api {
+public class DefaultWebSshController extends BaseController implements WebSshApi {
 
     @Resource
     private WebSshConfig webSshConfig;

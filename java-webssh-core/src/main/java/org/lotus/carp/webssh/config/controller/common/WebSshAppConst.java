@@ -7,7 +7,7 @@ package org.lotus.carp.webssh.config.controller.common;
  * @author : foy
  * @date : 2024-01-31 17:21
  **/
-public class AppConst {
+public class WebSshAppConst {
     //失败
     public static final int FAIL = -1;
 

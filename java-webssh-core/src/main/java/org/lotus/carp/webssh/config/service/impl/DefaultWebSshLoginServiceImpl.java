@@ -3,7 +3,7 @@ package org.lotus.carp.webssh.config.service.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.lotus.carp.webssh.config.exception.BusinessException;
+import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.PropertiesConfigUser;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
@@ -52,7 +52,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
         }
         if (ObjectUtils.isEmpty(webSshLoginVo.getUsername())) {
             log.info("please input username");
-            throw new BusinessException("username is needed.");
+            throw new WebSshBusinessException("username is needed.");
         }
         Optional<PropertiesConfigUser> matchOne = allowedUsers.stream().filter(u -> u.getUsername().equals(webSshLoginVo.getUsername())).findFirst();
         if (matchOne.isPresent()) {
@@ -134,7 +134,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
                 webSshConfig.isShouldVerifyToken() &&
                 webSshConfig.isForceCheckUserConfig2Prod()) {
             if (usersConfig.equals(DEFAULT_USER_CONFIG)) {
-                throw new BusinessException("invalid user config for production version.. " +
+                throw new WebSshBusinessException("invalid user config for production version.. " +
                         "please  config `webssh.allowedUsers` for login user information " +
                         "or set `webssh.shouldVerifyToken=false` to invalidate user check " +
                         "or set `webssh.forceCheckUserConfig2Prod=false` to close this check.");

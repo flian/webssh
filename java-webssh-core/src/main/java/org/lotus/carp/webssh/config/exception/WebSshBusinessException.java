@@ -4,23 +4,23 @@ package org.lotus.carp.webssh.config.exception;
  * @Author:
  * @Date: 2020/2/7 16:18
  */
-public class BusinessException extends RuntimeException {
+public class WebSshBusinessException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private Integer code;
 
-    public BusinessException() {
+    public WebSshBusinessException() {
     }
 
-    public BusinessException(int code, String msg) {
+    public WebSshBusinessException(int code, String msg) {
         super(msg);
         this.code = code;
     }
 
-    public BusinessException(String message) {
+    public WebSshBusinessException(String message) {
         super(message);
     }
 
-    public BusinessException(String message, Throwable cause) {
+    public WebSshBusinessException(String message, Throwable cause) {
         super(message, cause);
     }
 
@@ -36,10 +36,10 @@ public class BusinessException extends RuntimeException {
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
-        } else if (!(o instanceof BusinessException)) {
+        } else if (!(o instanceof WebSshBusinessException)) {
             return false;
         } else {
-            BusinessException other = (BusinessException)o;
+            WebSshBusinessException other = (WebSshBusinessException)o;
             if (!other.canEqual(this)) {
                 return false;
             } else if (!super.equals(o)) {
@@ -61,7 +61,7 @@ public class BusinessException extends RuntimeException {
     }
 
     protected boolean canEqual(final Object other) {
-        return other instanceof BusinessException;
+        return other instanceof WebSshBusinessException;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
-import org.lotus.carp.webssh.config.controller.api.Api;
-import org.lotus.carp.webssh.config.controller.api.FileApi;
+import org.lotus.carp.webssh.config.controller.api.WebSshApi;
+import org.lotus.carp.webssh.config.controller.api.WebSshFileApi;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshController;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshFileController;
 import org.lotus.carp.webssh.config.service.WebSshFileService;
@@ -49,14 +49,14 @@ public class DefaultBeanConfig {
     @ConditionalOnMissingBean
     @Resource
     @Bean
-    public Api defaultApiController() {
+    public WebSshApi defaultApiController() {
         return new DefaultWebSshController();
     }
 
     @ConditionalOnMissingBean
     @Resource
     @Bean
-    public FileApi defaultFileApiController() {
+    public WebSshFileApi defaultFileApiController() {
         return new DefaultWebSshFileController();
     }
 
