@@ -71,36 +71,37 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         UploadVo uploadVo = new UploadVo();
         uploadVo.setPathArr(pathArr);
         if (!ObjectUtils.isEmpty(dir)) {
-            pathArr = pathArr + dir;
+            pathArr = pathArr + "/" + dir;
             uploadVo.setPathArr(pathArr);
             uploadVo.shouldMkDir = true;
         }
-        String fileName = file.getName();
+        String fileName = file.getOriginalFilename();
         if (ObjectUtils.isEmpty(fileName)) {
             return FileUploadResultVo.failure("upload file name is not allow empty, please ensure file hase name.");
         }
-        uploadVo.setFileFullArr(pathArr + fileName);
+        uploadVo.setFileFullArr(pathArr + "/" + fileName);
 
         ensureChannelSftpAndExec(fileUploadDataRequest.getSshInfo(), fileUploadDataRequest.getToken(), sftp -> {
-            if (uploadVo.shouldMkDir) {
-                try {
-                    sftp.mkdir(uploadVo.pathArr);
-                    //try to use resume model.
-                    try {
-                        SftpATTRS attrs = sftp.stat(uploadVo.fileFullArr);
-                        log.info("file exist.. using RESUME mode to transfer file.");
-                        sftp.put(file.getInputStream(), uploadVo.fileFullArr,
-                                new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.RESUME);
-                    } catch (SftpException e) {
-                        log.info("file not exist.. using overwrite mode to transfer file.");
-                        sftp.put(file.getInputStream(), uploadVo.fileFullArr,
-                                new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.OVERWRITE);
-                    }
 
-                } catch (SftpException | IOException e) {
-                    result.setOk(false);
-                    result.setMsg("error while upload" + e.getMessage());
+            try {
+                if (uploadVo.shouldMkDir) {
+                    sftp.mkdir(uploadVo.pathArr);
                 }
+                //try to use resume model.
+                try {
+                    SftpATTRS attrs = sftp.stat(uploadVo.fileFullArr);
+                    log.info("file exist.. using RESUME mode to transfer file.filename:{},fileSize:{}", fileName, attrs.getSize());
+                    sftp.put(file.getInputStream(), uploadVo.fileFullArr,
+                            new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.RESUME);
+                } catch (SftpException e) {
+                    log.info("file not exist.. using overwrite mode to transfer file.");
+                    sftp.put(file.getInputStream(), uploadVo.fileFullArr,
+                            new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.OVERWRITE);
+                }
+
+            } catch (SftpException | IOException e) {
+                result.setOk(false);
+                result.setMsg("error while upload" + e.getMessage());
             }
         });
 
