@@ -3,9 +3,12 @@ package org.lotus.carp.webssh.config.service.impl;
 import cn.hutool.core.codec.Base64Decoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.*;
+import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.exception.BusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -18,6 +21,7 @@ import java.util.Hashtable;
  * @author : foy
  * @date : 2024-02-21 17:06
  **/
+@Slf4j
 public class JschBase implements InitializingBean {
     @Resource
     private WebSshConfig webSshConfig;
@@ -34,24 +38,44 @@ public class JschBase implements InitializingBean {
      * @throws IOException
      * @throws JSchException
      */
-    ChannelSftp createChannelSftp(String sshInfo) throws IOException, JSchException {
-        return createChannelSftp(sshInfo,webSshConfig.getDefaultConnectTimeOut());
+    void ensureCreateChannelSftpAndExec(String sshInfo, EnsureCloseSftpCall sftpCallFunc) {
+        if (ObjectUtils.isEmpty(sshInfo) || null == sftpCallFunc) {
+            throw new BusinessException("sshInfo and sftpCallFunc should not be null.");
+        }
+        ensureCreateChannelSftpAndExec(sshInfo, webSshConfig.getDefaultConnectTimeOut(), sftpCallFunc);
     }
 
     /**
      * create jsch sftp
+     *
      * @param sshInfo
      * @param connectTimeout
      * @return
      * @throws IOException
      * @throws JSchException
      */
-    ChannelSftp createChannelSftp(String sshInfo, int connectTimeout) throws IOException, JSchException {
-        Session session = createSessionFromSshInfo(sshInfo);
-        Channel channel = session.openChannel("sftp");
-        channel.connect(connectTimeout);
-        ChannelSftp sftp = (ChannelSftp) channel;
-        return sftp;
+    void ensureCreateChannelSftpAndExec(String sshInfo, int connectTimeout, EnsureCloseSftpCall sftpCallFunc) {
+        if (ObjectUtils.isEmpty(sshInfo) || null == sftpCallFunc) {
+            throw new BusinessException("sshInfo and sftpCallFunc should not be null.");
+        }
+        Session session = null;
+        ChannelSftp sftp = null;
+        try {
+            session = createSessionFromSshInfo(sshInfo);
+            Channel channel = session.openChannel("sftp");
+            channel.connect(connectTimeout);
+            sftp = (ChannelSftp) channel;
+            sftpCallFunc.callSftp(sftp);
+        } catch (Exception e) {
+            log.error("error while process sftp op.", e);
+        } finally {
+            //close sftp and session.
+            if (null != sftp)
+                sftp.exit();
+            if (null != session) {
+                session.disconnect();
+            }
+        }
     }
 
     /**
@@ -152,14 +176,14 @@ public class JschBase implements InitializingBean {
                 60,
                 0, 0, 0, 0,
                 // 1,
-                // TTY_OP_ISPEED 128
+                // TTY_OP_ISPEED 128=0x80
                 (byte) 0x80,
-                // 14400 = 00003840
-                0, 0, (byte) 0x38, (byte) 0x40,
-                // TTY_OP_OSPEED 129
+                // 38400 = 0x9600
+                0, 0, (byte) 0x96, (byte) 0x00,
+                // TTY_OP_OSPEED 129=0x81
                 (byte) 0x81,
-                // 14400 again
-                0, 0, (byte) 0x38, (byte) 0x40,
+                // 38400 again
+                0, 0, (byte) 0x96, (byte) 0x00,
                 // TTY_OP_END
                 0,
         };

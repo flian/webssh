@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.config.service.impl;
 
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListVo;
@@ -54,29 +55,38 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         List<FileMetaVo> fileList = new ArrayList<>();
         result.setList(fileList);
         try {
-            ChannelSftp sftp = createChannelSftp(requestParamsVo.getSshInfo());
-            sftp.cd(requestParamsVo.getPath());
-            Vector<ChannelSftp.LsEntry> list = sftp.ls(path);
-            if (!CollectionUtils.isEmpty(list)) {
-                list.stream().filter(f-> !(f.getFilename().equals(".") || f.getFilename().equals(".."))).forEach(f -> {
-                    FileMetaVo fileMeta = new FileMetaVo();
-                    fileMeta.setName(f.getFilename());
-                    fileMeta.setDir(f.getAttrs().isDir());
-                    fileMeta.setModifyTime(new Date(((long) f.getAttrs().getMTime()) * 1000L));
+            ensureCreateChannelSftpAndExec(requestParamsVo.getSshInfo(), sftp -> {
 
-                    fileMeta.setPermissionsString(f.getAttrs().getPermissionsString());
-                    fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
-                    if (fileMeta.getIsDir()) {
-                        fileMeta.setSize("" + f.getAttrs().getSize());
-                    } else {
-                        fileMeta.setSize(transFileSize(f.getAttrs().getSize()));
-                    }
+                Vector<ChannelSftp.LsEntry> list = null;
+                try {
+                    sftp.cd(requestParamsVo.getPath());
+                    list = sftp.ls(path);
+                } catch (SftpException e) {
+                    log.error("error while list remote server file list.", e);
+                }
+                if (!CollectionUtils.isEmpty(list)) {
+                    list.stream().filter(f -> !(f.getFilename().equals(".") || f.getFilename().equals(".."))).forEach(f -> {
+                        FileMetaVo fileMeta = new FileMetaVo();
+                        fileMeta.setName(f.getFilename());
+                        fileMeta.setDir(f.getAttrs().isDir());
+                        fileMeta.setModifyTime(new Date(((long) f.getAttrs().getMTime()) * 1000L));
 
-                    fileList.add(fileMeta);
-                });
-            }
+                        fileMeta.setPermissionsString(f.getAttrs().getPermissionsString());
+                        fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
+                        if (fileMeta.getIsDir()) {
+                            fileMeta.setSize("" + f.getAttrs().getSize());
+                        } else {
+                            fileMeta.setSize(transFileSize(f.getAttrs().getSize()));
+                        }
+                        fileList.add(fileMeta);
+                    });
+                }
+            });
+
         } catch (Exception e) {
             log.error("error while list files for remote server. path:{},e:{}", requestParamsVo.getPath(), e);
+        } finally {
+
         }
         return result;
     }
