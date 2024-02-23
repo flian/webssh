@@ -1,2 +1,6 @@
 server:
   port: 5132
+
+spring:
+  profiles:
+    active: prod

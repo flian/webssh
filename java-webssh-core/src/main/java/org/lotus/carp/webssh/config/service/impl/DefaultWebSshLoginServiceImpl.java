@@ -10,14 +10,15 @@ import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static org.lotus.carp.webssh.config.websocket.config.WebSshConfig.DEFAULT_USER_CONFIG;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -32,6 +33,9 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     @Resource
     private WebSshConfig webSshConfig;
+
+    @Value("${spring.profiles.active}")
+    private String env;
 
     private List<PropertiesConfigUser> allowedUsers = new ArrayList<>();
 
@@ -113,11 +117,11 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     @Override
     public Boolean isTokenValid(String token) {
-        if(!webSshConfig.isShouldVerifyToken()){
+        if (!webSshConfig.isShouldVerifyToken()) {
             log.info("ignore token verify.");
             return true;
         }
-        if(ObjectUtils.isEmpty(token)){
+        if (ObjectUtils.isEmpty(token)) {
             return false;
         }
         WebSshLoginResultVo cacheObject = getCacheObj(token);
@@ -126,6 +130,16 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
 
     private void setAllowedUsers(String usersConfig) {
+        if ("prod".equals(env) &&
+                webSshConfig.isShouldVerifyToken() &&
+                webSshConfig.isForceCheckUserConfig2Prod()) {
+            if (usersConfig.equals(DEFAULT_USER_CONFIG)) {
+                throw new BusinessException("invalid user config for production version.. " +
+                        "please  config `webssh.allowedUsers` for login user information " +
+                        "or set `webssh.shouldVerifyToken=false` to invalidate user check " +
+                        "or set `webssh.forceCheckUserConfig2Prod=false` to close this check.");
+            }
+        }
         if (!ObjectUtils.isEmpty(usersConfig)) {
             String[] users = usersConfig.split(webSshConfig.getUserDelimiter());
             if (!ObjectUtils.isEmpty(users)) {

@@ -3,6 +3,7 @@ package org.lotus.carp.webssh.config.service.impl;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
 import org.lotus.carp.webssh.config.controller.vo.FileListVo;
 import org.lotus.carp.webssh.config.controller.vo.FileMetaVo;
@@ -10,6 +11,7 @@ import org.lotus.carp.webssh.config.service.WebSshFileService;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,28 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         return size + SIZE_STR[i];
     }
 
+    /**
+     * download file from remote server
+     * @param downLoadRequest server and request information
+     * @param outputStream outputStream will write to
+     */
+    @Override
+    public void downloadFile(FileDownLoadParamsVo downLoadRequest, OutputStream outputStream) {
+        ensureCreateChannelSftpAndExec(downLoadRequest.getSshInfo(), sftp -> {
+            try {
+                sftp.get(downLoadRequest.getPath(), outputStream);
+            } catch (SftpException e) {
+                log.error("error while download file from remote server,path:{},error:{}", downLoadRequest.getPath(), e);
+            }
+        });
+    }
+
+    /**
+     * list file info for upload/download
+     *
+     * @param requestParamsVo request params
+     * @return
+     */
     @Override
     public FileListVo listFiles(FileListRequestParamsVo requestParamsVo) {
 

@@ -17,6 +17,18 @@ import org.springframework.stereotype.Component;
 public class WebSshConfig {
 
     /**
+     * default user config string.
+     */
+    public static final String DEFAULT_USER_CONFIG = "root:changeit@123!:%,test:test@123!:127.0.0.1";
+
+    /**
+     * force check allowedUsers config for production env.
+     * default is ture as use default setting is not safe for production env.
+     * set to false close force check.
+     */
+    private boolean forceCheckUserConfig2Prod = true;
+
+    /**
      * should front and back end verify token before process
      */
     private boolean shouldVerifyToken = true;
@@ -41,8 +53,10 @@ public class WebSshConfig {
 
     /**
      * default user config
+     * root:changeit@123!:%, means allow username:root,password:changeit@123! login and use webssh from any ip address
+     * test:test@123!:127.0.0.1, means allow username:test,password:test@123! login, but only allow client from ip:127.0.0.1 login and use.
      */
-    private String allowedUsers = "root:changeit@123!:%,test:test@123!:127.0.0.1";
+    private String allowedUsers = DEFAULT_USER_CONFIG;
 
     /**
      * token tokenExpiration, default 6 hour.
@@ -78,5 +92,5 @@ public class WebSshConfig {
     /**
      * default jsch connect timeout,default is 30s
      */
-    private int defaultConnectTimeOut = 30*1000;
+    private int defaultConnectTimeOut = 30 * 1000;
 }

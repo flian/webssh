@@ -60,7 +60,8 @@ public class DefaultWebSshFileController extends BaseController implements FileA
             fileName = "" + System.currentTimeMillis();
         }
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment().filename(fileName, StandardCharsets.UTF_8).build().toString());
-        //TODO write file
+        //write file.
+        webSshFileService.downloadFile(fileDownLoadParamsVo,response.getOutputStream());
         response.getOutputStream().flush();
     }
 
