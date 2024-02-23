@@ -23,7 +23,7 @@ public class WebSshConfig {
 
     /**
      * force check allowedUsers config for production env.
-     * default is ture as use default setting is not safe for production env.
+     * default is true as use default setting is not safe for production env.
      * set to false close force check.
      */
     private boolean forceCheckUserConfig2Prod = true;
