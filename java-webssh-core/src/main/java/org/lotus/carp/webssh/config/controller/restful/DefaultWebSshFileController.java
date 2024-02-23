@@ -12,6 +12,7 @@ import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -65,11 +66,10 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
     }
 
     @Override
-    public WebSshResponse<Boolean> uploadFileToServer(@Valid FileUploadDataVo fileUploadDataVo, MultipartFile file) {
+    public WebSshResponse<Boolean> uploadFileToServer(@Valid FileUploadDataVo fileUploadDataVo, @RequestParam("file") MultipartFile file) {
         if (!webSshLoginService.isTokenValid(fileUploadDataVo.getToken())) {
             return WebSshResponse.fail(Boolean.FALSE, "token is invalid.");
         }
-
         return WebSshResponse.ok(Boolean.TRUE);
     }
 }

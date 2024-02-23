@@ -109,8 +109,6 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
 
         } catch (Exception e) {
             log.error("error while list files for remote server. path:{},e:{}", requestParamsVo.getPath(), e);
-        } finally {
-
         }
         return result;
     }

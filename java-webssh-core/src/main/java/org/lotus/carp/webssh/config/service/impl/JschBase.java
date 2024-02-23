@@ -71,9 +71,17 @@ public class JschBase implements InitializingBean {
         } finally {
             //close sftp and session.
             if (null != sftp)
-                sftp.exit();
+                try {
+                    sftp.exit();
+                }catch (Exception e){
+                    log.error("error close sftp.",e);
+                }
             if (null != session) {
-                session.disconnect();
+                try{
+                    session.disconnect();
+                }catch (Exception e){
+                    log.error("error clsoe jsch session.",e);
+                }
             }
         }
     }
