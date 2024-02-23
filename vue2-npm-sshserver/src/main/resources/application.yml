@@ -2,5 +2,10 @@ server:
   port: 5132
 
 spring:
+  servlet:
+    multipart:
+      #set max file upload size
+      max-file-size: 5GB
+      max-request-size: 5GB
   profiles:
     active: prod
