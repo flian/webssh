@@ -110,6 +110,7 @@ public class JschBase implements InitializingBean {
             sftpCallFunc.callSftp(sftp);
         } catch (Exception e) {
             log.error("error while process sftp op.", e);
+            throw new WebSshBusinessException("500,server error."+e.getMessage());
         } finally {
             //close sftp and session.
             if (null != sftp)

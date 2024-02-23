@@ -9,6 +9,7 @@ package org.lotus.carp.webssh.config.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
+import org.lotus.carp.webssh.config.service.impl.JschSftpUploadProcessMonitor;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -20,8 +21,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import javax.annotation.Resource;
 import java.io.IOException;
 
-import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.CMD;
-import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.SSH_INFO;
+import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.*;
 
 /**
  * @author buhao
@@ -37,6 +37,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
 
     @Resource
     private WebSshTermService webSshTermService;
+
 
     /**
      * socket 建立成功事件
@@ -98,10 +99,10 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     break;
                 }
                 //resize
-                if(message.getPayload().contains("resize")){
+                if (message.getPayload().contains("resize")) {
                     String[] temps = message.getPayload().split(":");
-                    webSshTermService.handleTermWebSShResize(session,message,
-                            Integer.parseInt(temps[1]),Integer.parseInt(temps[2]));
+                    webSshTermService.handleTermWebSShResize(session, message,
+                            Integer.parseInt(temps[1]), Integer.parseInt(temps[2]));
                     break;
                 }
                 //session.sendMessage(message);
@@ -110,6 +111,31 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
             }
             case FILE_UPLOAD_PROGRESS: {
                 //file upload
+                //process file upload message.
+                String fileUid = (String) session.getAttributes().get(ID);
+                int maxCnt = webSshConfig.getCloseWebSocketBeforeCheckCount();
+                int checkCnt = 0;
+                if (ObjectUtils.isEmpty(fileUid)) {
+                    //file id is null. not a valid websocket connection.
+                    session.close();
+                }
+                boolean isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
+                while (true) {
+                    isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
+                    if (isFileUploading) {
+                        //file is uploading.. send uploaded size back.
+                        session.sendMessage(new TextMessage("" + JschSftpUploadProcessMonitor.uploadedSize(fileUid)));
+                    } else {
+                        //file upload is not start or is finished.
+                        //wait maxCnt (3) iterator times.
+                        if (checkCnt >= maxCnt) {
+                            break;
+                        }
+                        checkCnt++;
+                    }
+                    Thread.sleep(500);
+                }
+
                 break;
             }
         }

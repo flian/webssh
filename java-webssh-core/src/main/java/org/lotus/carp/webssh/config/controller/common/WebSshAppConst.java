@@ -14,6 +14,6 @@ public class WebSshAppConst {
     //成功
     public static final int OK = 200;
 
-    //默认成灌消息
+    //默认成功消息
     public static final String DEFAULT_WEBSSH_SUCCESS_MSG = "success";
 }

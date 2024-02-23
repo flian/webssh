@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.html.HTMLDocument;
+
 /**
  * <h3>javaWebSSH</h3>
  * <p></p>
@@ -93,4 +95,9 @@ public class WebSshConfig {
      * default jsch connect timeout,default is 30s
      */
     private int defaultConnectTimeOut = 30 * 1000;
+
+    /**
+     * Iterator 3 time before close file process websocket connection.
+     */
+    private int closeWebSocketBeforeCheckCount = 3;
 }

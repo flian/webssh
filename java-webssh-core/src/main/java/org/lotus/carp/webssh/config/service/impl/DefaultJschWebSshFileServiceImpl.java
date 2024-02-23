@@ -1,16 +1,19 @@
 package org.lotus.carp.webssh.config.service.impl;
 
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.FileListVo;
-import org.lotus.carp.webssh.config.controller.vo.FileMetaVo;
+import org.lotus.carp.webssh.config.controller.vo.*;
 import org.lotus.carp.webssh.config.service.WebSshFileService;
+import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,14 +50,72 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         return size + SIZE_STR[i];
     }
 
+    @Data
+    private static class UploadVo {
+        //should mkdir bfore upload file
+        private boolean shouldMkDir = false;
+        //path info for file upload
+        private String pathArr;
+        //file full path to upload
+        private String fileFullArr;
+    }
+
+
+    @Override
+    public FileUploadResultVo uploadFile(FileUploadDataVo fileUploadDataRequest, MultipartFile file) {
+        FileUploadResultVo result = new FileUploadResultVo();
+        result.setOk(true);
+        String path = ensurePath(fileUploadDataRequest.getPath());
+        String dir = fileUploadDataRequest.getDir();
+        String pathArr = path;
+        UploadVo uploadVo = new UploadVo();
+        uploadVo.setPathArr(pathArr);
+        if (!ObjectUtils.isEmpty(dir)) {
+            pathArr = pathArr + dir;
+            uploadVo.setPathArr(pathArr);
+            uploadVo.shouldMkDir = true;
+        }
+        String fileName = file.getName();
+        if (ObjectUtils.isEmpty(fileName)) {
+            return FileUploadResultVo.failure("upload file name is not allow empty, please ensure file hase name.");
+        }
+        uploadVo.setFileFullArr(pathArr + fileName);
+
+        ensureChannelSftpAndExec(fileUploadDataRequest.getSshInfo(), fileUploadDataRequest.getToken(), sftp -> {
+            if (uploadVo.shouldMkDir) {
+                try {
+                    sftp.mkdir(uploadVo.pathArr);
+                    //try to use resume model.
+                    try {
+                        SftpATTRS attrs = sftp.stat(uploadVo.fileFullArr);
+                        log.info("file exist.. using RESUME mode to transfer file.");
+                        sftp.put(file.getInputStream(), uploadVo.fileFullArr,
+                                new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.RESUME);
+                    } catch (SftpException e) {
+                        log.info("file not exist.. using overwrite mode to transfer file.");
+                        sftp.put(file.getInputStream(), uploadVo.fileFullArr,
+                                new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.OVERWRITE);
+                    }
+
+                } catch (SftpException | IOException e) {
+                    result.setOk(false);
+                    result.setMsg("error while upload" + e.getMessage());
+                }
+            }
+        });
+
+        return result;
+    }
+
     /**
      * download file from remote server
+     *
      * @param downLoadRequest server and request information
-     * @param outputStream outputStream will write to
+     * @param outputStream    outputStream will write to
      */
     @Override
     public void downloadFile(FileDownLoadParamsVo downLoadRequest, OutputStream outputStream) {
-        ensureChannelSftpAndExec(downLoadRequest.getSshInfo(),downLoadRequest.getToken(), sftp -> {
+        ensureChannelSftpAndExec(downLoadRequest.getSshInfo(), downLoadRequest.getToken(), sftp -> {
             try {
                 sftp.get(downLoadRequest.getPath(), outputStream);
             } catch (SftpException e) {
@@ -79,7 +140,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         List<FileMetaVo> fileList = new ArrayList<>();
         result.setList(fileList);
         try {
-            ensureChannelSftpAndExec(requestParamsVo.getSshInfo(),requestParamsVo.getToken(), sftp -> {
+            ensureChannelSftpAndExec(requestParamsVo.getSshInfo(), requestParamsVo.getToken(), sftp -> {
 
                 Vector<ChannelSftp.LsEntry> list = null;
                 try {
@@ -87,6 +148,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
                     list = sftp.ls(path);
                 } catch (SftpException e) {
                     log.error("error while list remote server file list.", e);
+                    result.setMsg("500 server error!" + e.getMessage());
                 }
                 if (!CollectionUtils.isEmpty(list)) {
                     list.stream().filter(f -> !(f.getFilename().equals(".") || f.getFilename().equals(".."))).forEach(f -> {
@@ -109,6 +171,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
 
         } catch (Exception e) {
             log.error("error while list files for remote server. path:{},e:{}", requestParamsVo.getPath(), e);
+            result.setMsg("500 server error!" + e.getMessage());
         }
         return result;
     }

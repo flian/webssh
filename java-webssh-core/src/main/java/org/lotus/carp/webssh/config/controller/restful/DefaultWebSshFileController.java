@@ -3,10 +3,7 @@ package org.lotus.carp.webssh.config.controller.restful;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.api.WebSshFileApi;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
-import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.FileListVo;
-import org.lotus.carp.webssh.config.controller.vo.FileUploadDataVo;
+import org.lotus.carp.webssh.config.controller.vo.*;
 import org.lotus.carp.webssh.config.service.WebSshFileService;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.springframework.http.ContentDisposition;
@@ -38,14 +35,15 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
     private WebSshFileService webSshFileService;
 
 
-
-
     @Override
     public WebSshResponse<FileListVo> listFiles(@Valid FileListRequestParamsVo requestParamsVo) {
         if (!webSshLoginService.isTokenValid(requestParamsVo.getToken())) {
             return WebSshResponse.fail("token is invalid.");
         }
-        return WebSshResponse.ok(webSshFileService.listFiles(requestParamsVo),"success");
+        long startTms = System.currentTimeMillis();
+        FileListVo result = webSshFileService.listFiles(requestParamsVo);
+        long endTms = System.currentTimeMillis();
+        return WebSshResponse.ok(result, result.getMsg(), String.format("%ss", (endTms - startTms) / 1000));
     }
 
     @Override
@@ -61,7 +59,7 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
         }
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment().filename(fileName, StandardCharsets.UTF_8).build().toString());
         //write file.
-        webSshFileService.downloadFile(fileDownLoadParamsVo,response.getOutputStream());
+        webSshFileService.downloadFile(fileDownLoadParamsVo, response.getOutputStream());
         response.getOutputStream().flush();
     }
 
@@ -70,6 +68,10 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
         if (!webSshLoginService.isTokenValid(fileUploadDataVo.getToken())) {
             return WebSshResponse.fail(Boolean.FALSE, "token is invalid.");
         }
-        return WebSshResponse.ok(Boolean.TRUE);
+        long startTms = System.currentTimeMillis();
+        //upload files.
+        FileUploadResultVo uploadResultVo = webSshFileService.uploadFile(fileUploadDataVo, file);
+        long endTms = System.currentTimeMillis();
+        return WebSshResponse.ok(uploadResultVo.isOk(), uploadResultVo.getMsg(), String.format("%ss", (endTms - startTms) / 1000));
     }
 }

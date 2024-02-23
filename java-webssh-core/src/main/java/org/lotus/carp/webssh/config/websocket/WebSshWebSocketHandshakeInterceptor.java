@@ -33,6 +33,7 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
 
     public static final String CMD = "CMD";
 
+    //upload file id
     public static final String ID = "id";
 
     public static final String SSH_INFO = "sshInfo";

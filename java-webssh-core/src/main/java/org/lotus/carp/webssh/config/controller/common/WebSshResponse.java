@@ -25,11 +25,23 @@ public class WebSshResponse<T> implements Serializable {
     @JsonProperty("Data")
     private T data;
 
+
+    @JsonProperty("Duration")
+    private String duration;
+
     public WebSshResponse(int resultCode, T data, String resultMsg) {
         this.code = resultCode;
         this.data = data;
         this.message = resultMsg;
         this.msg = resultMsg;
+    }
+
+    public WebSshResponse(int resultCode, T data, String resultMsg,String timeCost) {
+        this.code = resultCode;
+        this.data = data;
+        this.message = resultMsg;
+        this.msg = resultMsg;
+        this.duration = timeCost;
     }
 
     public WebSshResponse(int resultCode, T data) {
@@ -44,12 +56,18 @@ public class WebSshResponse<T> implements Serializable {
     }
 
 
+
+
     public static <E> WebSshResponse<E> ok(int OK, E data, String resultMsg) {
         return new WebSshResponse<E>(OK, data, resultMsg);
     }
 
     public static <E> WebSshResponse<E> ok(E data, String resultMsg) {
         return new WebSshResponse<E>(WebSshAppConst.OK, data, resultMsg);
+    }
+
+    public static <E> WebSshResponse<E> ok(E data, String resultMsg,String timeCost) {
+        return new WebSshResponse<E>(WebSshAppConst.OK, data, resultMsg,timeCost);
     }
 
     public static <E> WebSshResponse<E> ok(E data) {

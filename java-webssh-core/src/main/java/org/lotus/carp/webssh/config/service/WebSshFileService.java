@@ -1,9 +1,9 @@
 package org.lotus.carp.webssh.config.service;
 
-import org.lotus.carp.webssh.config.controller.vo.FileDownLoadParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.FileListRequestParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.FileListVo;
+import org.lotus.carp.webssh.config.controller.vo.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -14,6 +14,15 @@ import java.io.OutputStream;
  * @date : 2024-02-21 16:59
  **/
 public interface WebSshFileService {
+
+
+    /**
+     * process file upload
+     * @param fileUploadDataRequest file upload ssh info
+     * @param file file to upload
+     * @return
+     */
+    FileUploadResultVo uploadFile(FileUploadDataVo fileUploadDataRequest, MultipartFile file);
 
     /**
      * download file from remote server
