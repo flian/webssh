@@ -67,7 +67,7 @@ export default {
             selectTip: 'clickSelectFile',
             titleTip: 'uploadFile',
             uploadTip: '',
-``            dialogWidth: '70%',
+            dialogWidth: '70%',
             uploadWidth: '32%',
             nameWidth: 100,
             progressPercent: 0
