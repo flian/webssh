@@ -21,7 +21,17 @@ public class WebSshConfig {
     /**
      * default user config string.
      */
-    public static final String DEFAULT_USER_CONFIG = "root:changeit@123!:%,test:test@123!:127.0.0.1";
+    public static final String DEFAULT_USER_CONFIG = "root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1";
+
+    /**
+     *  config to enable random password
+     */
+    public boolean enableRandomPwd = true;
+
+    /**
+     * random command in password field.
+     */
+    public String randomPwdWord = "[RANDOM]";
 
     /**
      * force check allowedUsers config for production env.

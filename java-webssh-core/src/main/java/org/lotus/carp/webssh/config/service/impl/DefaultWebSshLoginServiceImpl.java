@@ -1,5 +1,6 @@
 package org.lotus.carp.webssh.config.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -133,11 +134,13 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
         if ("prod".equals(env) &&
                 webSshConfig.isShouldVerifyToken() &&
                 webSshConfig.isForceCheckUserConfig2Prod()) {
-            if (usersConfig.equals(DEFAULT_USER_CONFIG)) {
-                throw new WebSshBusinessException("invalid user config for production version.. " +
-                        "please  config `webssh.allowedUsers` for login user information " +
-                        "or set `webssh.shouldVerifyToken=false` to invalidate user check " +
-                        "or set `webssh.forceCheckUserConfig2Prod=false` to close this check.");
+            if (usersConfig.equals(DEFAULT_USER_CONFIG) && !webSshConfig.isEnableRandomPwd()) {
+                if (!usersConfig.contains(webSshConfig.getRandomPwdWord())) {
+                    throw new WebSshBusinessException("invalid user config for production version.. " +
+                            "please  config `webssh.allowedUsers` for login user information " +
+                            "or set `webssh.shouldVerifyToken=false` to invalidate user check " +
+                            "or set `webssh.forceCheckUserConfig2Prod=false` to close this check.");
+                }
             }
         }
         if (!ObjectUtils.isEmpty(usersConfig)) {
@@ -149,7 +152,16 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
                         PropertiesConfigUser user = new PropertiesConfigUser();
                         user.setUsername(fields[0]);
                         if (fields.length >= 2) {
-                            user.setPassword(fields[1]);
+                            String originPassword = fields[1];
+                            if (webSshConfig.isEnableRandomPwd() && originPassword.contains(webSshConfig.getRandomPwdWord())) {
+                                String randomPart = randomPassword();
+                                String password = originPassword.replace(webSshConfig.getRandomPwdWord(), randomPart);
+                                log.info("generate random password for user:{},password:{}," +
+                                        "random password is only for test purpose, please consider config password.", user.getUsername(), password);
+                                user.setPassword(password);
+                            } else {
+                                user.setPassword(originPassword);
+                            }
                         }
                         if (fields.length >= 3) {
                             user.setAllowedIps(fields[2]);
@@ -159,6 +171,14 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
                 });
             }
         }
+    }
+
+    //generate random password
+    private String randomPassword() {
+        return RandomUtil.randomStringUpper(3) +
+                RandomUtil.randomString(4) +
+                RandomUtil.randomNumbers(3) +
+                RandomUtil.randomString("~!!@#$%^&*()_+}{:><?,.|", 3);
     }
 
     @Override

@@ -28,6 +28,7 @@
                 </el-col>
             </el-row>
             <el-table :data="fileList" :height="clientHeight" @row-click="rowClick">
+
                 <el-table-column
                     :label="$t('Name')"
                     :width="nameWidth"
@@ -37,6 +38,10 @@
                         <p v-else-if="scope.row.IsDir === false" style="cursor: pointer" class="el-icon-document"> {{ scope.row.Name }}</p>
                     </template>
                 </el-table-column>
+                <el-table-column :label="$t('PermissionsString')" prop="PermissionsString"></el-table-column>
+                <el-table-column :label="$t('OwnerName')" prop="OwnerName"></el-table-column>
+                <el-table-column :label="$t('GroupName')" prop="GroupName"></el-table-column>
+                <el-table-column :label="$t('AddTime')" prop="AddTime" sortable></el-table-column>
                 <el-table-column :label="$t('Size')" prop="Size"></el-table-column>
                 <el-table-column :label="$t('ModifiedTime')" prop="ModifyTime" sortable></el-table-column>
             </el-table>

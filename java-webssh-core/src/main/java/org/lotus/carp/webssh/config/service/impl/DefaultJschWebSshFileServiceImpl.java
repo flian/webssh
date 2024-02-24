@@ -125,6 +125,24 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
         });
     }
 
+    private void try2SetOwnerAndGroup(String fileLongName,FileMetaVo result){
+        try {
+            log.debug("resolve owner and group info.fileLongName:{}",fileLongName);
+            String longName = fileLongName;
+            String[] attrs = longName.split("\\s+");
+            if(attrs.length >=3){
+                String ownerName = attrs[2];
+                result.setOwnerName(ownerName);
+            }
+            if(attrs.length>=4){
+                String groupName = attrs[3];
+                result.setGroupName(groupName);
+            }
+
+        }catch (Exception e){
+            log.error("exception try resolve file owner and group info.");
+        }
+    }
     /**
      * list file info for upload/download
      *
@@ -154,11 +172,13 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
                 if (!CollectionUtils.isEmpty(list)) {
                     list.stream().filter(f -> !(f.getFilename().equals(".") || f.getFilename().equals(".."))).forEach(f -> {
                         FileMetaVo fileMeta = new FileMetaVo();
+
                         fileMeta.setName(f.getFilename());
                         fileMeta.setDir(f.getAttrs().isDir());
                         fileMeta.setModifyTime(new Date(((long) f.getAttrs().getMTime()) * 1000L));
 
                         fileMeta.setPermissionsString(f.getAttrs().getPermissionsString());
+                        try2SetOwnerAndGroup(f.getLongname(),fileMeta);
                         fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
                         if (fileMeta.getIsDir()) {
                             fileMeta.setSize("" + f.getAttrs().getSize());

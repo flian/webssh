@@ -51,6 +51,16 @@ public class FileMetaVo {
      */
     private String permissionsString;
 
+    /**
+     * file owner name
+     */
+    private String ownerName;
+
+    /**
+     * file group name
+     */
+    private String groupName;
+
     public boolean getDir(){
         return this.isDir;
     }

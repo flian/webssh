@@ -12,5 +12,9 @@ export default {
     uploadFinish: ' upload finish',
     login: 'login',
     logout: 'logout',
-    loginFormTitle: 'please login'
+    loginFormTitle: 'please login',
+    PermissionsString: 'permissions',
+    AddTime: 'add time',
+    GroupName: 'group',
+    OwnerName: 'owner',
 }
