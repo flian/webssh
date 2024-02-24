@@ -84,7 +84,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                 while (true) {
                     boolean isFileUploading = JschSftpUploadProcessMonitor.isFileUploading(fileUid);
                     if (isFileUploading) {
-                        //file is uploading.. send uploaded size back.
+                        //file is uploading. send uploaded size back.
                         session.sendMessage(new TextMessage("" + JschSftpUploadProcessMonitor.uploadedSize(fileUid)));
                     } else {
                         //file upload is not start or is finished.
@@ -95,7 +95,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                         checkCnt++;
                     }
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(300);
                     } catch (InterruptedException e) {
                         log.error("FILE_UPLOAD_PROGRESS error", e);
                         break;
