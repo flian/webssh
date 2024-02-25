@@ -85,7 +85,12 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
 
             try {
                 if (uploadVo.shouldMkDir) {
-                    sftp.mkdir(uploadVo.pathArr);
+                    try {
+                        sftp.mkdir(uploadVo.pathArr);
+                    }catch (Exception e){
+                        //may folder is already created,just ignore here.
+                        log.error("try create folder failure.. path:{},e:{}",uploadVo.getPathArr(),e.getMessage());
+                    }
                 }
                 //try to use resume model.
                 /*try {
@@ -103,6 +108,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
                         new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.OVERWRITE);
 
             } catch (SftpException | IOException e) {
+                log.error("error upload file. uploadVo:{},e:{}",uploadVo.toString(),e);
                 result.setOk(false);
                 result.setMsg("error while upload" + e.getMessage());
             }

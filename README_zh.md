@@ -42,4 +42,7 @@ TODO
 
 **其他语言版本: [English](README.md), [中文](README_zh.md).**
 
-
+已知问题/TODO List ：
+1. 上传文件夹有问题，需要修正。 --done.
+2. 单文件上传，上传时进度条有个 undefined。。需要修复一下。
+3. 使用ssh 私钥key登录方式
