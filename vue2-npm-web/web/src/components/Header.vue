@@ -61,6 +61,7 @@
                         <el-button type="primary" @click="$emit('ssh-select')" plain>{{ $t('Connect') }}</el-button>
                     </el-form-item>
                     <el-form-item size="small">
+                        <!--file management -->
                         <file-list></file-list>
                     </el-form-item>
                     <el-form-item size="small">

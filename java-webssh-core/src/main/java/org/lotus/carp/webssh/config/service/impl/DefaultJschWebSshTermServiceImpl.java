@@ -9,16 +9,15 @@ import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,16 +39,14 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private ObjectMapper objectMapper = new ObjectMapper();
     private Map<String, CachedWebSocketSessionObject> cachedObjMap = new ConcurrentHashMap<>();
 
+    @Resource
+    private WebSshConfig webSshConfig;
 
-    private static final int DEFAULT_COL = 80;
-    private static final int DEFAULT_ROW = 24;
-    private static final int DEFAULT_WP = 640;
-    private static final int DEFAULT_HP = 480;
 
     private int getCol(WebSocketSession webSocketSession) {
         String tmp = (String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
         if (ObjectUtils.isEmpty(tmp)) {
-            return DEFAULT_COL;
+            return webSshConfig.getWebSshTermCol();
         }
         return Integer.parseInt(tmp);
     }
@@ -57,17 +54,17 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
     private int getRow(WebSocketSession webSocketSession) {
         String tmp = (String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.ROWS);
         if (ObjectUtils.isEmpty(tmp)) {
-            return DEFAULT_ROW;
+            return webSshConfig.getWebSshTermRow();
         }
         return Integer.parseInt(tmp);
     }
 
     private int getWp(WebSocketSession webSocketSession) {
-        return DEFAULT_WP;
+        return webSshConfig.getWebSshTermWp();
     }
 
     private int getHp(WebSocketSession webSocketSession) {
-        return DEFAULT_HP;
+        return webSshConfig.getWebSshTermHp();
     }
 
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
@@ -92,17 +89,24 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         return Base64Decoder.decodeStr(sshInfo);
     }
 
+    private byte translateBoolean2Byte(boolean flag){
+        if(flag){
+            return (byte)1;
+        }
+        return 0;
+    }
 
     //@see https://stackoverflow.com/questions/24623170/an-example-of-how-to-specify-terminal-modes-pty-req-string-for-ssh-client?rq=1
     private byte[] composeTerminalModes() {
+
         //can see "tail -f /var/log/secure" in your linux server for more login error detail.
         byte[] terminalModes = {
                 //Translate uppercase characters to lowercase.
                 37,
-                0, 0, 0, 0,
+                0, 0, 0, translateBoolean2Byte(webSshConfig.isWebSshTermTranslate2Lowercase()),
                 //ECHO 53
                 53,
-                0, 0, 0, 1,
+                0, 0, 0, translateBoolean2Byte(webSshConfig.isWebSshTermEcho()),
                 //ECHOE Visually erase chars.
                 54,
                 0, 0, 0, 0,
@@ -130,6 +134,13 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         return terminalModes;
     }
 
+    private String getTermPtyType() {
+        if (!ObjectUtils.isEmpty(webSshConfig.getWebSshTermPtyType())) {
+            return webSshConfig.getWebSshTermPtyType();
+        }
+        return "vt100";
+    }
+
     @Override
     public boolean initTermWebShhConnect(String sshInfo, WebSocketSession webSocketSession) throws IOException {
         try {
@@ -148,7 +159,7 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 session.connect(30 * 1000);
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");
-                ((ChannelShell) channel).setPtyType("xterm");
+                ((ChannelShell) channel).setPtyType(getTermPtyType());
                 ((ChannelShell) channel).setPtySize(getCol(webSocketSession), getRow(webSocketSession), getWp(webSocketSession), getHp(webSocketSession));
                 ((ChannelShell) channel).setPty(true);
 
@@ -202,8 +213,8 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
 
     @Override
     public boolean handleTermWebSShResize(WebSocketSession webSocketSession, TextMessage message, int rows, int cols) {
-        int row = rows > 0 ? rows : DEFAULT_ROW;
-        int col = cols > 0 ? cols : DEFAULT_COL;
+        int row = rows > 0 ? rows : webSshConfig.getWebSshTermRow();
+        int col = cols > 0 ? cols : webSshConfig.getWebSshTermCol();
         int wp = row * 8;
         int hp = col * 20;
         log.info("handler resize,row:{},col;{},wp:{},hp:{}", row, col, wp, hp);

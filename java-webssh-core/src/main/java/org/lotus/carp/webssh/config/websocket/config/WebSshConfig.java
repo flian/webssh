@@ -110,4 +110,38 @@ public class WebSshConfig {
      * Iterator 3 time before close file process websocket connection.
      */
     private int closeWebSocketBeforeCheckCount = 3;
+
+    /**
+     * ssh term ptyType
+     */
+    private String webSshTermPtyType ="xterm";
+
+    /**
+     * col – terminal width
+     */
+    private int webSshTermCol = 80;
+    /**
+     * columns row – terminal height
+     */
+    private int webSshTermRow = 24;
+    /**
+     * rows wp – terminal width, pixels
+     */
+    private int webSshTermWp = 640;
+
+    /**
+     * hp – terminal height, pixels
+     */
+    private int webSshTermHp = 480;
+
+    /**
+     * term ECHO
+     */
+    private boolean webSshTermEcho = true;
+
+    /**
+     * Translate uppercase characters to lowercase.
+     */
+    private boolean webSshTermTranslate2Lowercase = false;
+
 }

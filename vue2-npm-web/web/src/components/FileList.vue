@@ -42,8 +42,8 @@
                 <el-table-column :label="$t('OwnerName')" prop="OwnerName"></el-table-column>
                 <el-table-column :label="$t('GroupName')" prop="GroupName"></el-table-column>
                 <el-table-column :label="$t('Size')" prop="Size"></el-table-column>
-                <el-table-column :label="$t('AddTime')" prop="AddTime" sortable></el-table-column>
-                <el-table-column :label="$t('ModifiedTime')" prop="ModifyTime" sortable></el-table-column>
+                <el-table-column :label="$t('AddTime')" prop="AddTime" sortable width="150"></el-table-column>
+                <el-table-column :label="$t('ModifiedTime')" prop="ModifyTime" sortable width="150"></el-table-column>
             </el-table>
         </el-dialog>
     </div>
@@ -69,7 +69,7 @@ export default {
             uploadTip: '',
             dialogWidth: '70%',
             uploadWidth: '32%',
-            nameWidth: 100,
+            nameWidth: 120,
             progressPercent: 0
         }
     },
@@ -119,7 +119,7 @@ export default {
             } else {
                 this.dialogWidth = '50%'
                 this.uploadWidth = '28%'
-                this.nameWidth = 260
+                this.nameWidth = 220
             }
         },
         openUploadDialog() {
