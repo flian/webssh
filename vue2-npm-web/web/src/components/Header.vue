@@ -80,10 +80,10 @@
                         </el-dropdown>
                     </el-form-item>
                     <el-form-item size="small">
-                        <el-button type="primary" v-show="showLogin" plain>{{ $t('login') }}</el-button>
+                        <el-button type="primary" v-show="showLogin" @click="foreShowLogin = true;" plain>{{ $t('login') }}</el-button>
                     </el-form-item>
                     <el-form-item size="small">
-                        <el-button type="primary" v-show="showLogout" plain>{{ $t('logout') }}</el-button>
+                        <el-button type="primary" v-show="showLogout" @click="handleLogout()" plain>{{ $t('logout') }}</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -122,6 +122,7 @@ export default {
     },
     data() {
         return {
+            foreShowLogin: false,
             loginLoading: false,
             textareaVisible: false,
             login: {
@@ -159,6 +160,12 @@ export default {
         }
     },
     methods: {
+        handleLogout(){
+            const self = this;
+            self.foreShowLogin = false;
+            self.$emit('ssh-logout');
+            self.$store.dispatch('setToken', '');
+        },
         handleLogin() {
             const self = this;
             this.$refs.loginForm.validate((valid) => {
@@ -241,6 +248,9 @@ export default {
             const shouldValidToken = this.$store.state.shouldValidToken;
             const token = this.$store.state.token;
             if (shouldValidToken && (token == '' || token == null || token == undefined)) {
+                return true;
+            }
+            if(this.foreShowLogin){
                 return true;
             }
             return false;

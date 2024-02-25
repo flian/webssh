@@ -1,7 +1,6 @@
 package org.lotus.carp.webssh.config.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
@@ -35,8 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSshTermService {
-    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 10000, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(0));
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 10000, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(10000));
     private Map<String, CachedWebSocketSessionObject> xTermCachedObjMap = new ConcurrentHashMap<>();
 
     @Resource
@@ -110,10 +108,9 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
             CachedWebSocketSessionObject cachedObj = xTermCachedObjMap.get(webSocketSession.getId());
             if (null == cachedObj) {
                 Session session = createSessionFromSshInfo(sshInfo);
+                cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfo);
                 cachedObj.setSshSession(session);
-                cachedObj = new CachedWebSocketSessionObject();
-
                 // seems need to set... try set model....
                 CachedWebSocketSessionObject finalCachedObj = cachedObj;
                 Channel channel = createXtermShellChannel(session, (inputStream, outputStream) -> {

@@ -4,6 +4,8 @@
       <el-header style="height: auto">
         <vheader @ssh-select="() => {
           this.$refs.tabs.openTerm()
+        }" @ssh-logout="()=>{
+            this.$refs.tabs.closeTabs('all');
         }"/>
       </el-header>
       <el-container>

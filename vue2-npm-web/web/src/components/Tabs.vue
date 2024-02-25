@@ -42,6 +42,7 @@ export default {
     },
     data () {
         return {
+            currentTermId: '',
             currentTerm: '',
             currentTermIndex: 0,
             menuTab: '',
@@ -115,7 +116,7 @@ export default {
         },
         getCurrMenuIndex() {
             let index = 0
-            this.termList.forEach((tab, i) => { 
+            this.termList.forEach((tab, i) => {
                 if (tab.name === this.menuTab) {
                     index = i
                     return
@@ -188,19 +189,28 @@ export default {
         genID(length) {
             return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36)
         },
+        closeAllTerms(){
+            const self = this;
+            for (let i = 0; i < this.termList.length; ++i) {
+                self.removeTab(this.termList[i].name);
+            }
+        },
         openTerm() {
             const sshInfo = this.$store.state.sshInfo
             if (sshInfo.password === '') {
                 return
             }
+            const ID = `${this.genID(5)}`;
             this.termList.push({
-                name: `${sshInfo.host}-${this.genID(5)}`,
+                name: `${sshInfo.host}-${ID}`,
                 label: sshInfo.host,
                 path: '/',
-                closable: true
+                closable: true,
+                id: ID
             })
             const tab = this.termList[this.termList.length - 1]
             this.currentTerm = tab.name
+            this.currentTermId = tab.id;
             this.currentTermIndex = this.termList.length - 1
             this.$store.commit('SET_TAB', this.termList[this.currentTermIndex])
         },
