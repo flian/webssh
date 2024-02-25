@@ -189,12 +189,6 @@ export default {
         genID(length) {
             return Number(Math.random().toString().substr(3, length) + Date.now()).toString(36)
         },
-        closeAllTerms(){
-            const self = this;
-            for (let i = 0; i < this.termList.length; ++i) {
-                self.removeTab(this.termList[i].name);
-            }
-        },
         openTerm() {
             const sshInfo = this.$store.state.sshInfo
             if (sshInfo.password === '') {
