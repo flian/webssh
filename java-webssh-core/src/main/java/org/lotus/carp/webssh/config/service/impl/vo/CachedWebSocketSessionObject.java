@@ -22,7 +22,7 @@ public class CachedWebSocketSessionObject {
     /**
      * ssh connection info
      */
-    private SshInfo sshInfo;
+    private String sshInfo;
 
     /**
      * ssh sshChannel

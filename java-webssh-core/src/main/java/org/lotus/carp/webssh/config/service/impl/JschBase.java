@@ -20,6 +20,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
@@ -113,7 +115,7 @@ public class JschBase implements InitializingBean {
             sftpCallFunc.callSftp(sftp);
         } catch (Exception e) {
             log.error("error while process sftp op.", e);
-            throw new WebSshBusinessException("500,server error."+e.getMessage());
+            throw new WebSshBusinessException("500,server error." + e.getMessage());
         } finally {
             //close sftp and session.
             if (null != sftp)
@@ -177,7 +179,7 @@ public class JschBase implements InitializingBean {
         jsch.setConfig(config);
         Session session = jsch.getSession(sshInfoObject.getUsername(), sshInfoObject.getIpaddress(), sshInfoObject.getPort());
 
-        if(PASSWORD_LOGIN_TYPE == loginType){
+        if (PASSWORD_LOGIN_TYPE == loginType) {
             session.setPassword(sshInfoObject.getPassword());
         }
 
@@ -193,48 +195,70 @@ public class JschBase implements InitializingBean {
     /**
      * create jsch xterm channel shell for webssh with default parameters
      *
-     * @param session
+     * @param session        session to use create channel
+     * @param channelCall    get channel input and output stream after channel create.
+     * @param ptySize        ptySize[0]  col – terminal width;
+     *                       ptySize[1]  columns row – terminal height
+     *                       ptySize[2]  rows wp – terminal width, pixels
+     *                       ptySize[3]  hp – terminal height, pixels
      * @return
      * @throws JSchException
+     * @@param channelCall get channel input and output stream after channel create.
      */
-    Channel createXtermShellChannel(Session session) throws JSchException {
-        return createXtermShellChannel(session, webSshConfig.getDefaultConnectTimeOut(), 80, 24, 640, 480);
+    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int[] ptySize) throws JSchException {
+        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize);
     }
 
     /**
      * create jsch xterm channel shell for webssh
      *
-     * @param session
-     * @param connectTimeout
-     * @param col            col – terminal width
-     * @param row            columns row – terminal height
-     * @param wp             rows wp – terminal width, pixels
-     * @param hp             hp – terminal height, pixels
+     * @param session        session to use create channel
+     * @param channelCall    get channel input and output stream after channel create.
+     * @param connectTimeout channel connect timeout.
+     * @param ptySize        ptySize[0]  col – terminal width;
+     *                       ptySize[1]  columns row – terminal height
+     *                       ptySize[2]  rows wp – terminal width, pixels
+     *                       ptySize[3]  hp – terminal height, pixels
      * @return
      * @throws JSchException
      */
-    Channel createXtermShellChannel(Session session, int connectTimeout, int col, int row, int wp, int hp) throws JSchException {
+    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize) throws JSchException {
         Channel channel = session.openChannel("shell");
         ((ChannelShell) channel).setPtyType(getTermPtyType());
-        ((ChannelShell) channel).setPtySize(col, row, wp, hp);
+        ((ChannelShell) channel).setPtySize(ptySize[0], ptySize[1], ptySize[2], ptySize[3]);
         ((ChannelShell) channel).setPty(true);
         // should set mode
         ((ChannelShell) channel).setTerminalMode(composeTerminalModes());
-        channel.connect(connectTimeout);
+
+        try {
+            InputStream inputStream = channel.getInputStream();
+            channel.connect(connectTimeout);
+            OutputStream outputStream = channel.getOutputStream();
+            if (null != channelCall) {
+                channelCall.applySetInputAndOutStream(inputStream, outputStream);
+            }
+        } catch (IOException e) {
+            log.error("error create xterm shell/", e);
+            return null;
+        }
+
         return channel;
     }
-     String getTermPtyType() {
+
+    String getTermPtyType() {
         if (!ObjectUtils.isEmpty(webSshConfig.getWebSshTermPtyType())) {
             return webSshConfig.getWebSshTermPtyType();
         }
         return "vt100";
     }
-     byte translateBoolean2Byte(boolean flag) {
+
+    byte translateBoolean2Byte(boolean flag) {
         if (flag) {
             return (byte) 1;
         }
         return 0;
     }
+
     String deCodeBase64Str(String sshInfo) {
         return Base64Decoder.decodeStr(sshInfo);
     }
