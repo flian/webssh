@@ -194,7 +194,7 @@ export default {
             if (sshInfo.password === '') {
                 return
             }
-            const ID = `${this.genID(5)}`;
+            const ID = `${this.genID(10)}`;
             this.termList.push({
                 name: `${sshInfo.host}-${ID}`,
                 label: sshInfo.host,
