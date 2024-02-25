@@ -31,7 +31,7 @@ public class FileMetaVo {
     private boolean isDir;
 
     /**
-     * file human readable size
+     * file human-readable size
      */
     private String size;
 
@@ -43,9 +43,10 @@ public class FileMetaVo {
 
     /**
      * file add time
+     * TODO current can't find create time from jsch. later try to find it.
      */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date addTime;
+    private Date createTime;
     /**
      * file permissions string
      */

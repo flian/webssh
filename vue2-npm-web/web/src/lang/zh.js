@@ -8,7 +8,7 @@ export default {
     PermissionsString: '权限',
     GroupName: '所属组',
     OwnerName: '所有者',
-    AddTime: '创建时间',
+    CreateTime: '创建时间',
     Name: '名字',
     Copy: '复制',
     Upload: '上传',

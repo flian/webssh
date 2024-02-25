@@ -14,7 +14,7 @@ export default {
     logout: 'logout',
     loginFormTitle: 'please login',
     PermissionsString: 'permissions',
-    AddTime: 'add time',
+    CreateTime: 'add time',
     GroupName: 'group',
     OwnerName: 'owner',
 }

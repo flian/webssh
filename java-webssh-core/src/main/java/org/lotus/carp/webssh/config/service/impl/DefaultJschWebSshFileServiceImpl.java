@@ -88,7 +88,7 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
                     sftp.mkdir(uploadVo.pathArr);
                 }
                 //try to use resume model.
-                try {
+                /*try {
                     SftpATTRS attrs = sftp.stat(uploadVo.fileFullArr);
                     log.info("file exist.. using RESUME mode to transfer file.filename:{},fileSize:{}", fileName, attrs.getSize());
                     sftp.put(file.getInputStream(), uploadVo.fileFullArr,
@@ -97,7 +97,10 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
                     log.info("file not exist.. using overwrite mode to transfer file.");
                     sftp.put(file.getInputStream(), uploadVo.fileFullArr,
                             new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.OVERWRITE);
-                }
+                }*/
+                //TODO seems current file upload with spring input stream is not work, later try RESUME mode.
+                sftp.put(file.getInputStream(), uploadVo.fileFullArr,
+                        new JschSftpUploadProcessMonitor(fileUploadDataRequest.getId(), file.getSize()), ChannelSftp.OVERWRITE);
 
             } catch (SftpException | IOException e) {
                 result.setOk(false);
@@ -175,11 +178,16 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
 
                         fileMeta.setName(f.getFilename());
                         fileMeta.setDir(f.getAttrs().isDir());
+                        //atime 是指access time，访问时间，即文件被读取或者执行的时间；
+                        //mtime 即modify time，指文件内容被修改的时间；
+                        //ctime 即change time文件状态改变时间。
                         fileMeta.setModifyTime(new Date(((long) f.getAttrs().getMTime()) * 1000L));
+                        //TODO can't find create file attr, later try find it.
+                        //fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
 
                         fileMeta.setPermissionsString(f.getAttrs().getPermissionsString());
                         try2SetOwnerAndGroup(f.getLongname(),fileMeta);
-                        fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
+
                         if (fileMeta.getIsDir()) {
                             fileMeta.setSize("" + f.getAttrs().getSize());
                         } else {
