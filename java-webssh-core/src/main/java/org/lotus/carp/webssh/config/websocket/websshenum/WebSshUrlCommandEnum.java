@@ -1,6 +1,5 @@
-package org.lotus.carp.webssh.config.websocket;
+package org.lotus.carp.webssh.config.websocket.websshenum;
 
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.Arrays;

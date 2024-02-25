@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
+import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
+
+import static org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum.PASSWORD_LOGIN_TYPE;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -156,11 +159,27 @@ public class JschBase implements InitializingBean {
         JSch jsch = new JSch();
         Hashtable<String, String> config = new Hashtable();
         config.put("StrictHostKeyChecking", "no");
-        config.put("PreferredAuthentications", "password");
-        jsch.setConfig(config);
+        WebSshLoginTypeEnum loginType = WebSshLoginTypeEnum.getByCode(sshInfoObject.getLogintype());
+
+        switch (loginType) {
+            case PASSWORD_LOGIN_TYPE: {
+                config.put("PreferredAuthentications", "password");
+                break;
+            }
+            case PRIVATE_KEY_LOGIN_TYPE: {
+                config.put("PreferredAuthentications", "publickey");
+                //add private key
+                jsch.addIdentity("jsch_xterm_private_key", sshInfoObject.getPassword().getBytes(), (byte[]) null, (byte[]) null);
+                //jsch.addIdentity(sshInfoObject.getPassword());
+                break;
+            }
+        }
+
         Session session = jsch.getSession(sshInfoObject.getUsername(), sshInfoObject.getIpaddress(), sshInfoObject.getPort());
 
-        session.setPassword(sshInfoObject.getPassword());
+        if(PASSWORD_LOGIN_TYPE == loginType){
+            session.setPassword(sshInfoObject.getPassword());
+        }
 
         session.connect(connectTimeout);
 
@@ -196,7 +215,7 @@ public class JschBase implements InitializingBean {
      */
     Channel createXtermShellChannel(Session session, int connectTimeout, int col, int row, int wp, int hp) throws JSchException {
         Channel channel = session.openChannel("shell");
-        ((ChannelShell) channel).setPtyType("xterm");
+        ((ChannelShell) channel).setPtyType(getTermPtyType());
         ((ChannelShell) channel).setPtySize(col, row, wp, hp);
         ((ChannelShell) channel).setPty(true);
         // should set mode
@@ -204,7 +223,18 @@ public class JschBase implements InitializingBean {
         channel.connect(connectTimeout);
         return channel;
     }
-
+     String getTermPtyType() {
+        if (!ObjectUtils.isEmpty(webSshConfig.getWebSshTermPtyType())) {
+            return webSshConfig.getWebSshTermPtyType();
+        }
+        return "vt100";
+    }
+     byte translateBoolean2Byte(boolean flag) {
+        if (flag) {
+            return (byte) 1;
+        }
+        return 0;
+    }
     String deCodeBase64Str(String sshInfo) {
         return Base64Decoder.decodeStr(sshInfo);
     }
@@ -215,10 +245,10 @@ public class JschBase implements InitializingBean {
         byte[] terminalModes = {
                 //Translate uppercase characters to lowercase.
                 37,
-                0, 0, 0, 0,
+                0, 0, 0, translateBoolean2Byte(webSshConfig.isWebSshTermTranslate2Lowercase()),
                 //ECHO 53
                 53,
-                0, 0, 0, 1,
+                0, 0, 0, translateBoolean2Byte(webSshConfig.isWebSshTermEcho()),
                 //ECHOE Visually erase chars.
                 54,
                 0, 0, 0, 0,

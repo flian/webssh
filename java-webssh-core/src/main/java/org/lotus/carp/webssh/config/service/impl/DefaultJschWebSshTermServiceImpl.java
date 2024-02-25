@@ -10,6 +10,7 @@ import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
+import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -24,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import static org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum.PASSWORD_LOGIN_TYPE;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -89,9 +92,9 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
         return Base64Decoder.decodeStr(sshInfo);
     }
 
-    private byte translateBoolean2Byte(boolean flag){
-        if(flag){
-            return (byte)1;
+    private byte translateBoolean2Byte(boolean flag) {
+        if (flag) {
+            return (byte) 1;
         }
         return 0;
     }
@@ -151,11 +154,30 @@ public class DefaultJschWebSshTermServiceImpl implements WebSshTermService {
                 JSch jsch = new JSch();
                 Hashtable<String, String> config = new Hashtable();
                 config.put("StrictHostKeyChecking", "no");
-                config.put("PreferredAuthentications", "password");
-                jsch.setConfig(config);
-                Session session = jsch.getSession(sshInfoObject.getUsername(), sshInfoObject.getIpaddress(), sshInfoObject.getPort());
+                WebSshLoginTypeEnum loginType = WebSshLoginTypeEnum.getByCode(sshInfoObject.getLogintype());
 
-                session.setPassword(sshInfoObject.getPassword());
+                switch (loginType) {
+                    case PASSWORD_LOGIN_TYPE: {
+                        config.put("PreferredAuthentications", "password");
+                        break;
+                    }
+                    case PRIVATE_KEY_LOGIN_TYPE: {
+                        config.put("PreferredAuthentications", "publickey");
+                        //add private key
+                        jsch.addIdentity("jsch_xterm_private_key", sshInfoObject.getPassword().getBytes(), (byte[]) null, (byte[]) null);
+                        //jsch.addIdentity(sshInfoObject.getPassword());
+                        break;
+                    }
+                }
+
+                jsch.setConfig(config);
+
+
+                Session session = jsch.getSession(sshInfoObject.getUsername(), sshInfoObject.getIpaddress(), sshInfoObject.getPort());
+                if(PASSWORD_LOGIN_TYPE == loginType){
+                    session.setPassword(sshInfoObject.getPassword());
+                }
+
                 session.connect(30 * 1000);
                 // seems need to set... try set model....
                 Channel channel = session.openChannel("shell");

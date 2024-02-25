@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.JschSftpUploadProcessMonitor;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
+import org.lotus.carp.webssh.config.websocket.websshenum.WebSshUrlCommandEnum;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.CloseStatus;
