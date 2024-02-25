@@ -206,10 +206,10 @@ public class JschBase implements InitializingBean {
      *
      * @param session
      * @param connectTimeout
-     * @param col            shell col
-     * @param row            shell row
-     * @param wp             shell col for px
-     * @param hp             shell row for px
+     * @param col            col – terminal width
+     * @param row            columns row – terminal height
+     * @param wp             rows wp – terminal width, pixels
+     * @param hp             hp – terminal height, pixels
      * @return
      * @throws JSchException
      */
