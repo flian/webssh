@@ -114,10 +114,10 @@ export default {
             }
             screenfull.toggle()
         },
-        getCurrMenuIndex() {
+        getCurrMenuIndex(nextCurrentTab) {
             let index = 0
             this.termList.forEach((tab, i) => {
-                if (tab.name === this.menuTab) {
+                if ((nextCurrentTab && (tab.name === nextCurrentTab.name)) || tab.name === this.menuTab) {
                     index = i
                     return
                 }
@@ -208,14 +208,14 @@ export default {
             this.currentTermIndex = this.termList.length - 1
             this.$store.commit('SET_TAB', this.termList[this.currentTermIndex])
         },
-        findTerm() {
-            this.currentTermIndex = this.getCurrMenuIndex()
+        findTerm(tab) {
+            this.currentTermIndex = this.getCurrMenuIndex(tab)
             this.$store.commit('SET_TAB', this.termList[this.currentTermIndex])
         },
         clickTab(tab) {
             this.$refs[`${tab.name}`][0].setSSH()
             document.title = tab.label
-            this.findTerm()
+            this.findTerm(tab)
         },
         removeTab(targetName) {
             let activeName = this.currentTerm
