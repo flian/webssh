@@ -2,7 +2,7 @@ package org.lotus.carp.webssh.config.controller.vo;
 
 import lombok.Data;
 
-import static org.lotus.carp.webssh.config.controller.common.WebSshAppConst.DEFAULT_WEBSSH_SUCCESS_MSG;
+import static org.lotus.carp.webssh.config.controller.common.WebSshAppConst.DEFAULT_WEB_SSH_SUCCESS_MSG;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -15,7 +15,7 @@ import static org.lotus.carp.webssh.config.controller.common.WebSshAppConst.DEFA
 public class FileUploadResultVo {
 
     private boolean ok;
-    private String msg = DEFAULT_WEBSSH_SUCCESS_MSG;
+    private String msg = DEFAULT_WEB_SSH_SUCCESS_MSG;
 
     public static FileUploadResultVo failure(String msg) {
         FileUploadResultVo result = new FileUploadResultVo();

@@ -190,7 +190,7 @@ export default {
             } else {
                 const sshListObj = JSON.parse(window.atob(sshList))
                 sshListObj.forEach((v, i) => {
-                    if (v.host === sshInfo.host) {
+                    if (v.host === sshInfo.host && v.logintype === sshInfo.logintype) {
                         sshListObj.splice(i, 1)
                     }
                 })

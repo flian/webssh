@@ -16,6 +16,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import static org.lotus.carp.webssh.config.controller.common.WebSshAppConst.DEFAULT_WEB_SSH_SUCCESS_MSG;
+
 /**
  * <h3>javaWebSSH</h3>
  * <p>webssh controller</p>
@@ -38,7 +40,7 @@ public class DefaultWebSshController extends BaseController implements WebSshApi
         CheckResponseVo checkResponseVo = new CheckResponseVo();
         checkResponseVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
         checkResponseVo.setSavePass(webSshConfig.getSavePass());
-        return WebSshResponse.ok(checkResponseVo);
+        return WebSshResponse.ok(checkResponseVo,DEFAULT_WEB_SSH_SUCCESS_MSG);
     }
 
     @Override
