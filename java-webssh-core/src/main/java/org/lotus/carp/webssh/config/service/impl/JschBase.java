@@ -174,7 +174,7 @@ public class JschBase implements InitializingBean {
                 break;
             }
         }
-
+        jsch.setConfig(config);
         Session session = jsch.getSession(sshInfoObject.getUsername(), sshInfoObject.getIpaddress(), sshInfoObject.getPort());
 
         if(PASSWORD_LOGIN_TYPE == loginType){
