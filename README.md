@@ -12,6 +12,13 @@ java版本webssh
 ## 功能:
 实现的java版本的webssh
 
+## 原理
+```
++---------+     http     +--------+    ssh    +-----------+
+| browser | <==========> | webssh | <=======> | ssh server|
++---------+   websocket  +--------+    ssh    +-----------+
+```
+
 ### go webssh已有功能：
 1. 密码方式登录ssh.
 2. 私钥方式登录ssh. 
