@@ -8,12 +8,6 @@ java版本webssh
 由于业务、部署环境的特殊性，java目前市面上没有很合适的java版本的webssh可供使用，
 故参照 [go webssh](https://github.com/Jrohy/webssh) 实现了一版java版本的webssh。
 
-java version origin from: 
-
-## 参考:
-
-[go webssh](https://github.com/Jrohy/webssh) version: v1.26
-
 ## 功能:
 实现的java版本的webssh
 
