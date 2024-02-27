@@ -1,6 +1,6 @@
 const proxyTarget = 'http://127.0.0.1:5132'
 const wsTarget = proxyTarget.replace('http', 'ws')
-const path = require("path");
+const path = require('path');
 
 const name= 'Java Web SSH';
 
@@ -30,7 +30,7 @@ module.exports = {
         devtool: 'source-map',
         resolve: {
             alias :{
-                "@": resolve("src")
+                '@': resolve('src')
             }
         }
     },
