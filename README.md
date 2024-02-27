@@ -13,12 +13,14 @@ java版本webssh
 由于所处特殊行业特殊原因，各地机房防火墙一般ssh协议（跨地域访问）都是封禁状态。
 同时很多地方机房都不提供诸如堡垒机等形式的运维工具、方法，
 造成跨地域的运维工作很难开展。故意尝试使用webssh方式。
-由于业务、部署环境的特殊性，java目前市面上没有很合适的java版本的webssh可供使用，
-
+go版本webssh standalone模式本来基本够用，但是有的机房甚至开启了http/https白名单模式，只开
+放指定的http/https端口，为了简单起见，就需要webssh随业务一起打包启动。
+由于业务、部署环境的特殊性，java目前市面上没有很合适的java版本的webssh可供使用.
 故参照 [go webssh](https://github.com/Jrohy/webssh) 实现了一版java版本的webssh。
 
 ## 功能:
-实现的java版本的webssh
+实现的java版本的webssh。
+业务代码依赖webssh-core和vue2-web，配置参数即可随业务一起开启webssh功能。
 
 ## 原理
 ```
@@ -47,7 +49,7 @@ java版本webssh
 3. 修改vue2-server\src\resources\application-prod.yml中webssh的参数，参数详见下文。
 4. cmd 进入项目根目录，mvn package
 5. copy vue2-server\target\vue2-sshserver-1.26-SNAPSHOT.jar到服务器，使用 `java -jar vue2-sshserver-1.26-SNAPSHOT.jar` 启动程序.
-6. 浏览器访问 http://127.0.0.1:8357/webssh/index 即可反问
+6. 浏览器访问 http://127.0.0.1:5132/webssh/index 即可反问
 
 ### docker独立部署
 TODO
