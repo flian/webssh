@@ -47,16 +47,19 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws IOException {
+        WebSshUrlCommandEnum cmd = WebSshUrlCommandEnum.getByCode((String) session.getAttributes().get(CMD));
         String sessionId = session.getId();
         Object token = session.getAttributes().get(webSshConfig.getTokenName());
-        if (sessionId != null && token != null) {
+        if (sessionId != null && token != null
+                //only term type websocket will be add to sessionManager for now.
+                && (null!=cmd && WebSshUrlCommandEnum.TERM.equals(cmd))) {
             WebSshWsSessionManager.add(sessionId, session);
         } else {
             if (webSshConfig.isShouldVerifyToken()) {
                 throw new RuntimeException("user not exist,please reLogin!");
             }
         }
-        WebSshUrlCommandEnum cmd = WebSshUrlCommandEnum.getByCode((String) session.getAttributes().get(CMD));
+
         switch (cmd) {
             case TERM: {
                 //term websocket connection should connect to jsch
@@ -101,7 +104,8 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                         break;
                     }
                 }
-
+                //upload process done,close session.
+                session.close();
                 break;
             }
 
