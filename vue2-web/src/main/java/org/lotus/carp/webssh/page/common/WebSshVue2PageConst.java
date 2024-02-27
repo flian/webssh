@@ -21,5 +21,5 @@ public class WebSshVue2PageConst {
     /**
      * webssh vue2 page dist folder
      */
-    public static final String staticFileRoot = "webssh-dist";
+    public static final String WEB_SSH_VUE2_STATIC_FILE_ROOT = "webssh-dist";
 }

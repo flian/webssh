@@ -17,16 +17,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 @ConditionalOnProperty(value = "webssh.vue2.pageController.enable", matchIfMissing = true)
 public class WebSshPageController {
-    private String staticFileRoot = "webssh-dist";
+
 
     @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
     public String index() {
-        //return String.format("%s/%s", staticFileRoot, "index.html");
-        return "index.html";
+        return String.format("/%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, "index.html");
     }
 
-    @GetMapping("/webssh/static/{staticType}/{staticFileFull}")
+    /*@GetMapping("/webssh/static/{staticType}/{staticFileFull}")
     public String staticJsCssEtc(@PathVariable String staticType, @PathVariable String staticFileFull) {
-        return String.format("%s/%s/%s", staticFileRoot, staticType, staticFileFull);
-    }
+        return String.format("/%s/%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, staticType, staticFileFull);
+    }*/
 }

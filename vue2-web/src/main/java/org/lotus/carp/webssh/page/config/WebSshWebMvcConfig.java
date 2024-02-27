@@ -18,8 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebSshWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**")
+        registry.addResourceHandler(WebSshVue2PageConst.WEB_SSH_PREFIX + "/**")
                 //add vue2 dist folder to static resource
-                .addResourceLocations(String.format("classpath:%s/", WebSshVue2PageConst.staticFileRoot));
+                .addResourceLocations(String.format("classpath:%s/", WebSshVue2PageConst.WEB_SSH_VUE2_STATIC_FILE_ROOT));
     }
 }
