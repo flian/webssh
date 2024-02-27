@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.util.ObjectUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -24,13 +25,22 @@ public class WebSshServerApplication {
         Environment environment = configurableApplicationContext.getBean(Environment.class);
         String ip = InetAddress.getLocalHost().getHostAddress();
         String[] hosts = {"localhost", "127.0.0.1", ip};
-        String indexUri = environment.getProperty("server.servlet.context-path") + WebSshVue2PageConst.WEB_SSH_VUE2_INDEX;
+        String contextPath = environment.getProperty("server.servlet.context-path");
+        String indexUri = composeIndexUri(contextPath);
         String serverPort = environment.getProperty("server.port");
         System.out.println("\n\n =================系统启动成功！后台地址：====================== ");
         Arrays.stream(hosts).forEach(h -> {
             System.out.println(String.format("http://%s:%s%s", h, serverPort, indexUri));
         });
         System.out.println("===================================================== ");
+
+    }
+
+    private static String composeIndexUri(String contextPath) {
+        if (null == contextPath || contextPath.isEmpty()) {
+            return WebSshVue2PageConst.WEB_SSH_VUE2_INDEX;
+        }
+        return contextPath + WebSshVue2PageConst.WEB_SSH_VUE2_INDEX;
 
     }
 }
