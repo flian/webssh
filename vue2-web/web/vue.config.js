@@ -11,7 +11,7 @@ function resolve(dir){
 
 module.exports = {
     publicPath: '/',
-    outputDir: '../src/main/resources/dist',
+    outputDir: '../src/main/resources/webssh-dist',
 
     // 放置静态资源的地方 (js/css/img/font/...)
     assetsDir: 'static',
