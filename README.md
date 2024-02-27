@@ -4,6 +4,11 @@ java版本webssh
 [![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)   
 简易在线ssh和sftp工具, 可在线敲命令和上传下载文件. 端口隧道、http代理tcp（待完成）
 
+## 运行截图
+![avatar](asset/1.png)
+![avatar](asset/2.png)
+
+
 ## 背景：
 由于所处特殊行业特殊原因，各地机房防火墙一般ssh协议（跨地域访问）都是封禁状态。
 同时很多地方机房都不提供诸如堡垒机等形式的运维工具、方法，
