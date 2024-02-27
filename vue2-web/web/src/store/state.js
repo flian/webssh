@@ -13,5 +13,6 @@ export default {
     currentTab: {},
     shouldValidToken: true,
     token: '',
+    ctx: undefined,
     language: getLanguage()
 }

@@ -80,10 +80,16 @@
                         </el-dropdown>
                     </el-form-item>
                     <el-form-item size="small">
-                        <el-button type="primary" v-show="showLogin" @click="foreShowLogin = true;" plain>{{ $t('login') }}</el-button>
+                        <el-button type="primary" v-show="showLogin" @click="foreShowLogin = true;" plain>{{
+                                $t('login')
+                            }}
+                        </el-button>
                     </el-form-item>
                     <el-form-item size="small">
-                        <el-button type="primary" v-show="showLogout" @click="handleLogout()" plain>{{ $t('logout') }}</el-button>
+                        <el-button type="primary" v-show="showLogout" @click="handleLogout()" plain>{{
+                                $t('logout')
+                            }}
+                        </el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -160,7 +166,7 @@ export default {
         }
     },
     methods: {
-        handleLogout(){
+        handleLogout() {
             const self = this;
             self.foreShowLogin = false;
             self.$emit('ssh-logout');
@@ -222,6 +228,10 @@ export default {
                 }
                 reader.readAsText(file)
             }
+        },
+        getRequestParam(name) {
+            if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
+                return decodeURIComponent(name[1]);
         }
 
     },
@@ -235,7 +245,12 @@ export default {
             }
         }
         const self = this;
-        getShouldVerifyToken().then(function (shouldVerifyToken){
+        const contextPath = self.getRequestParam('prefix');
+        if(contextPath){
+            self.$store.state.ctx = contextPath;
+        }
+
+        getShouldVerifyToken().then(function (shouldVerifyToken) {
             self.$store.state.shouldValidToken = shouldVerifyToken.Data;
         });
     },
@@ -250,7 +265,7 @@ export default {
             if (shouldValidToken && (token == '' || token == null || token == undefined)) {
                 return true;
             }
-            if(this.foreShowLogin){
+            if (this.foreShowLogin) {
                 return true;
             }
             return false;

@@ -8,5 +8,6 @@ export default {
             "logintype":${state.sshInfo.logintype === undefined ? 0 : state.sshInfo.logintype}
         }`
     ),
-    token: state => state.token
+    token: state => state.token,
+    ctx: state => state.ctx,
 }

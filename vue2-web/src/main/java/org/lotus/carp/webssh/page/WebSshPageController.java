@@ -21,8 +21,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class WebSshPageController implements InitializingBean {
 
+    /**
+     * get servlet context root path
+     */
     @Value("${server.servlet.context-path:}")
     private String contextPath;
+
+    /**
+     * config context path in case under is not tomcat?
+     */
+    @Value("${webssh.api.url.prefix:}")
+    private String webSshConfigContextPrefix;
 
     /**
      * index with prefix parameter
@@ -37,11 +46,20 @@ public class WebSshPageController implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (null == contextPath || contextPath.isEmpty() || "/".equals(contextPath)) {
+        if (isRootCxtEmpty(contextPath) && isRootCxtEmpty(webSshConfigContextPrefix)) {
             log.info("not set context path,ignore prefix parameter to front.");
             return;
         }
-        INDEX_STR = INDEX_STR + "?prefix=" + contextPath;
+        if (!isRootCxtEmpty(contextPath)) {
+            INDEX_STR = INDEX_STR + "?prefix=" + contextPath;
+            return;
+        } else if (!isRootCxtEmpty(webSshConfigContextPrefix)) {
+            INDEX_STR = INDEX_STR + "?prefix=" + webSshConfigContextPrefix;
+        }
+    }
+
+    private boolean isRootCxtEmpty(String ctxPath) {
+        return (null == contextPath || contextPath.isEmpty() || "/".equals(contextPath));
     }
 
     /*@GetMapping("/webssh/static/{staticType}/{staticFileFull}")
