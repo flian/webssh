@@ -230,6 +230,7 @@ export default {
             }
         },
         getRequestParam(name) {
+            console.log('request query:'+location.search);
             if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
                 return decodeURIComponent(name[1]);
         }
@@ -246,6 +247,7 @@ export default {
         }
         const self = this;
         const contextPath = self.getRequestParam('prefix');
+        console.log('contextPath:'+contextPath);
         if(contextPath){
             self.$store.state.ctx = contextPath;
         }

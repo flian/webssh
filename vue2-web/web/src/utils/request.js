@@ -27,7 +27,9 @@ function validateStatus(status) {
 }
 
 function getBaseURL() {
-    return (store.getters.ctx ? store.getters.ctx : (process.env.NODE_ENV === 'production' ? '/' : '/api'));
+    const baseUrl = (store.getters.ctx ? store.getters.ctx : (process.env.NODE_ENV === 'production' ? '/' : '/api'));
+    console.log('baseUrl:'+baseUrl);
+    return baseUrl;
 }
 
 var instance = axios.create({

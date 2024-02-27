@@ -45,7 +45,7 @@ public class WebSshPageController implements InitializingBean {
      */
     private static String INDEX_STR = "index.html";
 
-    private String forwardIndexUri = "%s"+WebSshVue2PageConst.WEB_SSH_VUE2_INDEX + "?%s=%s";
+    private String forwardIndexUri = WebSshVue2PageConst.WEB_SSH_VUE2_INDEX + "?%s=%s";
 
 
     @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
@@ -86,11 +86,11 @@ public class WebSshPageController implements InitializingBean {
         }
         if (!isRootCxtEmpty(contextPath)) {
             INDEX_STR = String.format(INDEX_STR_WITH_PARAMETER, INDEX_STR, prefixParameterName, contextPath);
-            forwardIndexUri = String.format(forwardIndexUri, contextPath,prefixParameterName, contextPath);
+            forwardIndexUri = String.format(forwardIndexUri, prefixParameterName, contextPath);
             return;
         } else if (!isRootCxtEmpty(webSshConfigContextPrefix)) {
             INDEX_STR = String.format(INDEX_STR_WITH_PARAMETER, INDEX_STR, prefixParameterName, webSshConfigContextPrefix);
-            forwardIndexUri = String.format(forwardIndexUri, webSshConfigContextPrefix,prefixParameterName, webSshConfigContextPrefix);
+            forwardIndexUri = String.format(forwardIndexUri, prefixParameterName, webSshConfigContextPrefix);
         }
     }
 
