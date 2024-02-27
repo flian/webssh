@@ -9,9 +9,9 @@
     </parent>
 
     <groupId>org.lotus.carp</groupId>
-    <artifactId>vue2-npm-sshserver</artifactId>
-    <name>vue2-npm-sshserver</name>
-    <description>java webssh vue2 npm version module</description>
+    <artifactId>vue2-sshserver</artifactId>
+    <name>vue2-sshserver</name>
+    <description>java webssh vue2 sshserver</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>org.lotus.carp</groupId>
-            <artifactId>vue2-npm-web</artifactId>
+            <artifactId>vue2-web</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

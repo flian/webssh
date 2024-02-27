@@ -25,8 +25,8 @@
 
     <modules>
         <module>webssh-core</module>
-        <module>vue2-npm-web</module>
-        <module>vue2-npm-sshserver</module>
+        <module>vue2-web</module>
+        <module>vue2-sshserver</module>
     </modules>
     <dependencyManagement>
         <dependencies>
