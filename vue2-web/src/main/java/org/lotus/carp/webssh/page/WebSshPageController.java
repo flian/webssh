@@ -1,5 +1,6 @@
 package org.lotus.carp.webssh.page;
 
+import org.lotus.carp.webssh.page.common.WebSshVue2PageConst;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class WebSshPageController {
     private String staticFileRoot = "webssh-dist";
 
-    @GetMapping("/webssh/index")
+    @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
     public String index() {
         return String.format("%s/%s", staticFileRoot, "index.html");
     }
