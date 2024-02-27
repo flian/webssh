@@ -1,16 +1,27 @@
-# javaWebSSH
-java版本webssh
+# webssh
+![](https://img.shields.io/github/v/release/Jrohy/webssh.svg) 
+![](https://img.shields.io/docker/pulls/jrohy/webssh.svg) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Jrohy/webssh)](https://goreportcard.com/report/github.com/Jrohy/webssh)
+[![Downloads](https://img.shields.io/github/downloads/Jrohy/webssh/total.svg)](https://img.shields.io/github/downloads/Jrohy/webssh/total.svg) 
+[![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)   
+简易在线ssh和sftp工具, 可在线敲命令和上传下载文件
 
-## 背景：
-由于所处特殊行业特殊原因，各地机房防火墙一般ssh协议（跨地域访问）都是封禁状态。
-同时很多地方机房都不提供诸如堡垒机等形式的运维工具、方法，
-造成跨地域的运维工作很难开展。故意尝试使用webssh方式。
-由于业务、部署环境的特殊性，java目前市面上没有很合适的java版本的webssh可供使用，
+## 运行截图
+![avatar](asset/1.png)
+![avatar](asset/2.png)
 
-故参照 [go webssh](https://github.com/Jrohy/webssh) 实现了一版java版本的webssh。
-
-## 功能:
-实现的java版本的webssh
+## 命令行
+```
+Usage of ./webssh_linux_amd64:
+  -a string
+        开启账号密码登录验证, '-a user:pass'的格式传参
+  -p int
+        服务运行端口 (default 5032)
+  -t int
+        ssh连接超时时间(min) (default 120)
+  -s    保存ssh密码
+  -v    显示版本号
+```
 
 ## 原理
 ```
@@ -19,28 +30,16 @@ java版本webssh
 +---------+   websocket  +--------+    ssh    +-----------+
 ```
 
-### go webssh已有功能：
-1. 密码方式登录ssh.
-2. 私钥方式登录ssh. 
-3. 文件上传下载. 
+## 运行
+1. 下载[releases](https://github.com/Jrohy/webssh/releases)里不同平台的包来执行即可  
 
-### 添加如下功能：
-1. 独立的本地认证
-2. 端口转发（TODO）
-3. 可独立部署 (TODO)
-4. 打包到已有应用中部署适配。（TODO）
-
-
-## 部署方式
-
-### 独立部署
-TODO
-
-### docker独立部署
-TODO
-
-### 包含到已有项目中
-TODO
-
-**其他语言版本: [English](README_en.md), [中文](README.md).**
-
+2. docker运行:  
+    ```
+    docker run -d --net=host --log-driver json-file --log-opt max-file=1 --log-opt max-size=100m --restart always --name webssh -e TZ=Asia/Shanghai jrohy/webssh
+    ```
+    支持添加的环境变量:
+    ```
+    port: web使用端口, 默认5032
+    savePass: 是否保存密码, 默认true
+    authInfo: 开启账号密码登录验证, 'user:pass'的格式设置
+    ```
