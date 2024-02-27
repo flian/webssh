@@ -21,7 +21,8 @@ public class WebSshPageController {
 
     @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
     public String index() {
-        return String.format("%s/%s", staticFileRoot, "index.html");
+        //return String.format("%s/%s", staticFileRoot, "index.html");
+        return "index.html";
     }
 
     @GetMapping("/webssh/static/{staticType}/{staticFileFull}")

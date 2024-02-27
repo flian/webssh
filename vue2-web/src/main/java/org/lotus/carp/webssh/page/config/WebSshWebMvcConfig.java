@@ -20,6 +20,6 @@ public class WebSshWebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 //add vue2 dist folder to static resource
-                .addResourceLocations(String.format("classpath:/%s/", WebSshVue2PageConst.staticFileRoot));
+                .addResourceLocations(String.format("classpath:%s/", WebSshVue2PageConst.staticFileRoot));
     }
 }
