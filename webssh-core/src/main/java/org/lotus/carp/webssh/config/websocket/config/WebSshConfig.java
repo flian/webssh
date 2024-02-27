@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
 import lombok.Data;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

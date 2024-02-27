@@ -54,6 +54,7 @@
 <script>
 import { fileList } from '@/api/file'
 import { mapState } from 'vuex'
+import store from "@/store";
 
 export default {
     name: 'FileList',
@@ -173,7 +174,7 @@ export default {
                 f.startWsProgree = true;
             }
             if (e.percent === 50) {
-                const ws = new WebSocket(`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${process.env.NODE_ENV === 'production' ? '' : '/ws'}/webssh/file/progress?token=${token}&id=${f.uid}`)
+                const ws = new WebSocket(`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${store.getters.ctx ? store.getters.ctx : (process.env.NODE_ENV === 'production' ? '/' : '/ws')}/webssh/file/progress?token=${token}&id=${f.uid}`)
                 ws.onmessage = e1 => {
                     f.percentage = (f.size + Number(e1.data)) / (f.size * 2) * 100
                 }
