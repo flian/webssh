@@ -55,7 +55,7 @@ public class WebSshPageController implements InitializingBean {
             return String.format("/%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
         } else {
             //or forward request with prefix parameter.
-            return String.format("forward:%s", forwardIndexUri);
+            return String.format("redirect:%s", forwardIndexUri);
         }
     }
 
