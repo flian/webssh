@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <h3>webssh</h3>
  * <p>web ssh page controller</p>
@@ -33,15 +35,45 @@ public class WebSshPageController implements InitializingBean {
     @Value("${webssh.api.url.prefix:}")
     private String webSshConfigContextPrefix;
 
+    private boolean shouldForwardWithPrefixParameters = false;
+
+    private String prefixParameterName = "prefix";
+
+    private static final String INDEX_STR_WITH_PARAMETER = "%s?%s=%s";
     /**
      * index with prefix parameter
      */
     private static String INDEX_STR = "index.html";
 
+    private String forwardIndexUri = "%s"+WebSshVue2PageConst.WEB_SSH_VUE2_INDEX + "?%s=%s";
+
 
     @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
-    public String index() {
-        return String.format("/%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
+    public String index(HttpServletRequest request) {
+        if (shouldRenderPage(request)) {
+            //render page
+            return String.format("/%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
+        } else {
+            //or forward request with prefix parameter.
+            return String.format("forward:%s", forwardIndexUri);
+        }
+    }
+
+    private boolean shouldRenderPage(HttpServletRequest request){
+        if(!shouldForwardWithPrefixParameters){
+            return true;
+        }
+
+        String queryStr = request.getQueryString();
+        if(null == queryStr || queryStr.isEmpty()){
+            return false;
+        }
+
+        if(queryStr.contains(prefixParameterName)){
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -49,12 +81,16 @@ public class WebSshPageController implements InitializingBean {
         if (isRootCxtEmpty(contextPath) && isRootCxtEmpty(webSshConfigContextPrefix)) {
             log.info("not set context path,ignore prefix parameter to front.");
             return;
+        } else {
+            shouldForwardWithPrefixParameters = true;
         }
         if (!isRootCxtEmpty(contextPath)) {
-            INDEX_STR = INDEX_STR + "?prefix=" + contextPath;
+            INDEX_STR = String.format(INDEX_STR_WITH_PARAMETER, INDEX_STR, prefixParameterName, contextPath);
+            forwardIndexUri = String.format(forwardIndexUri, contextPath,prefixParameterName, contextPath);
             return;
         } else if (!isRootCxtEmpty(webSshConfigContextPrefix)) {
-            INDEX_STR = INDEX_STR + "?prefix=" + webSshConfigContextPrefix;
+            INDEX_STR = String.format(INDEX_STR_WITH_PARAMETER, INDEX_STR, prefixParameterName, webSshConfigContextPrefix);
+            forwardIndexUri = String.format(forwardIndexUri, webSshConfigContextPrefix,prefixParameterName, webSshConfigContextPrefix);
         }
     }
 
