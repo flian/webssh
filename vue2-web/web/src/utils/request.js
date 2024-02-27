@@ -4,31 +4,31 @@ import store from '@/store/index'
 
 function validateStatus(status) {
     switch (status) {
-        case 400:
-            Message.error('请求出错')
-            break
-        case 403:
-            Message.warning({
-                message: '拒绝访问'
-            })
-            break
-        case 404:
-            Message.warning({
-                message: '请求错误,未找到该资源'
-            })
-            break
-        case 500:
-            Message.warning({
-                message: '服务端错误'
-            })
-            break
+    case 400:
+        Message.error('请求出错')
+        break
+    case 403:
+        Message.warning({
+            message: '拒绝访问'
+        })
+        break
+    case 404:
+        Message.warning({
+            message: '请求错误,未找到该资源'
+        })
+        break
+    case 500:
+        Message.warning({
+            message: '服务端错误'
+        })
+        break
     }
     return status >= 200 && status < 300
 }
 
 function getBaseURL() {
     const baseUrl = (store.getters.ctx ? store.getters.ctx : (process.env.NODE_ENV === 'production' ? '/' : '/api'));
-    console.log('baseUrl:'+baseUrl);
+    console.log('baseUrl:' + baseUrl);
     return baseUrl;
 }
 

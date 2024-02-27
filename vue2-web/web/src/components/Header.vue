@@ -231,6 +231,7 @@ export default {
         },
         getRequestParam(name) {
             console.log('request query:'+location.search);
+            // eslint-disable-next-line no-cond-assign
             if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
                 return decodeURIComponent(name[1]);
         }
