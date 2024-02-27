@@ -143,4 +143,9 @@ public class WebSshConfig {
      */
     private boolean webSshTermTranslate2Lowercase = false;
 
+    /**
+     * set to true to only allow private key login to remote ssh server.
+     * default is false.
+     */
+    private boolean sshPrivateKeyOnly = false;
 }

@@ -166,6 +166,9 @@ public class JschBase implements InitializingBean {
         switch (loginType) {
             case PASSWORD_LOGIN_TYPE: {
                 config.put("PreferredAuthentications", "password");
+                if (webSshConfig.isSshPrivateKeyOnly()) {
+                    throw new WebSshBusinessException("only allow private key to login to remote server,but try password login.");
+                }
                 break;
             }
             case PRIVATE_KEY_LOGIN_TYPE: {
@@ -195,12 +198,12 @@ public class JschBase implements InitializingBean {
     /**
      * create jsch xterm channel shell for webssh with default parameters
      *
-     * @param session        session to use create channel
-     * @param channelCall    get channel input and output stream after channel create.
-     * @param ptySize        ptySize[0]  col – terminal width;
-     *                       ptySize[1]  columns row – terminal height
-     *                       ptySize[2]  rows wp – terminal width, pixels
-     *                       ptySize[3]  hp – terminal height, pixels
+     * @param session     session to use create channel
+     * @param channelCall get channel input and output stream after channel create.
+     * @param ptySize     ptySize[0]  col – terminal width;
+     *                    ptySize[1]  columns row – terminal height
+     *                    ptySize[2]  rows wp – terminal width, pixels
+     *                    ptySize[3]  hp – terminal height, pixels
      * @return
      * @throws JSchException
      * @@param channelCall get channel input and output stream after channel create.
