@@ -2,7 +2,7 @@ const proxyTarget = 'http://127.0.0.1:5132'
 const wsTarget = proxyTarget.replace('http', 'ws')
 const path = require('path');
 
-const name= 'Java Web SSH';
+const name= 'java web ssh package';
 
 function resolve(dir){
     return path.join(__dirname,dir);
