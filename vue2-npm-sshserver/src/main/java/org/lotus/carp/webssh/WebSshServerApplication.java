@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * <h3>javaWebSSH</h3>
+ * <h3>webssh standalone start module</h3>
  * <p>webssh server start</p>
  *
  * @author : foy
