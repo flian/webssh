@@ -8,8 +8,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.ObjectUtils;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * <h3>webssh standalone start module</h3>
@@ -23,17 +28,39 @@ public class WebSshServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(WebSshServerApplication.class, args);
         Environment environment = configurableApplicationContext.getBean(Environment.class);
-        String ip = InetAddress.getLocalHost().getHostAddress();
-        String[] hosts = {"localhost", "127.0.0.1", ip};
+        List<String> allIps = listAllIps();
         String contextPath = environment.getProperty("server.servlet.context-path");
         String indexUri = composeIndexUri(contextPath);
         String serverPort = environment.getProperty("server.port");
         System.out.println("\n\n =================系统启动成功！后台地址：====================== ");
-        Arrays.stream(hosts).forEach(h -> {
+        allIps.stream().forEach(h -> {
             System.out.println(String.format("http://%s:%s%s", h, serverPort, indexUri));
         });
         System.out.println("===================================================== ");
 
+    }
+
+    private static List<String> listAllIps() {
+        List<String> result = new ArrayList<>();
+        result.add("localhost");
+        result.add("127.0.0.1");
+        Enumeration<NetworkInterface> netInterfaces;
+        try {
+            netInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (netInterfaces.hasMoreElements()) {
+                NetworkInterface ni = netInterfaces.nextElement();
+                Enumeration<InetAddress> addresses = ni.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress ip = addresses.nextElement();
+                    if (!ip.isLoopbackAddress() && ip.getHostAddress().indexOf(':') == -1) {
+                        result.add(ip.getHostAddress());
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            System.err.println("error list networkInterfaces." + e.getMessage());
+        }
+        return result;
     }
 
     private static String composeIndexUri(String contextPath) {
