@@ -14,7 +14,12 @@ public class WebSshVue2PageConst {
     public static final String WEB_SSH_PREFIX = "/webssh";
 
     /**
-     * webssh vue page index.
+     * webssh vue2 page index.
      */
     public static final String WEB_SSH_VUE2_INDEX = WEB_SSH_PREFIX+ "/index";
+
+    /**
+     * webssh vue2 page dist folder
+     */
+    public static final String staticFileRoot = "webssh-dist";
 }
