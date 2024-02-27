@@ -4,14 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.lotus.carp</groupId>
-        <artifactId>javaWebSSH</artifactId>
+        <artifactId>webssh</artifactId>
         <version>1.26-SNAPSHOT</version>
     </parent>
 
     <groupId>org.lotus.carp</groupId>
-    <artifactId>java-webssh-core</artifactId>
-    <version>1.26-SNAPSHOT</version>
-    <name>java-webssh-core</name>
+    <artifactId>webssh-core</artifactId>
+    <name>bssh-core</name>
     <description>java webssh core</description>
 
     <properties>

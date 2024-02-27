@@ -1,9 +1,4 @@
-/*
- * *
- *  * blog.coder4j.cn
- *  * Copyright (C) 2016-2019 All Rights Reserved.
- *
- */
+
 package org.lotus.carp.webssh.config.websocket;
 
 import cn.hutool.http.HttpUtil;
@@ -24,10 +19,14 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+
 /**
- * @author buhao
- * @version MyInterceptor.java, v 0.1 2019-10-17 19:21 buhao
- */
+ * <h3>WebSshWebSocketHandshakeInterceptor</h3>
+ * <p></p>
+ *
+ * @author : foy
+ * @date : 2024-02-01 14:49
+ **/
 @Component
 @Slf4j
 public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor {

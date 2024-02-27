@@ -9,9 +9,9 @@
     </parent>
 
     <groupId>org.lotus.carp</groupId>
-    <artifactId>javaWebSSH</artifactId>
+    <artifactId>webssh</artifactId>
     <version>1.26-SNAPSHOT</version>
-    <name>javaWebSSH</name>
+    <name>webssh</name>
     <description>carp java webssh</description>
     <packaging>pom</packaging>
     <properties>
@@ -24,7 +24,7 @@
     </properties>
 
     <modules>
-        <module>java-webssh-core</module>
+        <module>webssh-core</module>
         <module>vue2-npm-web</module>
         <module>vue2-npm-sshserver</module>
     </modules>

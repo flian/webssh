@@ -1,9 +1,4 @@
-/*
- * *
- *  * blog.coder4j.cn
- *  * Copyright (C) 2016-2019 All Rights Reserved.
- *
- */
+
 package org.lotus.carp.webssh.config.websocket;
 
 
@@ -24,10 +19,14 @@ import java.io.IOException;
 
 import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor.*;
 
+
 /**
- * @author buhao
- * @version MyWSHandler.java, v 0.1 2019-10-17 17:10 buhao
- */
+ * <h3>WebSshWebsocketHandler</h3>
+ * <p></p>
+ *
+ * @author : foy
+ * @date : 2024-02-01 14:49
+ **/
 @Component
 @Slf4j
 public class WebSshWebsocketHandler extends TextWebSocketHandler {

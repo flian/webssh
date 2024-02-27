@@ -1,9 +1,4 @@
-/*
- * *
- *  * blog.coder4j.cn
- *  * Copyright (C) 2016-2019 All Rights Reserved.
- *
- */
+
 package org.lotus.carp.webssh.config.websocket;
 
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
@@ -15,10 +10,14 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 import javax.annotation.Resource;
 
+
 /**
- * @author buhao
- * @version WebSocketConfig.java, v 0.1 2019-10-17 15:43 buhao
- */
+ * <h3>WebSocketConfig</h3>
+ * <p></p>
+ *
+ * @author : foy
+ * @date : 2024-02-01 14:49
+ **/
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {

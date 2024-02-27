@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.HTMLDocument;
-
 /**
  * <h3>javaWebSSH</h3>
  * <p></p>

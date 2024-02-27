@@ -1,9 +1,4 @@
-/*
- * *
- *  * blog.coder4j.cn
- *  * Copyright (C) 2016-2019 All Rights Reserved.
- *
- */
+
 package org.lotus.carp.webssh.config.websocket;
 
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +7,14 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 /**
- * @author buhao
- * @version WsSessionManager.java, v 0.1 2019-10-22 10:24 buhao
- */
+ * <h3>WebSshWsSessionManager</h3>
+ * <p></p>
+ *
+ * @author : foy
+ * @date : 2024-02-01 14:49
+ **/
 @Slf4j
 public class WebSshWsSessionManager {
     /**
