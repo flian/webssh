@@ -5,6 +5,8 @@ mongo http tunnel for java
 http 代理tcp流量
 https://blog.twofei.com/877/
 
+减少不必要的依赖
+
 https:
 gen ssh:
 keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore websshDefault.p12 -validity 3650 -dname "CN=webssh, OU=NoOU, O=NoO, L=Chendu, ST=Sichuan, C=cn" -storepass "webssh@Admin123!"  -keypass "webssh@Admin123!"
