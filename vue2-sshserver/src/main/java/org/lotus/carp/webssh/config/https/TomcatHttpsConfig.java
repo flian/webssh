@@ -21,19 +21,15 @@ import javax.annotation.Resource;
  * @date : 2024-02-28 16:12
  **/
 @Configuration
-@ConditionalOnExpression("'true'.equals('${webssh.foreHttps}')&&'tomcat'.equals('${webssh.underContainer}')")
+@ConditionalOnExpression("'true'.equals('${server.ssl.enabled}')" +
+        "&&'true'.equals('${webssh.foreHttps}')" +
+        "&&'tomcat'.equals('${webssh.underContainer}')")
 public class TomcatHttpsConfig {
     @Resource
     private WebSshConfig webSshConfig;
 
     @Value("${server.port}")
     private int serverPort;
-
-    /**
-     * disable it will cause open two http port.
-     */
-    @Value("${server.ssl.enabled:false}")
-    private boolean serverSslEnabled;
 
     @Configuration
     public class TomcatConfig {
@@ -60,10 +56,9 @@ public class TomcatHttpsConfig {
             connector.setScheme("http");
             connector.setPort(webSshConfig.getHttpPort());
             connector.setSecure(false);
-            if (serverSslEnabled) {
-                //only ssl enabled，redirect are reasonable
-                connector.setRedirectPort(serverPort);
-            }
+            //only ssl enabled，redirect are reasonable
+            connector.setRedirectPort(serverPort);
+
             return connector;
         }
     }

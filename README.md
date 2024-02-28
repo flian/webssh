@@ -46,19 +46,22 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 ### 独立部署
 1. 安装node等软件
 2. cmd 进入vue2-web\web, 执行`npm run build`，打包前端资源
-3. 修改vue2-server\src\resources\application-prod.yml中webssh的参数，参数详见下文。
+3. 修改vue2-sshserver\src\resources\application-prod.yml中webssh的参数，参数详见下文。
 4. cmd 进入项目根目录，mvn package
-5. copy vue2-server\target\vue2-sshserver-1.26-SNAPSHOT.jar到服务器，使用 `java -jar vue2-sshserver-1.26-SNAPSHOT.jar` 启动程序.
+5. copy vue2-sshserver\target\vue2-sshserver-1.26-SNAPSHOT.jar到服务器，使用 `java -jar vue2-sshserver-1.26-SNAPSHOT.jar` 启动程序.
 6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 即可访问.
 7. 默认的standalone会开启https，5132会转跳到`https://127.0.0.1:5443/webssh/index`
-8. 可通过设置`server.ssl.enabled=false`关闭
-强制https功能(不建议关闭,因为我们这个程序能直接操作系统，比较危险，
-启动https能一定程度上保障安全)，关闭后端口5132,5443都是http端口
+8. 可通过设置启动参数`--spring.profiles.active=http`使用http only模式。（不建议使用，webssh会直接操作系统，太敏感了）
+9. 其他更多设置，见[关键参数说明](###关键参数说明)
+
 
 ### docker独立部署
 TODO
 
 ### 包含到已有项目中
+TODO
+
+### 关键参数说明
 TODO
 
 **其他语言版本: [English](README_en.md), [中文](README.md).**
