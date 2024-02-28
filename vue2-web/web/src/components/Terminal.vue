@@ -1,6 +1,16 @@
 <template>
     <div>
-        <div :id="id"></div>
+        <div :id="id">
+
+        </div>
+        <div>
+            <el-button
+                id="message_btn"
+                style="position: fixed; margin-left: 94%; margin-top: -24%"
+                class="el-icon-liuyanban"
+                @click="alert('aaa')"
+            ></el-button>
+        </div>
     </div>
 </template>
 

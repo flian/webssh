@@ -148,4 +148,24 @@ public class WebSshConfig {
      * default is false.
      */
     private boolean sshPrivateKeyOnly = false;
+
+    /**
+     * force using https for webssh
+     */
+    private boolean foreHttps = false;
+
+    /**
+     * if under is tomcat server
+     */
+    private boolean isUnderDefaultTomcat = false;
+
+    /**
+     * will try to auto generate https key while there is not present in classpath.
+     */
+    private boolean genSslKeyOnStartupIfNotPresent = false;
+
+    /**
+     * https port
+     */
+    private int httpsPort = 443;
 }
