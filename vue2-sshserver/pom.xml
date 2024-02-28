@@ -49,6 +49,7 @@
                 <filtering>false</filtering>
                 <includes>
                     <include>*.yml</include>
+                    <include>logback-spring.xml</include>
                     <include>websshDefault.p12</include>
                 </includes>
             </resource>
