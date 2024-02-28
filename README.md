@@ -49,7 +49,9 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 3. 修改vue2-server\src\resources\application-prod.yml中webssh的参数，参数详见下文。
 4. cmd 进入项目根目录，mvn package
 5. copy vue2-server\target\vue2-sshserver-1.26-SNAPSHOT.jar到服务器，使用 `java -jar vue2-sshserver-1.26-SNAPSHOT.jar` 启动程序.
-6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 即可访问
+6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 即可访问.
+7. 默认的standalone会开启https，5132会转跳到`https://127.0.0.1:5443/webssh/index`
+8. 可通过设置`server.ssl.enabled=false`关闭强制https功能，关闭后端口5132,5443都是http端口
 
 ### docker独立部署
 TODO

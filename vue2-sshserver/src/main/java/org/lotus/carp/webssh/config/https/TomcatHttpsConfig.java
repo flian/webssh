@@ -29,6 +29,12 @@ public class TomcatHttpsConfig {
     @Value("${server.port}")
     private int serverPort;
 
+    /**
+     * disable it will cause open two http port.
+     */
+    @Value("${server.ssl.enabled:false}")
+    private boolean serverSslEnabled;
+
     @Configuration
     public class TomcatConfig {
         @Bean
@@ -39,7 +45,7 @@ public class TomcatHttpsConfig {
                     SecurityConstraint constraint = new SecurityConstraint();
                     constraint.setUserConstraint("CONFIDENTIAL");
                     SecurityCollection collection = new SecurityCollection();
-                    collection.addPattern("/*");
+                    collection.addPattern(webSshConfig.getWebSshWebsocketPrefix() + "/*");
                     constraint.addCollection(collection);
                     context.addConstraint(constraint);
                 }
@@ -54,7 +60,10 @@ public class TomcatHttpsConfig {
             connector.setScheme("http");
             connector.setPort(webSshConfig.getHttpPort());
             connector.setSecure(false);
-            connector.setRedirectPort(serverPort);
+            if (serverSslEnabled) {
+                //only ssl enabled，redirect are reasonable
+                connector.setRedirectPort(serverPort);
+            }
             return connector;
         }
     }
