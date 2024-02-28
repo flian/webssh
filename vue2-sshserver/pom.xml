@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.lotus.carp</groupId>
+        <groupId>org.lotus.carp.webssh</groupId>
         <artifactId>webssh</artifactId>
         <version>1.26-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.lotus.carp</groupId>
+    <groupId>org.lotus.carp.webssh</groupId>
     <artifactId>vue2-sshserver</artifactId>
     <name>vue2-sshserver</name>
     <description>java webssh vue2 sshserver</description>
@@ -20,12 +20,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.lotus.carp</groupId>
+            <groupId>org.lotus.carp.webssh</groupId>
             <artifactId>webssh-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.lotus.carp</groupId>
+            <groupId>org.lotus.carp.webssh</groupId>
             <artifactId>vue2-web</artifactId>
             <version>${project.version}</version>
         </dependency>
