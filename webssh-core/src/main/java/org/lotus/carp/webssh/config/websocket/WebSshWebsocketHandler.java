@@ -3,6 +3,8 @@ package org.lotus.carp.webssh.config.websocket;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
+import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.JschSftpUploadProcessMonitor;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
@@ -38,6 +40,8 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
     @Resource
     private WebSshTermService webSshTermService;
 
+    @Resource
+    private WebSshLoginService webSshLoginService;
 
     /**
      * socket 建立成功事件
@@ -50,13 +54,26 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         WebSshUrlCommandEnum cmd = WebSshUrlCommandEnum.getByCode((String) session.getAttributes().get(CMD));
         String sessionId = session.getId();
         Object token = session.getAttributes().get(webSshConfig.getTokenName());
-        if (sessionId != null && token != null
-                //only term type websocket will be add to sessionManager for now.
-                && (null!=cmd && WebSshUrlCommandEnum.TERM.equals(cmd))) {
-            WebSshWsSessionManager.add(sessionId, session);
-        } else {
+
+        if (ObjectUtils.isEmpty(sessionId)) {
+            session.close();
+            throw new WebSshBusinessException("sessionId should not be empty.");
+        }
+        if (ObjectUtils.isEmpty(token)) {
             if (webSshConfig.isShouldVerifyToken()) {
-                throw new RuntimeException("user not exist,please reLogin!");
+                session.close();
+                throw new WebSshBusinessException("token is required!.");
+            }
+        }
+        if (webSshConfig.isShouldVerifyToken()) {
+            if (!webSshLoginService.isTokenValid((String) token)) {
+                session.close();
+                throw new WebSshBusinessException("token is invalid!.");
+            }
+        }
+        if (null != cmd) {
+            if (WebSshUrlCommandEnum.TERM.equals(cmd)) {
+                WebSshWsSessionManager.add(sessionId, session);
             }
         }
 
@@ -171,6 +188,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
             WebSshWsSessionManager.remove(sessionId);
         }
         webSshTermService.onSessionClose(session);
+
     }
 
 
