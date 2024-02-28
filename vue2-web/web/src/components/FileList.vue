@@ -54,7 +54,7 @@
 <script>
 import { fileList } from '@/api/file'
 import { mapState } from 'vuex'
-import store from "@/store";
+import store from '@/store';
 
 export default {
     name: 'FileList',

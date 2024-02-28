@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div :id="id"></div>
+        <div :id="id">
+
+        </div>
+
     </div>
 </template>
 

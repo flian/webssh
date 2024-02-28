@@ -98,7 +98,7 @@
         <el-dialog
             :title="$t('loginFormTitle')"
             :visible.sync="showLogin"
-            width="30%">
+            width="30%" :show-close="false">
             <el-form :model="login.form" ref="loginForm" :rules="login.checkRules">
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="login.form.username" placeholder="请输入用户名"></el-input>

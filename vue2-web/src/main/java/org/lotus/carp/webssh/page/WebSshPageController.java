@@ -52,7 +52,7 @@ public class WebSshPageController implements InitializingBean {
     public String index(HttpServletRequest request) {
         if (shouldRenderPage(request)) {
             //render page
-            return String.format("/%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
+            return String.format("%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
         } else {
             //or redirect request with prefix parameter.
             return String.format("redirect:%s", forwardIndexUri);
