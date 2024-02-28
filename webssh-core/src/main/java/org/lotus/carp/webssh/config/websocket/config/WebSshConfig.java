@@ -162,6 +162,8 @@ public class WebSshConfig {
      * while foreHttps is true and underContainer='tomcat'
      * if using tomcat,config this to tomcat will cause TomcatHttpsConfig using.
      * you may need config your own HttpsConfig for other contain.
+     * spring boot supported contain: tomcat,jetty,undertow,netty,webflux,
+     * you need config your own httpsConfig except tomcat.
      *
      */
     private String underContainer ="";
