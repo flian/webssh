@@ -39,7 +39,7 @@ public class TomcatHttpsConfig {
                     SecurityConstraint constraint = new SecurityConstraint();
                     constraint.setUserConstraint("CONFIDENTIAL");
                     SecurityCollection collection = new SecurityCollection();
-                    collection.addPattern(webSshConfig.getWebSshWebsocketPrefix());
+                    collection.addPattern("/*");
                     constraint.addCollection(collection);
                     context.addConstraint(constraint);
                 }
@@ -52,9 +52,9 @@ public class TomcatHttpsConfig {
             Connector connector = new
                     Connector("org.apache.coyote.http11.Http11NioProtocol");
             connector.setScheme("http");
-            connector.setPort(serverPort);
+            connector.setPort(webSshConfig.getHttpPort());
             connector.setSecure(false);
-            connector.setRedirectPort(webSshConfig.getHttpsPort());
+            connector.setRedirectPort(serverPort);
             return connector;
         }
     }

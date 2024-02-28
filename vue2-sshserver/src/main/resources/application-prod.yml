@@ -1,0 +1,16 @@
+server:
+  port: 5443
+  ssl:
+    protocol: TLS
+    enabled: true
+    key-store: classpath:websshDefault.p12
+    key-store-password: webssh@Admin123!
+    key-store-type: PKCS12
+    key-alias: springboottomcat
+webssh:
+  #force https for standalone webssh
+  foreHttps: true
+  #standalone webssh using tomcat
+  isUnderDefaultTomcat: true
+  #standalone will gen ssl while config note present
+  genSslKeyOnStartupIfNotPresent: true

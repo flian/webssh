@@ -165,7 +165,12 @@ public class WebSshConfig {
     private boolean genSslKeyOnStartupIfNotPresent = false;
 
     /**
+     * default httpPort
+     */
+    private int httpPort = 5132;
+
+    /**
      * https port
      */
-    private int httpsPort = 443;
+    private int httpsPort = 5443;
 }
