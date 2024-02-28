@@ -30,11 +30,13 @@ public class WebSshServerApplication {
         Environment environment = configurableApplicationContext.getBean(Environment.class);
         List<String> allIps = listAllIps();
         String contextPath = environment.getProperty("server.servlet.context-path");
+        String sslEnabled = environment.getProperty("server.ssl.enabled");
+        String protocol = "true".equalsIgnoreCase(sslEnabled) ? "https" : "http";
         String indexUri = composeIndexUri(contextPath);
         String serverPort = environment.getProperty("server.port");
         System.out.println("\n\n =================系统启动成功！后台地址：====================== ");
-        allIps.stream().forEach(h -> {
-            System.out.println(String.format("http://%s:%s%s", h, serverPort, indexUri));
+        allIps.stream().forEach(ip -> {
+            System.out.println(String.format("%s://%s:%s%s", protocol, ip, serverPort, indexUri));
         });
         System.out.println("===================================================== ");
 
