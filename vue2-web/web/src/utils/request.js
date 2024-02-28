@@ -27,7 +27,7 @@ function validateStatus(status) {
 }
 
 function getBaseURL() {
-    const baseUrl = (store.getters.ctx ? store.getters.ctx : (process.env.NODE_ENV === 'production' ? '/' : '/api'));
+    const baseUrl = ((process.env.NODE_ENV === 'production' ? '' : '/api') + (store.getters.ctx ? store.getters.ctx : ''));
     console.log('baseUrl:' + baseUrl);
     return baseUrl;
 }

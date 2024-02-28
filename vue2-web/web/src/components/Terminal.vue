@@ -50,7 +50,7 @@ export default {
             const sshReq = this.$store.getters.sshReq
             const token = this.$store.getters.token
             this.close()
-            const prefix = store.getters.ctx ? store.getters.ctx : (process.env.NODE_ENV === 'production' ? '/' : '/ws')
+            const prefix = (process.env.NODE_ENV === 'production' ? '' : '/ws') + (store.getters.ctx ? store.getters.ctx : '')
             const fitAddon = new FitAddon()
             this.term = new Terminal({
                 rendererType: 'canvas', //渲染类型
