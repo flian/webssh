@@ -52,7 +52,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 即可访问.
 7. 默认的standalone会开启https，5132会转跳到`https://127.0.0.1:5443/webssh/index`
 8. 可通过设置启动参数`--spring.profiles.active=http`使用http only模式。（不建议使用，webssh会直接操作系统，太敏感了）
-9. 其他更多设置，见[关键参数说明](###关键参数说明)
+9. 其他更多设置，见[关键参数说明](#关键参数说明)
 
 
 ### docker独立部署
