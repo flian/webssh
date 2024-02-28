@@ -6,7 +6,7 @@ import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +14,14 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.Resource;
 
 /**
- * <h3>webssh</h3>
+ * <h3>webssh http force redirect to https for tomcat</h3>
  * <p>tomcat https config</p>
  *
  * @author : foy
  * @date : 2024-02-28 16:12
  **/
 @Configuration
-@ConditionalOnProperty(value = {"webssh.foreHttps", "webssh.isUnderDefaultTomcat"})
+@ConditionalOnExpression("'true'.equals('${webssh.foreHttps}')&&'tomcat'.equals('${webssh.underContainer}')")
 public class TomcatHttpsConfig {
     @Resource
     private WebSshConfig webSshConfig;

@@ -150,19 +150,28 @@ public class WebSshConfig {
     private boolean sshPrivateKeyOnly = false;
 
     /**
-     * force using https for webssh
+     * force using https for webssh.
+     * config underContainer for your case.
+     * current only support tomcat as underContainer.
+     * other container,please config your own HttpsConfig @see TomcatHttpsConfig for reference
      */
     private boolean foreHttps = false;
 
     /**
-     * if under is tomcat server
+     * using container,default is ''
+     * while foreHttps is true and underContainer='tomcat'
+     * if using tomcat,config this to tomcat will cause TomcatHttpsConfig using.
+     * you may need config your own HttpsConfig for other contain.
+     *
      */
-    private boolean isUnderDefaultTomcat = false;
+    private String underContainer ="";
 
     /**
      * will try to auto generate https key while there is not present in classpath.
      */
     private boolean genSslKeyOnStartupIfNotPresent = false;
+
+
 
     /**
      * default httpPort

@@ -1,6 +1,9 @@
 server:
   port: 5132
 
+webssh:
+  httpPort: 5132
+
 spring:
   servlet:
     multipart:
