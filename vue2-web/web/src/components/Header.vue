@@ -254,7 +254,7 @@ export default {
         }
 
         getShouldVerifyToken().then(function (shouldVerifyToken) {
-            self.$store.state.shouldValidToken = shouldVerifyToken.Data;
+            self.$store.state.shouldValidToken = shouldVerifyToken.data;
         });
     },
     computed: {
