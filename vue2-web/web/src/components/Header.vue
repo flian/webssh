@@ -180,7 +180,7 @@ export default {
                     login(self.login.form).then(function (result) {
                         self.loginLoading = false;
                         if (result.code == '200') {
-                            const token = result.Data.token;
+                            const token = result.data.token;
                             if (token) {
                                 self.$store.dispatch('setToken', token);
                             }

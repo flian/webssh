@@ -178,10 +178,10 @@ export default {
             this.ssh = Object.assign({}, sshInfo)
             // 校验ssh连接信息是否正确
             const result = await checkSSH(this.$store.getters.sshReq, this.$store.state.token)
-            if (result.Msg !== 'success') {
+            if (result.msg !== 'success') {
                 return
             } else {
-                this.savePass = result.Data.savePass
+                this.savePass = result.data.savePass
             }
             document.title = sshInfo.host
             let sshList = this.$store.state.sshList
