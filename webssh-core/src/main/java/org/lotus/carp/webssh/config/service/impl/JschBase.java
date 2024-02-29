@@ -38,7 +38,7 @@ import static org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeE
 @Slf4j
 public class JschBase implements InitializingBean {
     @Resource
-    private WebSshConfig webSshConfig;
+    protected WebSshConfig webSshConfig;
 
     private static boolean jschLoggerInitialized = false;
 
@@ -329,5 +329,14 @@ public class JschBase implements InitializingBean {
                     }
                 })
                 .build();
+        //init sub class.
+        subInit();
+    }
+
+    /**
+     * afterPropertiesSet init for sub class.
+     */
+    public void subInit() {
+
     }
 }

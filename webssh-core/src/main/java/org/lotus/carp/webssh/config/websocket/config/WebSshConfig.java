@@ -189,4 +189,14 @@ public class WebSshConfig {
      * web ssh default date format.
      */
     private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * default start core pool size for ssh shellTerm
+     */
+    private int startCoreSshShellTermCorePoolSize = 5;
+
+    /**
+     * default max shell thread
+     */
+    private int maxSshShellTermCorePoolSize = 1000;
 }

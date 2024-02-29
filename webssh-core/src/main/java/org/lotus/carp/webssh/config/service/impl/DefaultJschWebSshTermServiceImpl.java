@@ -9,20 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
 import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
-import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -34,12 +30,22 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSshTermService {
-    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 1000, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3));
+
+
+    private static ThreadPoolExecutor threadPool;
     private Map<String, CachedWebSocketSessionObject> xTermCachedObjMap = new ConcurrentHashMap<>();
 
-    @Resource
-    private WebSshConfig webSshConfig;
+    private int maxSessionCnt;
 
+    private AtomicInteger currentSessionCnt = new AtomicInteger(0);
+
+    @Override
+    public void subInit() {
+        threadPool = new ThreadPoolExecutor(webSshConfig.getStartCoreSshShellTermCorePoolSize(), webSshConfig.getMaxSshShellTermCorePoolSize(),
+                10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1),
+                Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+        maxSessionCnt = webSshConfig.getMaxSshShellTermCorePoolSize();
+    }
 
     private int getCol(WebSocketSession webSocketSession) {
         String tmp = (String) webSocketSession.getAttributes().get(WebSshWebSocketHandshakeInterceptor.COLS);
@@ -88,6 +94,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
         threadPool.submit(() -> {
             try {
+                currentSessionCnt.incrementAndGet();
                 InputStream inputStreamReader = xTermCachedObjMap.get(webSocketSession.getId()).getChannelInputStream();
                 //循环读取
                 byte[] buffer = new byte[1024];
@@ -98,6 +105,8 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                 }
             } catch (IOException e) {
                 log.error("error while send term message back to websocket.", e);
+            } finally {
+                currentSessionCnt.decrementAndGet();
             }
         });
     }
@@ -107,6 +116,12 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
         try {
             CachedWebSocketSessionObject cachedObj = xTermCachedObjMap.get(webSocketSession.getId());
             if (null == cachedObj) {
+                if (currentSessionCnt.get() >= maxSessionCnt) {
+                    log.error("Execute max concurrent capacity exec.max:{},current:{}", maxSessionCnt, currentSessionCnt.get());
+                    webSocketSession.sendMessage(new TextMessage("Execute Max Concurrent Capacity,session will be close."));
+                    webSocketSession.close();
+                    return false;
+                }
                 Session session = createSessionFromSshInfo(sshInfo);
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfo);
