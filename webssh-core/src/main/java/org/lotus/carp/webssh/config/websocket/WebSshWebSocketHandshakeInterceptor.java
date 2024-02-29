@@ -1,7 +1,6 @@
 
 package org.lotus.carp.webssh.config.websocket;
 
-import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
@@ -15,8 +14,9 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import javax.annotation.Resource;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -70,6 +70,26 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
     }
 
     /**
+     * decode params from query string.
+     *
+     * @param queryString
+     * @return
+     */
+    private Map<String, String> decodeParamMap(String queryString) {
+        Map<String, String> result = new HashMap<>();
+        String[] temp = queryString.split("&");
+        if (!ObjectUtils.isEmpty(temp)) {
+            Arrays.stream(temp).forEach(kv -> {
+                String[] valuesPars = kv.split("=");
+                if (!ObjectUtils.isEmpty(valuesPars) && 2 == valuesPars.length) {
+                    result.put(valuesPars[0], valuesPars[1]);
+                }
+            });
+        }
+        return result;
+    }
+
+    /**
      * 握手前
      *
      * @param request
@@ -88,7 +108,7 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
 
         log.info("握手开始");
         // 获得请求参数
-        Map<String, String> paramMap = HttpUtil.decodeParamMap(request.getURI().getQuery(), Charset.forName("utf-8"));
+        Map<String, String> paramMap = decodeParamMap(request.getURI().getQuery());
         //set connection config.
         setSessionParamIfPresent(request.getURI().getPath(), paramMap, attributes);
         String token = paramMap.get(webSshConfig.getTokenName());

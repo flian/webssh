@@ -1,6 +1,5 @@
 package org.lotus.carp.webssh.config.service.impl;
 
-import cn.hutool.extra.ssh.Sftp;
 import com.jcraft.jsch.Session;
 
 /**
