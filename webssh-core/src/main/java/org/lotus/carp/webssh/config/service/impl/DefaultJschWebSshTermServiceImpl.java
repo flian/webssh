@@ -41,9 +41,14 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
 
     @Override
     public void subInit() {
-        threadPool = new ThreadPoolExecutor(webSshConfig.getStartCoreSshShellTermCorePoolSize(), webSshConfig.getMaxSshShellTermCorePoolSize(),
-                10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1),
+        //set core poolSize = maxPoolSize
+        threadPool = new ThreadPoolExecutor(webSshConfig.getMaxSshShellTermCorePoolSize(), webSshConfig.getMaxSshShellTermCorePoolSize(),
+                30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1),
                 Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+        //and allow core thread time out,as this threadPool is running jsch outPutStream to front
+        //it will block on waiting message or session close.
+        //actually may direct create thread is better. or java 21 virtual thread.
+        threadPool.allowCoreThreadTimeOut(true);
         maxSessionCnt = webSshConfig.getMaxSshShellTermCorePoolSize();
     }
 
@@ -94,6 +99,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
     public void sendSshMessageBack(WebSocketSession webSocketSession, Channel channel) {
         threadPool.submit(() -> {
             try {
+                //限制任务数
                 currentSessionCnt.incrementAndGet();
                 InputStream inputStreamReader = xTermCachedObjMap.get(webSocketSession.getId()).getChannelInputStream();
                 //循环读取
