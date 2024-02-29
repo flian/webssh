@@ -175,6 +175,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     //generate random password
     private String randomPassword() {
+        //FIXME using jdk random instead of hutools..
         return RandomUtil.randomStringUpper(3) +
                 RandomUtil.randomString(4) +
                 RandomUtil.randomNumbers(3) +

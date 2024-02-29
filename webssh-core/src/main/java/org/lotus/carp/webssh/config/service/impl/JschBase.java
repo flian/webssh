@@ -44,6 +44,7 @@ public class JschBase implements InitializingBean {
 
     private ObjectMapper baseObjectMapper = new ObjectMapper();
 
+    //FIXME use jdk md5, exclude hutools.
     private MD5 md5 = MD5.create();
 
     Cache<String, Session> sessionCache;
