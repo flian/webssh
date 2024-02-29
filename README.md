@@ -56,7 +56,19 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 或者`https://127.0.0.1:5443/webssh/index`即可访问.
 7. 默认的standalone会开启https，5132会转跳到`https://127.0.0.1:5443/webssh/index`
 8. 可通过设置启动参数`--spring.profiles.active=http`使用http only模式。（不建议使用，webssh会直接操作系统，太敏感了）
-9. 其他更多设置，见[关键参数说明](#关键参数说明)
+9. 建议发布生成环境时产生并使用自己的ssl证书。
+```
+自签名证书生成及配置示例：
+例如，cd d:\执行命令：
+keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore websshDefault.p12 -validity 3650 -dname "CN=webssh, OU=NoOU, O=NoO, L=Chendu, ST=Sichuan, C=cn" -storepass "webssh@Admin123!"  -keypass "webssh@Admin123!"
+其中alias,keystore,storepass,keypass按需要配置
+完成后在d根目录很产生keystore配置文件名的.p12文件，copy到合适的位置
+启动命令参考application-prod.yml，配置ssl文件名、路径、密码等信息
+后续版本会考虑动态启动时动态生成ssl文件并配置
+
+```
+10. 其他更多设置，见[关键参数说明](#关键参数说明)
+
 
 
 ### docker独立部署
