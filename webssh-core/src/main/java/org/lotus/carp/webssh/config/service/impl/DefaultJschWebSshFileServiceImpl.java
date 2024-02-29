@@ -187,14 +187,14 @@ public class DefaultJschWebSshFileServiceImpl extends JschBase implements WebSsh
                         //atime 是指access time，访问时间，即文件被读取或者执行的时间；
                         //mtime 即modify time，指文件内容被修改的时间；
                         //ctime 即change time文件状态改变时间。
-                        fileMeta.setModifyTime(new Date(((long) f.getAttrs().getMTime()) * 1000L));
+                        fileMeta.setModifyTimeObj(new Date(((long) f.getAttrs().getMTime()) * 1000L));
                         //TODO can't find create file attr, later try find it.
                         //fileMeta.setAddTime(new Date(((long) f.getAttrs().getATime()) * 1000L));
 
                         fileMeta.setPermissionsString(f.getAttrs().getPermissionsString());
                         try2SetOwnerAndGroup(f.getLongname(),fileMeta);
 
-                        if (fileMeta.getIsDir()) {
+                        if (fileMeta.isDir()) {
                             fileMeta.setSize("" + f.getAttrs().getSize());
                         } else {
                             fileMeta.setSize(transFileSize(f.getAttrs().getSize()));

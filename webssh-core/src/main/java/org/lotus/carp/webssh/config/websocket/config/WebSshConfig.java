@@ -184,4 +184,9 @@ public class WebSshConfig {
      * https port
      */
     private int httpsPort = 5443;
+
+    /**
+     * web ssh default date format.
+     */
+    private String dateFormat = "yyyy-MM-dd HH:mm:ss";
 }

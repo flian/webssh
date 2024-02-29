@@ -20,13 +20,13 @@ public class WebSshResponse<T> implements Serializable {
     private int code;
     private String message;
 
-    @JsonProperty("Msg")
+    //@JsonProperty("Msg")
     private String msg = DEFAULT_WEB_SSH_SUCCESS_MSG;
-    @JsonProperty("Data")
+    //@JsonProperty("Data")
     private T data;
 
 
-    @JsonProperty("Duration")
+    //@JsonProperty("Duration")
     private String duration;
 
     public WebSshResponse(int resultCode, T data, String resultMsg) {

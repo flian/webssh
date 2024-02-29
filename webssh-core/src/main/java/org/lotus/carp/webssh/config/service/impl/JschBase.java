@@ -10,6 +10,7 @@ import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
+import org.lotus.carp.webssh.config.utils.WebSshUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
 import org.springframework.beans.factory.InitializingBean;
@@ -308,6 +309,13 @@ public class JschBase implements InitializingBean {
         if (!jschLoggerInitialized && webSshConfig.getDebugJsch2SystemError()) {
             JSch.setLogger(new JschLogger());
         }
+        if (!WebSshUtils.isInitialized) {
+            if(!ObjectUtils.isEmpty(webSshConfig.getDateFormat())){
+                WebSshUtils.WEB_SSH_DEFAULT_DATE_FORMAT = webSshConfig.getDateFormat();
+            }
+            WebSshUtils.isInitialized = true;
+        }
+
         sessionCache = CacheBuilder.newBuilder()
                 .maximumSize(10000)
                 .expireAfterAccess(webSshConfig.getTokenExpiration(), TimeUnit.HOURS)
