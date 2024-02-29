@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSshTermService {
-    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 10000, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(10000));
+    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, 1000, 100, TimeUnit.SECONDS, new LinkedBlockingQueue<>(3));
     private Map<String, CachedWebSocketSessionObject> xTermCachedObjMap = new ConcurrentHashMap<>();
 
     @Resource
