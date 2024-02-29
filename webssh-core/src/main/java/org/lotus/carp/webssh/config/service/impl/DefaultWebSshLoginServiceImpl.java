@@ -175,7 +175,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     //generate random password
     private String randomPassword() {
-        return RandomUtils.getPassWord(RandomUtils.getMD5("abcdef", String.valueOf(System.currentTimeMillis())));
+        return RandomUtils.generatePassword();
     }
 
     @Override

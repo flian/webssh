@@ -17,33 +17,32 @@ public class RandomUtils {
 
     private static Random random = new SecureRandom();
 
-    public static void main(String[] args) {
-        Long saltLong = System.currentTimeMillis();
-        String str = getMD5("加盐MD5", String.valueOf(saltLong));
-        System.out.println(str);
-        System.out.println(getPassWord(str));
-    }
-
     //用于加密的字符
     private static final char md5String[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'
             , 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c'
             , 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r'
             , 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-    public static final char[] chars = {'!', '@', ')', '(', '&', '~', '$', '#', '*', '?', '+', '-'};
+    private static final char[] chars = {'!', '@', ')', '(', '&', '~', '$', '#', '*', '?', '+', '-'};
 
     /**
-     * 单次MD5加密函数
-     *
-     * @param pwd
-     * @return java.lang.String
-     * @throws
-     * @Author 李
-     * @MethodName MD5
-     * @Description //单次MD5加密函数
-     * @Date 15:51 2020/9/25
-     **/
-    public static String getMD5(String pwd) {
+     * 产生最大12位随机密码
+      * @return
+     */
+    public static String generatePassword() {
+        return generatePassword(12);
+    }
+
+    /**
+     * 参数不大于needMaxPasswordLength位的密码
+     * @param needMaxPasswordLength 最大密码长度
+     * @return
+     */
+    public static String generatePassword(int needMaxPasswordLength) {
+        return getPassWord(RandomUtils.getMD5("abcdef1212424ADF", String.valueOf(System.currentTimeMillis())),needMaxPasswordLength);
+    }
+
+    private static String getMD5(String pwd) {
         try {
             //使用平台的默认字符集将此 String 编码为 byte序列，并将结果存储到一个新的 byte数组中
             byte[] btInput = pwd.getBytes();
@@ -75,35 +74,14 @@ public class RandomUtils {
         }
     }
 
-    /*
-     *
-     * @Author 李
-     * @MethodName saltMD5
-     * @Description //加盐MD5
-     * @Date 15:51 2020/9/25
-     * @param str
-     * @param salt
-     * @return java.lang.String
-     * @exception
-     **/
-    public static String getMD5(String password, String salt) {
+
+    private static String getMD5(String password, String salt) {
         return getMD5(getMD5(password) + getMD5(salt));
     }
 
-    public static String getPassWord(String passWord){
-        return getPassWord(passWord,12);
-    }
-    /**
-     * 功能描述：随机密码生成器
-     *
-     * @param passWord
-     * @return java.lang.String
-     * @throws
-     * @Author 李
-     * @MethodName getPassWord
-     * @Date 10:02 2020/11/17
-     **/
-    public static String getPassWord(String passWord,int length) {
+
+
+    private static String getPassWord(String passWord, int needPasswordLength) {
         String prefix = passWord.substring(0, 6);
         String suffix = passWord.substring(passWord.length() - 6);
         passWord = prefix + suffix;
@@ -146,18 +124,23 @@ public class RandomUtils {
                     } else {
                         charPassWord[i] += 32;
                     }
-                    if (letterKey - intKey >= 4 && i >= 6) {//当数字过少时，抽选部分字母转成特殊字符
+                    //当数字过少时，抽选部分字母转成特殊字符
+                    if (letterKey - intKey >= 4 && i >= 6) {
                         charPassWord[i / 2] = getHash(i);
                     }
                 }
             }
         }
-        charPassWord = shuffle(charPassWord);//洗牌算法
+        //洗牌算法
+        charPassWord = shuffle(charPassWord);
         String result = String.valueOf(charPassWord);
+        if (result.length() > needPasswordLength) {
+            return result.substring(0, needPasswordLength - 1);
+        }
         return result;
     }
 
-    public static int getRandom(int key) {
+    private static int getRandom(int key) {
         if (key == 0) {
             return 0;
         }
@@ -165,11 +148,11 @@ public class RandomUtils {
         return key;
     }
 
-    public static char getHash(int c) {
+    private static char getHash(int c) {
         return chars[c];
     }
 
-    public static char[] shuffle(char[] c) {//洗牌算法
+    private static char[] shuffle(char[] c) {//洗牌算法
         for (int i = 0; i < c.length; i++) {
             int j = random.nextInt(c.length - 1);
             if (c[i] != c[j] && !String.valueOf(c[i]).equals(String.valueOf(c[j]))) {
