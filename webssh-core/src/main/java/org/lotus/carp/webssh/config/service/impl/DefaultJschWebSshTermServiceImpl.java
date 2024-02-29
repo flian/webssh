@@ -124,7 +124,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
             if (null == cachedObj) {
                 if (currentSessionCnt.get() >= maxSessionCnt) {
                     log.error("Execute max concurrent capacity exec.max:{},current:{}", maxSessionCnt, currentSessionCnt.get());
-                    webSocketSession.sendMessage(new TextMessage("Execute Max Concurrent Capacity,session will be close."));
+                    webSocketSession.sendMessage(new TextMessage("Execute Max Concurrent Capacity,session will be closed."));
                     webSocketSession.close();
                     return false;
                 }
