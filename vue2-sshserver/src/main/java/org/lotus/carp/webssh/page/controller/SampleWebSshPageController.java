@@ -2,6 +2,7 @@ package org.lotus.carp.webssh.page.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.page.WebSshPageController;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date : 2024-03-01 14:19
  **/
 @Slf4j
+@Controller
 public class SampleWebSshPageController extends WebSshPageController {
 
     /**

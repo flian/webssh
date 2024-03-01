@@ -8,9 +8,11 @@ package org.lotus.carp.webssh.page.config;
  * @date : 2024-03-01 10:35
  **/
 
+import org.lotus.carp.webssh.page.WebSshPageController;
 import org.lotus.carp.webssh.page.api.WebSshProjectTokensApi;
 import org.lotus.carp.webssh.page.restful.DefaultWebSshProjectTokensController;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,5 +25,13 @@ public class DefaultVue2WebBeanConfig {
     @Bean
     public WebSshProjectTokensApi defaultWebSshProjectTokens() {
         return new DefaultWebSshProjectTokensController();
+    }
+
+    @ConditionalOnProperty(value = "webssh.vue2.pageController.enable", matchIfMissing = true)
+    @ConditionalOnMissingBean
+    @Resource
+    @Bean
+    public WebSshPageController defaultWebSshPageController() {
+        return new WebSshPageController();
     }
 }
