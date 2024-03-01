@@ -1,11 +1,7 @@
 package org.lotus.carp.webssh.config.controller.vo;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
+import org.lotus.carp.webssh.config.utils.WebSshUtils;
 
 import java.util.Date;
 
@@ -17,7 +13,7 @@ import java.util.Date;
  * @date : 2024-02-01 11:24
  **/
 @Data
-@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class FileMetaVo {
     //File{Name: mFile.Name(), IsDir: mFile.IsDir(), Size: fileSize, ModifyTime: mFile.ModTime().Format("2006-01-02 15:04:05")}
     /**
@@ -28,7 +24,7 @@ public class FileMetaVo {
     /**
      * is file folder
      */
-    private boolean isDir;
+    private boolean dir;
 
     /**
      * file human-readable size
@@ -38,15 +34,19 @@ public class FileMetaVo {
     /**
      * file last modify time
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date modifyTime;
+    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date modifyTimeObj;
 
+    private String modifyTime;
     /**
      * file add time
      * TODO current can't find create time from jsch. later try to find it.
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date createTime;
+    //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date createTimeObj;
+
+    private String createTime;
+
     /**
      * file permissions string
      */
@@ -62,12 +62,14 @@ public class FileMetaVo {
      */
     private String groupName;
 
-    public boolean getDir(){
-        return this.isDir;
+    public void setModifyTimeObj(Date modifyTimeObj) {
+        this.modifyTimeObj = modifyTimeObj;
+        this.modifyTime = WebSshUtils.formatDateTimeStr(modifyTimeObj);
     }
 
-    @JsonProperty("IsDir")
-    public boolean getIsDir(){
-        return this.isDir;
+    public void setCreateTimeObj(Date createTimeObj) {
+        this.createTimeObj = createTimeObj;
+        this.createTime = WebSshUtils.formatDateTimeStr(createTimeObj);
     }
+
 }

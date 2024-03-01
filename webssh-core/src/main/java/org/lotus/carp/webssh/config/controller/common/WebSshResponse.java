@@ -1,6 +1,5 @@
 package org.lotus.carp.webssh.config.controller.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,14 +19,18 @@ public class WebSshResponse<T> implements Serializable {
     private int code;
     private String message;
 
-    @JsonProperty("Msg")
+    //@JsonProperty("Msg")
     private String msg = DEFAULT_WEB_SSH_SUCCESS_MSG;
-    @JsonProperty("Data")
+    //@JsonProperty("Data")
     private T data;
 
 
-    @JsonProperty("Duration")
+    //@JsonProperty("Duration")
     private String duration;
+
+    public boolean isOk() {
+        return WebSshAppConst.OK == code;
+    }
 
     public WebSshResponse(int resultCode, T data, String resultMsg) {
         this.code = resultCode;
@@ -36,7 +39,7 @@ public class WebSshResponse<T> implements Serializable {
         this.msg = resultMsg;
     }
 
-    public WebSshResponse(int resultCode, T data, String resultMsg,String timeCost) {
+    public WebSshResponse(int resultCode, T data, String resultMsg, String timeCost) {
         this.code = resultCode;
         this.data = data;
         this.message = resultMsg;
@@ -56,8 +59,6 @@ public class WebSshResponse<T> implements Serializable {
     }
 
 
-
-
     public static <E> WebSshResponse<E> ok(int OK, E data, String resultMsg) {
         return new WebSshResponse<E>(OK, data, resultMsg);
     }
@@ -66,8 +67,8 @@ public class WebSshResponse<T> implements Serializable {
         return new WebSshResponse<E>(WebSshAppConst.OK, data, resultMsg);
     }
 
-    public static <E> WebSshResponse<E> ok(E data, String resultMsg,String timeCost) {
-        return new WebSshResponse<E>(WebSshAppConst.OK, data, resultMsg,timeCost);
+    public static <E> WebSshResponse<E> ok(E data, String resultMsg, String timeCost) {
+        return new WebSshResponse<E>(WebSshAppConst.OK, data, resultMsg, timeCost);
     }
 
     public static <E> WebSshResponse<E> ok(E data) {
@@ -102,8 +103,9 @@ public class WebSshResponse<T> implements Serializable {
     public static <T> WebSshResponse<T> fail(String resultMsg) {
         return new WebSshResponse<T>(WebSshAppConst.FAIL, resultMsg);
     }
+
     public static <T> WebSshResponse<T> fail(T data, String resultMsg) {
-        return new WebSshResponse<T>(WebSshAppConst.FAIL, data,resultMsg);
+        return new WebSshResponse<T>(WebSshAppConst.FAIL, data, resultMsg);
     }
 
     public static <E> WebSshResponse<E> fail(int FAIL, E data, String resultMsg) {

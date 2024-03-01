@@ -173,7 +173,10 @@ public class WebSshConfig {
      */
     private boolean genSslKeyOnStartupIfNotPresent = false;
 
-
+    /**
+     * config to enable project exchange token.
+     */
+    private boolean enableProjectExchangeToken = false;
 
     /**
      * default httpPort
@@ -184,4 +187,19 @@ public class WebSshConfig {
      * https port
      */
     private int httpsPort = 5443;
+
+    /**
+     * web ssh default date format.
+     */
+    private String dateFormat = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * default start core pool size for ssh shellTerm
+     */
+    private int startCoreSshShellTermCorePoolSize = 5;
+
+    /**
+     * default max shell thread
+     */
+    private int maxSshShellTermCorePoolSize = 1000;
 }

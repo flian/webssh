@@ -1,6 +1,5 @@
 package org.lotus.carp.webssh.config.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.PropertiesConfigUser;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
+import org.lotus.carp.webssh.config.utils.RandomUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -175,10 +175,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     //generate random password
     private String randomPassword() {
-        return RandomUtil.randomStringUpper(3) +
-                RandomUtil.randomString(4) +
-                RandomUtil.randomNumbers(3) +
-                RandomUtil.randomString("~!!@#$%^&*()_+}{:><?,.|", 3);
+        return RandomUtils.generatePassword();
     }
 
     @Override

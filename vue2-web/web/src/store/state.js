@@ -13,6 +13,8 @@ export default {
     currentTab: {},
     shouldValidToken: true,
     token: '',
+    projectExchangeToken: undefined,
+    projectHeaderParams: [],
     ctx: undefined,
     language: getLanguage()
 }

@@ -29,6 +29,11 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>webssh-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

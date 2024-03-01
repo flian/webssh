@@ -1,3 +1,16 @@
+TODO LIST：
+1. 减少不必要的依赖（jackson,hutools etc) - done
+2. 时间格式 - done
+3. json对象大小写转换（目前都是大小，需改为标准的java格式） - done
+4. 依赖方式部署readme编写
+5. 参数说明readme编写
+6. prod模式，启动时动态生成ssl并配置
+7. 端口转发
+8. http代理tcp
+9. navicat mySQL/postgresSQL/SQLite http代理翻译 （ntunnel_mysql.php,ntunnel_pgsql.php,ntunnel_sqlite.php)
+10.请求webssh header可能需要带其他参数(示例）
+
+其他信息：
 http tunnel for mysql:
 ntunnel_mysql.php for java
 mongo http tunnel for java
@@ -5,7 +18,7 @@ mongo http tunnel for java
 http 代理tcp流量
 https://blog.twofei.com/877/
 
-减少不必要的依赖
+
 
 启动时如果https是默认配置，尝试自动生成一套新的https证书并使用新证书。
 https:

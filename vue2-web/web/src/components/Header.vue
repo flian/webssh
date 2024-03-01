@@ -118,6 +118,7 @@
 <script>
 import {getShouldVerifyToken} from '@/api/common'
 import {login} from '@/api/common'
+import {getProjectHeaders} from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
@@ -172,6 +173,17 @@ export default {
             self.$emit('ssh-logout');
             self.$store.dispatch('setToken', '');
         },
+        handleProjectTokens(self,token){
+            const projectExchangeToken = self.$store.state.projectExchangeToken;
+            getProjectHeaders(token,projectExchangeToken).then(function (result){
+                if(result.code =='200'){
+                    const headerTokens = result.data;
+                    if(headerTokens){
+                        self.$store.state.projectHeaderParams = headerTokens;
+                    }
+                }
+            });
+        },
         handleLogin() {
             const self = this;
             this.$refs.loginForm.validate((valid) => {
@@ -180,9 +192,10 @@ export default {
                     login(self.login.form).then(function (result) {
                         self.loginLoading = false;
                         if (result.code == '200') {
-                            const token = result.Data.token;
+                            const token = result.data.token;
                             if (token) {
                                 self.$store.dispatch('setToken', token);
+                                self.handleProjectTokens(self,token);
                             }
                         }
 
@@ -252,9 +265,18 @@ export default {
         if(contextPath){
             self.$store.state.ctx = contextPath;
         }
+        const projectExchangeToken = self.getRequestParam('projectExchangeToken')
+        console.log('projectExchangeToken:'+projectExchangeToken);
+        if(projectExchangeToken){
+            self.$store.state.projectExchangeToken = projectExchangeToken;
+        }
 
         getShouldVerifyToken().then(function (shouldVerifyToken) {
-            self.$store.state.shouldValidToken = shouldVerifyToken.Data;
+            self.$store.state.shouldValidToken = shouldVerifyToken.data;
+            if(!self.$store.state.shouldValidToken){
+                //no need token verify,sending token null.
+                self.handleProjectTokens(self,'');
+            }
         });
     },
     computed: {

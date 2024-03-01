@@ -1,7 +1,5 @@
 package org.lotus.carp.webssh.config.service.impl;
 
-import cn.hutool.core.codec.Base64Decoder;
-import cn.hutool.crypto.digest.MD5;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
@@ -10,9 +8,11 @@ import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
+import org.lotus.carp.webssh.config.utils.WebSshUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Base64;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
@@ -37,13 +38,11 @@ import static org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeE
 @Slf4j
 public class JschBase implements InitializingBean {
     @Resource
-    private WebSshConfig webSshConfig;
+    protected WebSshConfig webSshConfig;
 
     private static boolean jschLoggerInitialized = false;
 
     private ObjectMapper baseObjectMapper = new ObjectMapper();
-
-    private MD5 md5 = MD5.create();
 
     Cache<String, Session> sessionCache;
 
@@ -70,12 +69,16 @@ public class JschBase implements InitializingBean {
             preFix = clientRemoteHost();
         }
 
-        String cacheSessionKey = md5.digestHex16(String.format("%s:%s", preFix, sshInfo));
+        String cacheSessionKey = md5String(String.format("%s:%s", preFix, sshInfo));
         Session result = sessionCache.getIfPresent(cacheSessionKey);
         if (null != result) {
             return result;
         }
         return createAndCacheOne(sshInfo, cacheSessionKey);
+    }
+
+    private String md5String(String source) {
+        return DigestUtils.md5DigestAsHex(source.getBytes());
     }
 
     private synchronized Session createAndCacheOne(String sshInfo, String cacheKey) throws IOException, JSchException {
@@ -263,7 +266,7 @@ public class JschBase implements InitializingBean {
     }
 
     String deCodeBase64Str(String sshInfo) {
-        return Base64Decoder.decodeStr(sshInfo);
+        return new String(Base64.getDecoder().decode(sshInfo));
     }
 
     //@see https://stackoverflow.com/questions/24623170/an-example-of-how-to-specify-terminal-modes-pty-req-string-for-ssh-client?rq=1
@@ -308,6 +311,13 @@ public class JschBase implements InitializingBean {
         if (!jschLoggerInitialized && webSshConfig.getDebugJsch2SystemError()) {
             JSch.setLogger(new JschLogger());
         }
+        if (!WebSshUtils.isInitialized) {
+            if (!ObjectUtils.isEmpty(webSshConfig.getDateFormat())) {
+                WebSshUtils.WEB_SSH_DEFAULT_DATE_FORMAT = webSshConfig.getDateFormat();
+            }
+            WebSshUtils.isInitialized = true;
+        }
+
         sessionCache = CacheBuilder.newBuilder()
                 .maximumSize(10000)
                 .expireAfterAccess(webSshConfig.getTokenExpiration(), TimeUnit.HOURS)
@@ -319,5 +329,14 @@ public class JschBase implements InitializingBean {
                     }
                 })
                 .build();
+        //init sub class.
+        subInit();
+    }
+
+    /**
+     * afterPropertiesSet init for sub class.
+     */
+    public void subInit() {
+
     }
 }

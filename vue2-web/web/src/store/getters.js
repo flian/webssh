@@ -10,4 +10,5 @@ export default {
     ),
     token: state => state.token,
     ctx: state => state.ctx,
+    projectHeaderParams: state => state.projectHeaderParams,
 }

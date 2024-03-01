@@ -34,18 +34,18 @@
                     :width="nameWidth"
                     sortable :sort-method="nameSort">
                     <template slot-scope="scope">
-                        <p v-if="scope.row.IsDir === true" style="color:#0c60b5;cursor:pointer;" class="el-icon-folder"> {{ scope.row.Name }}</p>
-                        <p v-else-if="scope.row.IsDir === false" style="cursor: pointer" class="el-icon-document"> {{ scope.row.Name }}</p>
+                        <p v-if="scope.row.dir === true" style="color:#0c60b5;cursor:pointer;" class="el-icon-folder"> {{ scope.row.name }}</p>
+                        <p v-else-if="scope.row.dir === false" style="cursor: pointer" class="el-icon-document"> {{ scope.row.name }}</p>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('PermissionsString')" prop="PermissionsString"></el-table-column>
-                <el-table-column :label="$t('OwnerName')" prop="OwnerName"></el-table-column>
-                <el-table-column :label="$t('GroupName')" prop="GroupName"></el-table-column>
-                <el-table-column :label="$t('Size')" prop="Size"></el-table-column>
+                <el-table-column :label="$t('PermissionsString')" prop="permissionsString"></el-table-column>
+                <el-table-column :label="$t('OwnerName')" prop="ownerName"></el-table-column>
+                <el-table-column :label="$t('GroupName')" prop="groupName"></el-table-column>
+                <el-table-column :label="$t('Size')" prop="size"></el-table-column>
                 <!-- TODO current can't get create time from remote.
                     <el-table-column :label="$t('AddTime')" prop="createTime" sortable width="150"></el-table-column>
                 -->
-                <el-table-column :label="$t('ModifiedTime')" prop="ModifyTime" sortable width="150"></el-table-column>
+                <el-table-column :label="$t('ModifiedTime')" prop="modifyTime" sortable width="150"></el-table-column>
             </el-table>
         </el-dialog>
     </div>
@@ -190,13 +190,13 @@ export default {
             return a.Name > b.Name
         },
         rowClick(row) {
-            if (row.IsDir) {
+            if (row.dir) {
                 // 文件夹处理
-                this.currentPath = this.currentPath.charAt(this.currentPath.length - 1) === '/' ? this.currentPath + row.Name : this.currentPath + '/' + row.Name
+                this.currentPath = this.currentPath.charAt(this.currentPath.length - 1) === '/' ? this.currentPath + row.name : this.currentPath + '/' + row.name
                 this.getFileList()
             } else {
                 // 文件处理
-                this.downloadFilePath = this.currentPath.charAt(this.currentPath.length - 1) === '/' ? this.currentPath + row.Name : this.currentPath + '/' + row.Name
+                this.downloadFilePath = this.currentPath.charAt(this.currentPath.length - 1) === '/' ? this.currentPath + row.name : this.currentPath + '/' + row.name
                 this.downloadFile()
             }
         },
@@ -206,16 +206,16 @@ export default {
                 this.currentPath = '/'
             }
             const result = await fileList(this.currentPath, this.$store.getters.sshReq,this.$store.state.token)
-            if (result.Msg === 'success') {
-                if (result.Data.list === null) {
+            if (result.msg === 'success') {
+                if (result.data.list === null) {
                     this.fileList = []
                 } else {
-                    this.fileList = result.Data.list
+                    this.fileList = result.data.list
                 }
                 this.updatePath(this.currentPath)
             } else {
                 this.fileList = []
-                this.$message.error(result.Msg)
+                this.$message.error(result.msg)
                 this.updatePath('/')
             }
         },
