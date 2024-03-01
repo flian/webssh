@@ -32,6 +32,18 @@ function getBaseURL() {
     return baseUrl;
 }
 
+
+function applyProjectParams(config){
+    //apply project tokens.
+    const projectHeaderParams = store.getters.projectHeaderParams
+    if(projectHeaderParams && projectHeaderParams.length > 0){
+        for (let index = 0; index < projectHeaderParams.length; ++index) {
+            const element = projectHeaderParams[index];
+            config.headers[element['name']] = element['value']
+        }
+    }
+}
+
 var instance = axios.create({
     timeout: 8000,
     baseURL: getBaseURL(),
@@ -42,6 +54,7 @@ var instance = axios.create({
 instance.interceptors.request.use(
     async config => {
         config.baseURL = await getBaseURL();
+        applyProjectParams(config);
         return config;
     },
     error => Promise.reject(error));

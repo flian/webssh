@@ -1,6 +1,5 @@
 package org.lotus.carp.webssh.config.controller.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;

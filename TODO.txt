@@ -8,6 +8,7 @@ TODO LIST：
 7. 端口转发
 8. http代理tcp
 9. navicat mySQL/postgresSQL/SQLite http代理翻译 （ntunnel_mysql.php,ntunnel_pgsql.php,ntunnel_sqlite.php)
+10.请求webssh header可能需要带其他参数(示例）
 
 其他信息：
 http tunnel for mysql:
