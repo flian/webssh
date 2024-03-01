@@ -95,7 +95,7 @@ public class WebSshPageController implements InitializingBean {
     }
 
     private boolean isRootCxtEmpty(String ctxPath) {
-        return (null == contextPath || contextPath.isEmpty() || "/".equals(contextPath));
+        return (null == ctxPath || ctxPath.isEmpty() || "/".equals(ctxPath));
     }
 
     /*@GetMapping("/webssh/static/{staticType}/{staticFileFull}")
