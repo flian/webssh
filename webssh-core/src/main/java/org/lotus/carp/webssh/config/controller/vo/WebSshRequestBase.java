@@ -12,6 +12,12 @@ import lombok.Data;
 
 @Data
 public class WebSshRequestBase {
+    /**
+     * webssh token if present.
+     */
     private String token;
+    /**
+     * current ssh client info
+     */
     private String sshInfo;
 }

@@ -6,8 +6,11 @@ import org.lotus.carp.webssh.config.controller.vo.WebSshRequestBase;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.page.api.WebSshProjectTokensApi;
 import org.lotus.carp.webssh.page.api.vo.ProjectHeaderParamVo;
+import org.lotus.carp.webssh.page.api.vo.ProjectHeaderRequestVo;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,7 @@ public class DefaultWebSshProjectTokensController extends BaseController impleme
     private WebSshLoginService webSshLoginService;
 
     @Override
-    public WebSshResponse<List<ProjectHeaderParamVo>> composeProjectHeaderTokens(WebSshRequestBase requestVo) {
+    public WebSshResponse<List<ProjectHeaderParamVo>> composeProjectHeaderTokens(HttpServletRequest request, HttpServletResponse response, ProjectHeaderRequestVo requestVo) {
         WebSshResponse<List<ProjectHeaderParamVo>> result = checkTokenValid(requestVo);
         if (null != result) {
             return result;
@@ -34,7 +37,7 @@ public class DefaultWebSshProjectTokensController extends BaseController impleme
         return WebSshResponse.ok(defaultProjectHeaders);
     }
 
-    protected WebSshResponse<List<ProjectHeaderParamVo>> checkTokenValid(WebSshRequestBase requestVo) {
+    protected WebSshResponse<List<ProjectHeaderParamVo>> checkTokenValid(ProjectHeaderRequestVo requestVo) {
         if (!webSshLoginService.isTokenValid(requestVo.getToken())) {
             return WebSshResponse.fail("token is invalid.");
         }

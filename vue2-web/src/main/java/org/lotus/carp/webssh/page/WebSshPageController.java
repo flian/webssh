@@ -4,8 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.page.common.WebSshVue2PageConst;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @ConditionalOnProperty(value = "webssh.vue2.pageController.enable", matchIfMissing = true)
+@ConditionalOnMissingBean(WebSshPageController.class)
 @Slf4j
 public class WebSshPageController implements InitializingBean {
 
@@ -50,26 +54,46 @@ public class WebSshPageController implements InitializingBean {
 
     @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
     public String index(HttpServletRequest request) {
+        String returnUrl;
         if (shouldRenderPage(request)) {
             //render page
-            return String.format("%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
+            returnUrl = String.format("%s/%s", WebSshVue2PageConst.WEB_SSH_PREFIX, INDEX_STR);
         } else {
             //or redirect request with prefix parameter.
-            return String.format("redirect:%s", forwardIndexUri);
+            returnUrl = String.format("redirect:%s", forwardIndexUri);
+        }
+        String projectExchangeToken = generateProjectExchangeToken(request);
+
+        if (!ObjectUtils.isEmpty(projectExchangeToken)) {
+            //compose projectExchangeToken
+            returnUrl = appEndExchangeToken2Url(returnUrl, projectExchangeToken);
+        }
+        return returnUrl;
+    }
+
+    public String appEndExchangeToken2Url(String returnUrl, String projectExchangeToken) {
+        if (returnUrl.contains("?") && returnUrl.contains("&")) {
+            return returnUrl + "&" + WebSshVue2PageConst.WEB_SSH_VUE2_PROJECT_EXCHANGE_TOKEN + "=" + projectExchangeToken;
+        } else {
+            return returnUrl + "?" + WebSshVue2PageConst.WEB_SSH_VUE2_PROJECT_EXCHANGE_TOKEN + "=" + projectExchangeToken;
         }
     }
 
-    private boolean shouldRenderPage(HttpServletRequest request){
-        if(!shouldForwardWithPrefixParameters){
+    public String generateProjectExchangeToken(HttpServletRequest request) {
+        return "";
+    }
+
+    private boolean shouldRenderPage(HttpServletRequest request) {
+        if (!shouldForwardWithPrefixParameters) {
             return true;
         }
 
         String queryStr = request.getQueryString();
-        if(null == queryStr || queryStr.isEmpty()){
+        if (null == queryStr || queryStr.isEmpty()) {
             return false;
         }
 
-        if(queryStr.contains(prefixParameterName)){
+        if (queryStr.contains(prefixParameterName)) {
             return true;
         }
 

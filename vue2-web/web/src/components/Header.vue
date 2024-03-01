@@ -264,6 +264,11 @@ export default {
         if(contextPath){
             self.$store.state.ctx = contextPath;
         }
+        const projectExchangeToken = self.getRequestParam('projectExchangeToken')
+        console.log('projectExchangeToken:'+projectExchangeToken);
+        if(projectExchangeToken){
+            self.$store.state.projectExchangeToken = projectExchangeToken;
+        }
 
         getShouldVerifyToken().then(function (shouldVerifyToken) {
             self.$store.state.shouldValidToken = shouldVerifyToken.data;

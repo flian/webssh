@@ -1,12 +1,15 @@
 package org.lotus.carp.webssh.page.controller;
 
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
-import org.lotus.carp.webssh.config.controller.vo.WebSshRequestBase;
 import org.lotus.carp.webssh.config.utils.RandomUtils;
 import org.lotus.carp.webssh.page.api.vo.ProjectHeaderParamVo;
+import org.lotus.carp.webssh.page.api.vo.ProjectHeaderRequestVo;
 import org.lotus.carp.webssh.page.restful.DefaultWebSshProjectTokensController;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -18,6 +21,8 @@ import java.util.List;
  **/
 @Controller
 public class SampleProjectHeaderController extends DefaultWebSshProjectTokensController {
+    private String projectExchangeTokenResult = "EXCHANGE_TOKEN_RESULT";
+
     public SampleProjectHeaderController() {
         if (super.defaultProjectHeaders.isEmpty()) {
             //sample add 2 test header token and value
@@ -27,9 +32,25 @@ public class SampleProjectHeaderController extends DefaultWebSshProjectTokensCon
         }
     }
 
+    private boolean haseProjectExchangeTokenResult() {
+        return defaultProjectHeaders.stream().filter(d -> d.getName().equals(projectExchangeTokenResult)).findFirst().isPresent();
+    }
+
+    /**
+     * just a sample do project token exchange
+     * @param request
+     * @param response
+     * @param requestVo
+     * @return
+     */
     @Override
-    public WebSshResponse<List<ProjectHeaderParamVo>> composeProjectHeaderTokens(WebSshRequestBase requestVo) {
+    public WebSshResponse<List<ProjectHeaderParamVo>> composeProjectHeaderTokens(HttpServletRequest request, HttpServletResponse response, ProjectHeaderRequestVo requestVo) {
         //return headers.
-        return super.composeProjectHeaderTokens(requestVo);
+        if (!ObjectUtils.isEmpty(requestVo.getProjectExchangeToken())) {
+            if (!haseProjectExchangeTokenResult()) {
+                defaultProjectHeaders.add(new ProjectHeaderParamVo(projectExchangeTokenResult, "PROJECT_TOKEN_EXCHANGE_RESULT:12345"));
+            }
+        }
+        return super.composeProjectHeaderTokens(request, response, requestVo);
     }
 }

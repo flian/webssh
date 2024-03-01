@@ -7,8 +7,8 @@ export function getShouldVerifyToken(){
     return request.get('/webssh/shouldVerifyToken')
 }
 
-export function getProjectHeaders(token){
-    return request.get(`/webssh/projectHeader/params?token=${token}`)
+export function getProjectHeaders(token,projectExchangeToken){
+    return request.get(`/webssh/projectHeader/params?token=${token}&projectExchangeToken=${projectExchangeToken}`)
 }
 
 export function login(loginData){

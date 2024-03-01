@@ -51,7 +51,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 5. copy vue2-sshserver\target\vue2-sshserver-1.26-SNAPSHOT.jar到服务器，
 ```
 使用 java -jar vue2-sshserver-1.26-SNAPSHOT.jar --webssh.allowedUsers=root:changeit@123!:% 启动程序.
-其中changeit@123!改为自己的密码。如果不设置webssh.allowedUsers,默认的root会产生一个随机密码，请注意观察控制台日子。
+其中changeit@123!改为自己的密码。如果不设置webssh.allowedUsers,默认的root会产生一个随机密码，请注意观察控制台日志。
 ```
 6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 或者`https://127.0.0.1:5443/webssh/index`即可访问.
 7. 默认的standalone会开启https，5132会转跳到`https://127.0.0.1:5443/webssh/index`
