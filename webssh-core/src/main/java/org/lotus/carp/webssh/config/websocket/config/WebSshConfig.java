@@ -173,7 +173,10 @@ public class WebSshConfig {
      */
     private boolean genSslKeyOnStartupIfNotPresent = false;
 
-
+    /**
+     * config to enable project exchange token.
+     */
+    private boolean enableProjectExchangeToken = false;
 
     /**
      * default httpPort

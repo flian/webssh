@@ -19,11 +19,15 @@ public class SampleWebSshPageController extends WebSshPageController {
 
     /**
      * just a sample for project exchange token
+     *
      * @param request
      * @return
      */
     @Override
     public String generateProjectExchangeToken(HttpServletRequest request) {
+        if (!webSshConfig.isEnableProjectExchangeToken()) {
+            return null;
+        }
         return "ThisIsASampleExchangeToken";
     }
 }

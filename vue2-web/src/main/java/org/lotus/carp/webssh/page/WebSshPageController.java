@@ -1,12 +1,15 @@
 package org.lotus.carp.webssh.page;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.page.common.WebSshVue2PageConst;
+import org.lotus.carp.webssh.page.config.WebSshWebMvcConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +40,9 @@ public class WebSshPageController implements InitializingBean {
      */
     @Value("${webssh.api.url.prefix:}")
     private String webSshConfigContextPrefix;
+
+    @Resource
+    protected WebSshConfig webSshConfig;
 
     private String prefixParameterName = "prefix";
 
@@ -119,6 +125,9 @@ public class WebSshPageController implements InitializingBean {
 
 
     public String generateProjectExchangeToken(HttpServletRequest request) {
+        if(!webSshConfig.isEnableProjectExchangeToken()){
+            return null;
+        }
         return null;
     }
 

@@ -174,7 +174,8 @@ export default {
             self.$store.dispatch('setToken', '');
         },
         handleProjectTokens(self,token){
-            getProjectHeaders(token).then(function (result){
+            const projectExchangeToken = self.$store.state.projectExchangeToken;
+            getProjectHeaders(token,projectExchangeToken).then(function (result){
                 if(result.code =='200'){
                     const headerTokens = result.data;
                     if(headerTokens){
