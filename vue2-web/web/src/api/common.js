@@ -8,7 +8,11 @@ export function getShouldVerifyToken(){
 }
 
 export function getProjectHeaders(token,projectExchangeToken){
-    return request.get(`/webssh/projectHeader/params?token=${token}&projectExchangeToken=${projectExchangeToken}`)
+    let eTokenVal = '';
+    if(projectExchangeToken){
+        eTokenVal = projectExchangeToken;
+    }
+    return request.get(`/webssh/projectHeader/params?token=${token}&projectExchangeToken=${eTokenVal}`)
 }
 
 export function login(loginData){

@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,25 +33,32 @@ public class SampleProjectHeaderController extends DefaultWebSshProjectTokensCon
         }
     }
 
-    private boolean haseProjectExchangeTokenResult() {
-        return defaultProjectHeaders.stream().filter(d -> d.getName().equals(projectExchangeTokenResult)).findFirst().isPresent();
+    private boolean haseProjectExchangeTokenResult(List<ProjectHeaderParamVo> list) {
+        return list.stream().filter(d -> d.getName().equals(projectExchangeTokenResult)).findFirst().isPresent();
     }
 
     /**
-     * just a sample do project token exchange
-     * @param request
-     * @param response
+     * just a sample to show case for project exchange token.
+     *
      * @param requestVo
      * @return
      */
     @Override
-    public WebSshResponse<List<ProjectHeaderParamVo>> composeProjectHeaderTokens(HttpServletRequest request, HttpServletResponse response, ProjectHeaderRequestVo requestVo) {
+    protected WebSshResponse<List<ProjectHeaderParamVo>> checkTokenValidAndComposeResult(HttpServletRequest request, HttpServletResponse response, ProjectHeaderRequestVo requestVo) {
+        WebSshResponse<List<ProjectHeaderParamVo>> superResult = super.checkTokenValidAndComposeResult(request, response, requestVo);
+        if (!superResult.isOk()) {
+            //valid token is not ok,just return.
+            return superResult;
+        }
+        List<ProjectHeaderParamVo> resultList = new ArrayList<>();
+        resultList.addAll(superResult.getData());
         //return headers.
         if (!ObjectUtils.isEmpty(requestVo.getProjectExchangeToken())) {
-            if (!haseProjectExchangeTokenResult()) {
-                defaultProjectHeaders.add(new ProjectHeaderParamVo(projectExchangeTokenResult, "PROJECT_TOKEN_EXCHANGE_RESULT:12345"));
+            if (!haseProjectExchangeTokenResult(resultList)) {
+                //if request project token exchange,add a result.just for show case.
+                resultList.add(new ProjectHeaderParamVo(projectExchangeTokenResult, "PROJECT_TOKEN_EXCHANGE_RESULT:12345"));
             }
         }
-        return super.composeProjectHeaderTokens(request, response, requestVo);
+        return WebSshResponse.ok(resultList);
     }
 }

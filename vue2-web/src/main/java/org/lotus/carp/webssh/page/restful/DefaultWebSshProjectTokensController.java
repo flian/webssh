@@ -2,7 +2,6 @@ package org.lotus.carp.webssh.page.restful;
 
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.restful.BaseController;
-import org.lotus.carp.webssh.config.controller.vo.WebSshRequestBase;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.page.api.WebSshProjectTokensApi;
 import org.lotus.carp.webssh.page.api.vo.ProjectHeaderParamVo;
@@ -30,17 +29,17 @@ public class DefaultWebSshProjectTokensController extends BaseController impleme
 
     @Override
     public WebSshResponse<List<ProjectHeaderParamVo>> composeProjectHeaderTokens(HttpServletRequest request, HttpServletResponse response, ProjectHeaderRequestVo requestVo) {
-        WebSshResponse<List<ProjectHeaderParamVo>> result = checkTokenValid(requestVo);
+        WebSshResponse<List<ProjectHeaderParamVo>> result = checkTokenValidAndComposeResult(request,response,requestVo);
         if (null != result) {
             return result;
         }
         return WebSshResponse.ok(defaultProjectHeaders);
     }
 
-    protected WebSshResponse<List<ProjectHeaderParamVo>> checkTokenValid(ProjectHeaderRequestVo requestVo) {
+    protected WebSshResponse<List<ProjectHeaderParamVo>> checkTokenValidAndComposeResult(HttpServletRequest request, HttpServletResponse response,ProjectHeaderRequestVo requestVo) {
         if (!webSshLoginService.isTokenValid(requestVo.getToken())) {
             return WebSshResponse.fail("token is invalid.");
         }
-        return null;
+        return WebSshResponse.ok(defaultProjectHeaders);
     }
 }
