@@ -13,6 +13,7 @@ import {Terminal} from 'xterm'
 import {FitAddon} from 'xterm-addon-fit'
 import {AttachAddon} from 'xterm-addon-attach'
 import store from '@/store';
+import wshelper from '@/utils/ws';
 
 export default {
     name: 'Terminal',
@@ -91,7 +92,7 @@ export default {
                 closeTip = 'Connection timed out!'
             }
             // open websocket
-            this.ws = new WebSocket(`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${prefix}/webssh/term?token=${token}&sshInfo=${sshReq}&rows=${this.term.rows}&cols=${this.term.cols}&closeTip=${closeTip}`)
+            this.ws = wshelper.newWs({url:`${(location.protocol === 'http:' ? 'ws' : 'wss')}://${location.host}${prefix}/webssh/term?token=${token}&sshInfo=${sshReq}&rows=${this.term.rows}&cols=${this.term.cols}&closeTip=${closeTip}`})
             this.ws.onopen = () => {
                 console.log(Date(), 'onopen')
                 self.connected()
