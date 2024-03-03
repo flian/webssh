@@ -1,15 +1,13 @@
 version='1.26'
-SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
-cd ${SHELL_FOLDER}
 
-#编译项目
+#package project
 cd ../
 mvn clean package -DskipTests
 
-#编译
+#build local docker images
 docker build -f scripts/docker/Dockerfile -t foylian/webssh:${version} .
 docker tag foylian/webssh:${version} foylian/webssh:latest
 
-#中央仓库
+#push images to docker hub
 docker tag foylian/webssh:${version} foylian/webssh:${version}
 docker tag foylian/webssh:${version} foylian/webssh:latest
