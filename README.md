@@ -87,8 +87,7 @@ TODO
 
 ### 包含到已有项目中
 
-包含到已有项目后，主要问题就是认证的问题，下面假设已有项目都包含了webssh的全部前端、
-后端代码。
+包含到已有项目后，主要问题就是认证的问题，下面假设已有项目都包含了webssh的全部前端、后端代码。
 由于目前还在开发、测试阶段，执行下面操作时，请自安装webssh到本地（命令行执行`mvn install`）或者自己的私库。
 
 
@@ -121,6 +120,15 @@ webssh必须依赖的组件包括springboot配套的websocket,validation两个�
         </dependency>
 
 ```
+
+同时，无论如何都需要把以下webssh api加入项目白名单：
+/webssh/index
+/webssh/check
+/webssh/shouldVerifyToken
+/webssh/projectHeader/params
+/webssh/login
+/webssh/logout
+
 #### [可选1]只启用webssh认证
 
 webssh端配置:
@@ -128,11 +136,24 @@ webssh端配置:
 由于只依赖webssh自己的认证，这里密码强度请注意设置足够复杂，并且请注意不要泄漏密码。
 其他更多设置，见[关键参数说明](#关键参数说明)
 
-
 项目端配置：
 由于只启动webssh认证，项目端需要把`/webssh/**`加入项目自己的白名单中即可。
 
-#### [可选2] 使用项目认证方式认证webssh接口
+
+#### [可选2]使用项目认证方式认证webssh接口
+
+实现`WebSshProjectTokensApi.composeProjectHeaderTokens` 方法,把对应用户后续请求需要带在header里面的参数设置上。
+例如：
+SampleProjectHeaderController示里里面可选返回了一个"new ProjectHeaderParamVo("AUTH_COOKIE_TEST", RandomUtils.generatePassword(8))"
+webssh后续请求头里面就会有一个AUTH_COOKIE_TEST参数，参数值为这里设置的一个随机字符串。
+这样webssh请求都会经过项目的正常认证流程。
+
+
+#### 配置webssh
+
+最后把`/webssh/index`加入已有项目的正常菜单、权限管理即可。更详细的webssh按钮、功能权限后续规划中，敬请期待。
+
+
 
 
 其他更多设置，见[关键参数说明](#关键参数说明)
@@ -207,4 +228,22 @@ webssh.randomPwdWord： 默认值[RANDOM],启动时，密码中需要产生随�
 
 ```
 
+### webssh api说明
+```
+/webssh/index  webssh主页
+/webssh/check  检查ssh账号密码有效性
+/webssh/shouldVerifyToken  拉取是否启用webssh独立认证
+/webssh/projectHeader/params  拉取webssh api请求时需要的额外token
+/webssh/login webssh独立认证登录接口
+/webssh/logout webssh独立认证注销接口
+/webssh/file/list 拉取对于终端的文件目录信息
+/webssh/file/download 下载远程server指定的文件
+/webssh/file/upload 上传指定文件到指定目录
+
+websocket url(ws/wss):
+ /webssh/term 建立xterm终端连接
+ /webssh/file/progress 获取指定文件上传进度
+
+
+```
 
