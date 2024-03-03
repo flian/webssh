@@ -23,6 +23,8 @@ import java.util.List;
 @RequestMapping("/webssh/projectHeader")
 public interface WebSshProjectTokensApi {
     /**
+     * get project tokens info.
+     * front page will store ProjectHeaderParamVo and add in header for any other webssh request.
      * @param request
      * @param response
      * @param requestVo

@@ -2,7 +2,7 @@
 <configuration>
     <property name="LOG_HOME" value="./logs" />
     <property name="DEFAULT_MAX_LOG_FILE_SIZE" value="2GB"/>
-    <property name="PROJECT_LOG_LEVEL" value="DEBUG"/>
+    <property name="PROJECT_LOG_LEVEL" value="INFO"/>
 
     <!-- 控制台打印日志的相关配置 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -17,7 +17,7 @@
         <!--滚动日志 基于时间和文件大小-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- 滚动日志文件保存格式 -->
-            <FileNamePattern>web-ssh-server-debug.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <FileNamePattern>${LOG_HOME}/web-ssh-server-debug.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <maxHistory>30</maxHistory>
             <maxFileSize>${DEFAULT_MAX_LOG_FILE_SIZE}</maxFileSize>
         </rollingPolicy>
@@ -77,7 +77,7 @@
             <maxFileSize>${DEFAULT_MAX_LOG_FILE_SIZE}</maxFileSize>
         </rollingPolicy>
     </appender>
-    <logger name="org.lotus.carp.webssh" level="DEBUG" />
+    <logger name="org.lotus.carp.webssh" level="${PROJECT_LOG_LEVEL}" />
     <root level="INFO">
         <appender-ref ref="DEBUG-OUT"/>
         <appender-ref ref="STDOUT"/>

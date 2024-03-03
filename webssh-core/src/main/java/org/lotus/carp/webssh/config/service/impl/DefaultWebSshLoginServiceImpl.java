@@ -3,11 +3,13 @@ package org.lotus.carp.webssh.config.service.impl;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.controller.vo.LogoutVo;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.PropertiesConfigUser;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
+import org.lotus.carp.webssh.config.service.vo.WebSshLogoutResultVo;
 import org.lotus.carp.webssh.config.utils.RandomUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
@@ -70,6 +72,24 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
         return null;
     }
 
+    @Override
+    public WebSshLogoutResultVo doWebSshLogout(LogoutVo logoutVo) {
+        WebSshLogoutResultVo resultVo = new WebSshLogoutResultVo();
+        if (!ObjectUtils.isEmpty(logoutVo.getToken())) {
+            WebSshLoginResultVo loginUser = getCachedUser(logoutVo.getToken());
+            if(null != loginUser){
+                resultVo.setLogoutResult(true);
+                resultVo.setUserName(loginUser.getUserName());
+                resultVo.setLoginUserIpAddr(loginUser.getUserIpAddr());
+                resultVo.setLogoutFromIpAddr(logoutVo.getRequestIp());
+                log.info("logout success,request:{},logoutResult:{}",logoutVo,resultVo);
+                removeCacheObj(logoutVo.getToken(),loginUser);
+                return resultVo;
+            }
+        }
+        return null;
+    }
+
     private boolean isIpValidForGivenUser(String userIpAddr, String allowedIps) {
         if (ObjectUtils.isEmpty(userIpAddr)) {
             return true;
@@ -81,6 +101,13 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
             return true;
         }
         return false;
+    }
+
+    private WebSshLoginResultVo getCachedUser(String token) {
+        if (ObjectUtils.isEmpty(token)) {
+            return null;
+        }
+        return getCacheObj(token);
     }
 
     private WebSshLoginResultVo genOneTokenAndCache(WebSshLoginVo user) {
@@ -102,6 +129,10 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
     public <T> T getCacheObj(String token) {
         return (T) tokenCache.getIfPresent(token);
+    }
+    public <T> boolean removeCacheObj(String token,T obj){
+         tokenCache.invalidate(token);
+         return true;
     }
 
     private Date genExpirationDate() {

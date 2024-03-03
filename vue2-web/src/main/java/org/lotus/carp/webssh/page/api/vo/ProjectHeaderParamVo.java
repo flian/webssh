@@ -11,7 +11,14 @@ import lombok.Data;
  **/
 @Data
 public class ProjectHeaderParamVo {
+    /**
+     * header name will be added when webssh front page send request
+     */
     private String name;
+
+    /**
+     * header value will be added  when webssh front page send request
+     */
     private String value;
 
     public ProjectHeaderParamVo(String name, String val) {

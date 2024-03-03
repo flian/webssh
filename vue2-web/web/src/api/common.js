@@ -22,3 +22,6 @@ export function login(loginData){
         data: loginData
     })
 }
+export function logout(token){
+    return request.get(`/webssh/logout?token=${token}`);
+}

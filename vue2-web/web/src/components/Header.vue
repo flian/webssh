@@ -116,9 +116,7 @@
 </template>
 
 <script>
-import {getShouldVerifyToken} from '@/api/common'
-import {login} from '@/api/common'
-import {getProjectHeaders} from '@/api/common'
+import {getProjectHeaders, getShouldVerifyToken, login, logout} from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
@@ -170,15 +168,22 @@ export default {
         handleLogout() {
             const self = this;
             self.foreShowLogin = false;
+            const token = self.$store.getters.token
             self.$emit('ssh-logout');
             self.$store.dispatch('setToken', '');
+            if (token && token !='') {
+                logout(token).then(function (result) {
+                    //logout..
+                    console.log('logout info:'+result);
+                });
+            }
         },
-        handleProjectTokens(self,token){
+        handleProjectTokens(self, token) {
             const projectExchangeToken = self.$store.state.projectExchangeToken;
-            getProjectHeaders(token,projectExchangeToken).then(function (result){
-                if(result.code =='200'){
+            getProjectHeaders(token, projectExchangeToken).then(function (result) {
+                if (result.code == '200') {
                     const headerTokens = result.data;
-                    if(headerTokens){
+                    if (headerTokens) {
                         self.$store.state.projectHeaderParams = headerTokens;
                     }
                 }
@@ -195,7 +200,7 @@ export default {
                             const token = result.data.token;
                             if (token) {
                                 self.$store.dispatch('setToken', token);
-                                self.handleProjectTokens(self,token);
+                                self.handleProjectTokens(self, token);
                             }
                         }
 
@@ -243,7 +248,7 @@ export default {
             }
         },
         getRequestParam(name) {
-            console.log('request query:'+location.search);
+            console.log('request query:' + location.search);
             // eslint-disable-next-line no-cond-assign
             if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
                 return decodeURIComponent(name[1]);
@@ -261,21 +266,21 @@ export default {
         }
         const self = this;
         const contextPath = self.getRequestParam('prefix');
-        console.log('contextPath:'+contextPath);
-        if(contextPath){
+        console.log('contextPath:' + contextPath);
+        if (contextPath) {
             self.$store.state.ctx = contextPath;
         }
         const projectExchangeToken = self.getRequestParam('projectExchangeToken')
-        console.log('projectExchangeToken:'+projectExchangeToken);
-        if(projectExchangeToken){
+        console.log('projectExchangeToken:' + projectExchangeToken);
+        if (projectExchangeToken) {
             self.$store.state.projectExchangeToken = projectExchangeToken;
         }
 
         getShouldVerifyToken().then(function (shouldVerifyToken) {
             self.$store.state.shouldValidToken = shouldVerifyToken.data;
-            if(!self.$store.state.shouldValidToken){
+            if (!self.$store.state.shouldValidToken) {
                 //no need token verify,sending token null.
-                self.handleProjectTokens(self,'');
+                self.handleProjectTokens(self, '');
             }
         });
     },
