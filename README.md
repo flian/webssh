@@ -54,6 +54,8 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 
 1. 安装node等软件
 2. cmd 进入vue2-web\web, 执行`npm run build`，打包前端资源
+(可选，dev分支会不定期提交编译好的前端代码。要保证最新，可以自己编译一下前端页面。)
+
 3. 修改vue2-sshserver\src\resources\application-prod.yml中webssh的参数，见[关键参数说明](#关键参数说明)
 强烈建议修改`--webssh.allowedUsers`设置允许登录webssh的账号密码信息。
 
