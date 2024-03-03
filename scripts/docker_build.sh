@@ -7,9 +7,9 @@ cd ../
 mvn clean package -DskipTests
 
 #编译
-docker build -f scripts/docker/Dockerfile -t foylian/webssh:${version} .
-docker tag foylian/webssh:${version} foylian/webssh:latest
+docker build -f scripts/docker/Dockerfile -t lotus/webssh:${version} .
+docker tag lotus/webssh:${version} lotus/webssh:latest
 
 #中央仓库
-docker tag foylian/webssh:${version} foylian/webssh:${version}
-docker tag foylian/webssh:${version} foylian/webssh:latest
+docker tag lotus/webssh:${version} foylian/webssh:${version}
+docker tag lotus/webssh:${version} foylian/webssh:latest

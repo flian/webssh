@@ -5,9 +5,9 @@ cd ../
 mvn clean package -DskipTests
 
 #build local docker images
-docker build -f scripts/docker/Dockerfile -t foylian/webssh:${version} .
-docker tag foylian/webssh:${version} foylian/webssh:latest
+docker build -f scripts/docker/Dockerfile -t lotus/webssh:${version} .
+docker tag lotus/webssh:${version} lotus/webssh:latest
 
 #push images to docker hub
-docker tag foylian/webssh:${version} foylian/webssh:${version}
-docker tag foylian/webssh:${version} foylian/webssh:latest
+docker tag lotus/webssh:${version} foylian/webssh:${version}
+docker tag lotus/webssh:${version} foylian/webssh:latest
