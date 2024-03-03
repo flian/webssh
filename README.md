@@ -96,7 +96,7 @@ webssh开发环境实在spring boot 2.5.14版本下，讲道理大于这个版�
 webssh必须依赖的组件包括springboot配套的websocket,validation两个模块，下面是项目依赖
 的示例,请根据项目情况增减:
 ```
- <dependency>
+        <dependency>
             <groupId>org.lotus.carp.webssh</groupId>
             <artifactId>webssh-core</artifactId>
             <version>${project.version}</version>
@@ -144,18 +144,15 @@ webssh端配置:
 
 实现`WebSshProjectTokensApi.composeProjectHeaderTokens` 方法,把对应用户后续请求需要带在header里面的参数设置上。
 例如：
-SampleProjectHeaderController示里里面可选返回了一个"new ProjectHeaderParamVo("AUTH_COOKIE_TEST", RandomUtils.generatePassword(8))"
+SampleProjectHeaderController示里里面返回了一个"new ProjectHeaderParamVo("AUTH_COOKIE_TEST", RandomUtils.generatePassword(8))"
 webssh后续请求头里面就会有一个AUTH_COOKIE_TEST参数，参数值为这里设置的一个随机字符串。
-这样webssh请求都会经过项目的正常认证流程。
+实现时，这里获取当前用户的身份信息，返回一个项目使用的token，这样webssh请求都会经过项目的正常认证流程。
+其他更多设置，见[关键参数说明](#关键参数说明)
 
 
 #### 配置webssh
 
 最后把`/webssh/index`加入已有项目的正常菜单、权限管理即可。更详细的webssh按钮、功能权限后续规划中，敬请期待。
-
-
-
-
 其他更多设置，见[关键参数说明](#关键参数说明)
 
 ### 关键参数说明
