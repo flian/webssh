@@ -1,9 +1,15 @@
 #just a place hoder,prepare for next release
+# avaliable jdk base:(will chose one as base)
 #frolvlad/alpine-oraclejre8:slim
 #pivotalservices/jdk8-minimal:latest
+#openjdk:8-jdk-alpine
 #https://www.cnblogs.com/lshan/p/10113284.html
+#push image to hub or replace tag https://blog.51cto.com/u_16175439/7044317
+FROM openjdk:8-jdk-alpine
 
-FROM frolvlad/alpine-oraclejre8:slim
+# set timezone
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 MAINTAINER foylian <ljs2342003@gmail.com>
 
