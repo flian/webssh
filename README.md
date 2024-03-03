@@ -248,6 +248,6 @@ websocket url(ws/wss):
 
 发布到私服： mvn deploy -Dmaven.test.skip=true
 
-版本发布： see maven-release-plugin for more detail
+版本发布： see [maven-release-plugin](https://maven.apache.org/maven-release/maven-release-plugin/) for more detail
 
 预备：mvn release:prepare 发布：mvn release:perform
