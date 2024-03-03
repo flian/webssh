@@ -1,11 +1,12 @@
-#FIXME just a place hoder,prepare for next release
-FROM --platform=$TARGETPLATFORM alpine
+#just a place hoder,prepare for next release
+#frolvlad/alpine-oraclejre8:slim
+#pivotalservices/jdk8-minimal:latest
+#https://www.cnblogs.com/lshan/p/10113284.html
 
-LABEL maintainer="foylian <ljs2342003@gmail.com>"
+FROM frolvlad/alpine-oraclejre8:slim
 
-ARG TARGETARCH
+MAINTAINER foylian <ljs2342003@gmail.com>
 
-RUN apk add --no-cache tzdata libc6-compat gcompat
 
 COPY result/webssh_linux_$TARGETARCH /webssh
 
