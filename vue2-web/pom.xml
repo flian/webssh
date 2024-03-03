@@ -32,6 +32,7 @@
         <dependency>
             <groupId>org.lotus.carp.webssh</groupId>
             <artifactId>webssh-core</artifactId>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

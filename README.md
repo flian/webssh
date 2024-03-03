@@ -68,8 +68,12 @@ keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2
 
 ```
 10. 其他更多设置，见[关键参数说明](#关键参数说明)
+```
+webssh.
+webssh.enableRandomPwd: 启动时，是否使用随机字符串替换掉webssh.allowedUsers配置中[RANDOM]字段,并在控制台打印产生的密码信息。默认值true。
+webssh.randomPwdWord： 默认值[RANDOM],启动时，密码中需要产生随机字符产生替换的字符串。
 
-
+```
 
 ### docker独立部署
 TODO

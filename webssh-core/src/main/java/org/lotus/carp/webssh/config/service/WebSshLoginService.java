@@ -1,8 +1,10 @@
 package org.lotus.carp.webssh.config.service;
 
+import org.lotus.carp.webssh.config.controller.vo.LogoutVo;
 import org.lotus.carp.webssh.config.service.vo.PropertiesConfigUser;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
+import org.lotus.carp.webssh.config.service.vo.WebSshLogoutResultVo;
 
 import java.util.UUID;
 
@@ -20,6 +22,13 @@ public interface WebSshLoginService {
      * @return
      */
     WebSshLoginResultVo doWebSshLogin(WebSshLoginVo webSshLoginVo);
+
+    /**
+     * handle webssh logout
+     * @param logoutVo
+     * @return
+     */
+    WebSshLogoutResultVo doWebSshLogout(LogoutVo logoutVo);
 
     /**
      * verify token is valid
