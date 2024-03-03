@@ -87,7 +87,55 @@ TODO
 
 ### 包含到已有项目中
 
-TODO
+包含到已有项目后，主要问题就是认证的问题，下面假设已有项目都包含了webssh的全部前端、
+后端代码。
+由于目前还在开发、测试阶段，执行下面操作时，请自安装webssh到本地（命令行执行`mvn install`）或者自己的私库。
+
+
+#### [必选]项目依赖
+webssh开发环境实在spring boot 2.5.14版本下，讲道理大于这个版本，小于3的版本都是支持的。
+webssh必须依赖的组件包括springboot配套的websocket,validation两个模块，下面是项目依赖
+的示例,请根据项目情况增减:
+```
+ <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>webssh-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>vue2-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+```
+#### [可选1]只启用webssh认证
+
+webssh端配置:
+默认配置已经开启了webssh认证，只需要项目里面配置"webssh.allowedUsers:"参数即可。
+由于只依赖webssh自己的认证，这里密码强度请注意设置足够复杂，并且请注意不要泄漏密码。
+其他更多设置，见[关键参数说明](#关键参数说明)
+
+
+项目端配置：
+由于只启动webssh认证，项目端需要把`/webssh/**`加入项目自己的白名单中即可。
+
+#### [可选2] 使用项目认证方式认证webssh接口
+
+
+其他更多设置，见[关键参数说明](#关键参数说明)
 
 ### 关键参数说明
 

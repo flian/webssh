@@ -14,7 +14,6 @@ import static org.lotus.carp.webssh.config.controller.common.WebSshAppConst.DEFA
  * @date : 2024-02-01 11:23
  **/
 @Data
-//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class FileListVo {
     private String path;
     private List<FileMetaVo> list;

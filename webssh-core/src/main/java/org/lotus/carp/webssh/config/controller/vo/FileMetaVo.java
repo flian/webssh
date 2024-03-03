@@ -13,9 +13,7 @@ import java.util.Date;
  * @date : 2024-02-01 11:24
  **/
 @Data
-//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy.class)
 public class FileMetaVo {
-    //File{Name: mFile.Name(), IsDir: mFile.IsDir(), Size: fileSize, ModifyTime: mFile.ModTime().Format("2006-01-02 15:04:05")}
     /**
      * file name
      */
@@ -34,7 +32,6 @@ public class FileMetaVo {
     /**
      * file last modify time
      */
-    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifyTimeObj;
 
     private String modifyTime;
@@ -42,7 +39,6 @@ public class FileMetaVo {
      * file add time
      * TODO current can't find create time from jsch. later try to find it.
      */
-    //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTimeObj;
 
     private String createTime;
