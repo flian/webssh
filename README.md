@@ -86,8 +86,25 @@ keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2
 
 
 ### docker独立部署
+``` 
+示范例:
 
-TODO
+docker run -e JAVA_OPTS='-Xmx1024M -Xms1024M' -e SPRING_BOOT_OPTS='--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1' -d -p 5132:5132 -p:5443:5443  –restart always --name javaWebSsh foylian/webssh:1.26
+
+强烈建议自行修改其中'--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'配置的账户密码，
+这里使用的默认账户配置，含义如下:
+账户1：
+账户账户名：root
+账户密码：changeit@123! +（系统启动时会随机参数一串字符串），需要在控制台找最终的密码
+允许登录ip：任意ip
+
+账户2：
+账户账户名：test
+账户密码：test@123!
+允许登录ip：只允许客户端ip为127.0.0.1的电脑登录
+
+```
+
 
 ### 包含到已有项目中
 
