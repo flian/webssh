@@ -80,12 +80,6 @@ public class WebSshConfig {
     private String webSshWebsocketPrefix = "/webssh";
 
     /**
-     * web ssh websocket uri pattern
-     */
-    @Deprecated
-    private String webSshWebsocketUri = "/webssh/**";
-
-    /**
      * token name from front
      */
     private String tokenName = "token";
@@ -98,7 +92,7 @@ public class WebSshConfig {
     /**
      * debug jsch log to system error.
      */
-    private Boolean debugJsch2SystemError = true;
+    private Boolean debugJsch2SystemError = false;
 
     /**
      * default jsch connect timeout,default is 30s
