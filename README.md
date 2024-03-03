@@ -92,47 +92,62 @@ TODO
 ### 关键参数说明
 
 ```
-webssh.allowedUsers: webssh独立认证中的用户配置信息。格式"用户名:密码：允许登录的ip列表",默认值“root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1”
+webssh.allowedUsers: webssh独立认证中的用户配置信息。格式"用户名:密码：允许登录的ip列表"
+,默认值“root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1”
 表示含义，
 root:changeit@123![RANDOM]:%
- 允许登录用户名:root,密码：changeit@123!+系统随机产生的随机字符，允许登录者的ip：允许任意ip登录。 
+ 允许登录用户名:root,密码：changeit@123!+系统随机产生的随机字符，
+ 允许登录者的ip：允许任意ip登录。 
 test:test@123!:127.0.0.1
  允许登录用户名:test,密码：test@123!，允许登录者的ip：127.0.0.1
 强烈建议使用的时候自己配置这个参数，并且保密。
-如果不想使用配置方式开启webssh认证，可设置webssh.forceCheckUserConfig2Prod=false,并且自行实现WebSshLoginService接口。
+如果不想使用配置方式开启webssh认证，可设置webssh.forceCheckUserConfig2Prod=false,
+并且自行实现WebSshLoginService接口。
 
 webssh.shouldVerifyToken: 是否开启webssh页面及api的独立认证。默认值:true. 
-webssh默认包含一个token认证，为true时会有个独立登录页面，认证页面会验证webssh.allowedUsers配置的用户，成功后会返回一个
+webssh默认包含一个token认证，为true时会有个独立登录页面，
+认证页面会验证webssh.allowedUsers配置的用户，成功后会返回一个
 token给前端，后续webssh的接口调用会带上这个token。
 
 webssh.tokenExpiration: webssh独立认证token的过期时间。默认值：6,单位小时。
 
-webssh.savePass: 前端"历史记录"中是否记住ssh的密码,设置为true后会在前端的localstorage中存储ssh密码，不建议开启，默认值:false.
+webssh.savePass: 前端"历史记录"中是否记住ssh的密码,
+设置为true后会在前端的localstorage中存储ssh密码，不建议开启，默认值:false.
 
-webssh.debugJsch2SystemError: 是否打开jsch的debug信息，当需要调试源代码时可以开启。默认值：false
+webssh.debugJsch2SystemError: 是否打开jsch的debug信息，
+当需要调试源代码时可以开启。默认值：false
 
-webssh.forceCheckUserConfig2Prod: 是否开启严格验证webssh.allowedUsers配置的用户信息。默认值true. 开启后会验证账号的强度。
+webssh.forceCheckUserConfig2Prod: 是否开启严格验证webssh.allowedUsers
+配置的用户信息。默认值true. 开启后会验证账号的强度。
 
-webssh.userDelimiter: allowedUsers webssh独立登录用户配置中用户间的分割符.默认值","
+webssh.userDelimiter: allowedUsers webssh独立登录用户配置中
+用户间的分割符.默认值","
 
 webssh.userFieldDelimiter: allowedUsers配置中，用户字段的分隔符号
 
-webssh.enableRandomPwd: 启动时，是否使用随机字符串替换掉webssh.allowedUsers配置中[RANDOM]字段,并在控制台打印产生的密码信息。默认值true。
+webssh.enableRandomPwd: 启动时，是否使用随机字符串替换掉webssh.allowedUsers配置中
+[RANDOM]字段,并在控制台打印产生的密码信息。默认值true。
 
-webssh.defaultConnectTimeOut: jsch连接远程ssh server是的默认超时时间.默认值30*1000，表示30s
+webssh.defaultConnectTimeOut: jsch连接远程ssh server是的默认超时时间.
+默认值30*1000，表示30s
 
-webssh.webSshTermPtyType: jsch连接server的ttype类型，默认值：xterm。可选:vt100等。具体请查看SSH2的RFC。
+webssh.webSshTermPtyType: jsch连接server的ttype类型，默认值：xterm。可选:vt100等。
+具体请查看SSH2的RFC。
 
-webssh.sshPrivateKeyOnly: jsch连接远程server的时候，是否启用密码登录方式认证。默认值：false. 
-表示密码和私钥都允许登录。在特定环境时可以设置为true，表示只允许私钥方式登录远程服务器。
+webssh.sshPrivateKeyOnly: jsch连接远程server的时候，是否启用密码登录方式认证。
+默认值：false. 表示密码和私钥都允许登录。
+在特定环境时可以设置为true，表示只允许私钥方式登录远程服务器。
 
 webssh.foreHttps: 是否强制开启webssh https。默认值：false
 项目依赖模式，这里是关闭的了，配置随着主项目配置
-standalone默认是true，因为webssh里面跑的信息都太敏感了，https能稍微加强一点安全性。(强烈建议standalone模式的同学自己生成自己的ssl证书，不要用默认的配置)
+standalone默认是true，因为webssh里面跑的信息都太敏感了，https能稍微加强一点安全性。
+(强烈建议standalone模式的同学自己生成自己的ssl证书，不要用默认的配置)
 
-webssh.underContainer: 应用使用的容器名称。默认值："",配合webssh.foreHttps=true的时候才有意义
+webssh.underContainer: 应用使用的容器名称。默认值："",
+配合webssh.foreHttps=true的时候才有意义
 项目依赖模式，这里默认值就是”“，即没有启用默认http转跳https的配置
-standalone模式默认值这里是“tomcat",会启用TomcatHttpsConfig里面的配置，启用http强制转跳https，具体配置参数vue2-sshserver模块
+standalone模式默认值这里是“tomcat",会启用TomcatHttpsConfig里面的配置，
+启用http强制转跳https，具体配置参数vue2-sshserver模块
 
 webssh.dateFormat: webssh页面上涉及到的日期格式。默认值："yyyy-MM-dd HH:mm:ss"
 
