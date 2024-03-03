@@ -91,6 +91,7 @@ keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2
 
 docker run -e JAVA_OPTS='-Xmx1024M -Xms1024M' -e SPRING_BOOT_OPTS='--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1' -d -p 5132:5132 -p:5443:5443  –restart always --name javaWebSsh foylian/webssh:1.26
 
+浏览器访问 `http://127.0.0.1:5132/webssh/index` 或者`https://127.0.0.1:5443/webssh/index`即可访问.
 强烈建议自行修改其中'--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'配置的账户密码，
 这里使用的默认账户配置，含义如下:
 账户1：
@@ -153,7 +154,7 @@ webssh必须依赖的组件包括springboot配套的websocket,validation两个�
 #### [可选1]只启用webssh认证
 
 webssh端配置:
-默认配置已经开启了webssh认证，只需要项目里面配置"webssh.allowedUsers:"参数即可。
+默认配置已经开启了webssh认证，只需要项目里面配置'webssh.allowedUsers:'参数即可。
 由于只依赖webssh自己的认证，这里密码强度请注意设置足够复杂，并且请注意不要泄漏密码。
 其他更多设置，见[关键参数说明](#关键参数说明)
 
