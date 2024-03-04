@@ -110,10 +110,10 @@
             :visible.sync="showLogin"
             width="30%" :show-close="false">
             <el-form :model="login.form" ref="loginForm" :rules="login.checkRules">
-                <el-form-item label="Username" prop="username">
+                <el-form-item :label="$t('Username')" prop="username">
                     <el-input v-model="login.form.username" :placeholder="$t('usernameTip')"></el-input>
                 </el-form-item>
-                <el-form-item label="Password" prop="password">
+                <el-form-item :label="$t('Password')" prop="password">
                     <el-input v-model="login.form.password" :placeholder="$t('passwordTip')" type="password"></el-input>
                 </el-form-item>
             </el-form>
