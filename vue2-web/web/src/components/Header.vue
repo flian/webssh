@@ -9,7 +9,7 @@
                                 <div slot="content">
                                     <p>Switch Language</p>
                                 </div>
-                                <span @click="handleSetLanguage()">Host</span>
+                                <span @click="handleSetLanguage(true)">Host</span>
                             </el-tooltip>
                         </template>
                         <el-input v-model="sshInfo.host" :placeholder="$t('hostTip')"
@@ -43,7 +43,7 @@
                         <el-input :rows="8" v-model="sshInfo.password" type="textarea"
                                   :placeholder="$t('keyTip')"></el-input>
                         <div slot="footer" class="dialog-footer">
-                            <!-- 选择密钥文件 -->
+                            <!-- select private key file -->
                             <input ref="pkFile" @change="handleChangePKFile" type="file"
                                    style="position: absolute;clip: rect(0 0 0 0)"/>
                             <el-button type="primary" plain @click="$refs.pkFile.click()">{{
@@ -91,6 +91,16 @@
                             }}
                         </el-button>
                     </el-form-item>
+                    <el-form-item size="small">
+                        <el-select v-model="selLang" @change="handleSetLanguage()"  placeholder="$t('pleaseSelect')">
+                            <el-option
+                                v-for="item in langOptions"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
@@ -100,11 +110,11 @@
             :visible.sync="showLogin"
             width="30%" :show-close="false">
             <el-form :model="login.form" ref="loginForm" :rules="login.checkRules">
-                <el-form-item label="用户名" prop="username">
-                    <el-input v-model="login.form.username" placeholder="请输入用户名"></el-input>
+                <el-form-item label="Username" prop="username">
+                    <el-input v-model="login.form.username" placeholder="$t('usernameTip')"></el-input>
                 </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input v-model="login.form.password" placeholder="请输入密码" type="password"></el-input>
+                <el-form-item label="Password" prop="password">
+                    <el-input v-model="login.form.password" placeholder="$t('passwordTip')" type="password"></el-input>
                 </el-form-item>
             </el-form>
 
@@ -127,6 +137,8 @@ export default {
     },
     data() {
         return {
+            selLang: '',
+            langOptions: [{label:'中文',value:'zh'},{label:'English',value:'en'}],
             foreShowLogin: false,
             loginLoading: false,
             textareaVisible: false,
@@ -213,9 +225,14 @@ export default {
                 }
             }, 10);
         },
-        handleSetLanguage() {
-            const oldLang = getLanguage()
-            const lang = oldLang === 'zh' ? 'en' : 'zh'
+        handleSetLanguage(headerChange) {
+            let lang;
+            if(this.selLang && !headerChange){
+                lang = this.selLang;
+            }else {
+                let oldLang = getLanguage()
+                lang = oldLang === 'zh' ? 'en' : 'zh'
+            }
             this.$i18n.locale = lang
             this.$store.dispatch('setLanguage', lang)
         },
@@ -256,7 +273,7 @@ export default {
 
     },
     mounted() {
-
+        this.selLang = getLanguage();
         if (this.sshList.length > 0) {
             const latestSSH = this.sshList[this.sshList.length - 1]
             this.$store.commit('SET_SSH', latestSSH)

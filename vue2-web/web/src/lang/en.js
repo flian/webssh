@@ -45,4 +45,9 @@ export default {
     CreateTime: 'add time',
     GroupName: 'group',
     OwnerName: 'owner',
+    Username: 'Username',
+    Password: 'Password',
+    usernameTip: 'please type your username',
+    passwordTip: 'please type your password',
+    pleaseSelect : 'please select',
 }

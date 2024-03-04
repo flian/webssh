@@ -44,5 +44,10 @@ export default {
     uploadFolder: '上传文件夹',
     login: '登录',
     logout: '注销',
-    loginFormTitle: '请输入账号登录'
+    loginFormTitle: '请输入账号登录',
+    Username: '用户名',
+    Password: '密码',
+    usernameTip: '请输入用户名',
+    passwordTip: '请输入密码',
+    pleaseSelect : '请选择'
 }
