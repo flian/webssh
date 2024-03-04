@@ -11,6 +11,7 @@ docker tag lotus/webssh:${version} lotus/webssh:latest
 
 #may need delete local tag and push again.
 #docker rmi foylian/webssh:${version}
+#docker rmi foylian/webssh:latest
 
 #tag images with hub name
 docker tag lotus/webssh:${version} foylian/webssh:${version}
