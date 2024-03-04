@@ -85,7 +85,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     session.sendMessage(new TextMessage("ssh connection info error, empty sshinfo."));
                     session.close();
                 }
-                if (!webSshTermService.initTermWebShhConnect(sshInfo, session)) {
+                if (!webSshTermService.initTermWebSshConnect(sshInfo, session)) {
                     //connect error,close session.
                     session.close();
                 }

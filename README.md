@@ -45,7 +45,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 4. 独立部署.
 5. 独立的本地认证
 6. 端口转发（TODO）
-7. 打包到已有应用中部署适配。（TODO）
+7. 打包到已有应用中部署适配。
 8. navicat http代理。 (TODO)
 
 ## 部署方式
@@ -79,6 +79,11 @@ java内存默认设置1G，演示用，自由调整。
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 ### 独立部署
+
+[release v1,26](https://github.com/flian/webssh/releases/tag/V1.26)
+可以到上面对应的发布版本页面下载已经打包好的spring boot jar包。
+
+或者自己编译包，参考如下步骤：
 
 1. 安装node等软件
 2. cmd 进入vue2-web\web, 执行`npm run build`，打包前端资源

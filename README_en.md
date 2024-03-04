@@ -59,7 +59,7 @@ The business code relies on webssh core and vue2 web, and configuration paramete
 
 6. Port forwarding (TODO)
 
-7. Package and deploy adaptation into existing applications. (TODO)
+7. include into your exists project.
 
 8. Navicat HTTP proxy. (TODO)
 
@@ -77,13 +77,13 @@ docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -
 Key meaning explanation:
 
 
-Browser Access [http 5132]（ http://127.0.0.1:5132/webssh/index ）Or [https 5443]（ https://127.0.0.1:5443/webssh/index ）You can access it now
+Browser Access [http 5132](http://127.0.0.1:5132/webssh/index) Or [https 5443](https://127.0.0.1:5443/webssh/index) You can access it now
 
-It is strongly recommended to modify the '-- webssh. allowedUsers=root' on your own changeit@123 ! [RANDOM]:%, test: test@123 !: 127.0.0.1 'configured account password,
+It is strongly recommended to modify the '-- webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'configured account password,
 
 Among them, "[RANDOM]" represents a randomly generated string placeholder during startup, which uses the default account configuration,
 
-The meaning of the parameter configuration "-- webssh. allowedUsers=" above is as follows:
+The meaning of the parameter configuration "--webssh.allowedUsers=" above is as follows:
 
 Account 1:
 
@@ -101,7 +101,7 @@ Account name: test
 
 Account password: test@123 !
 
-Allow login IP: Only computers with client IP 127.0.0.1 are allowed to log in
+Allow login IP: Only computers with IP 127.0.0.1 are allowed to log in
 
 
 
@@ -109,81 +109,75 @@ Docker profile startup will automatically generate an SSL certificate file on th
 
 Java memory is set to 1GB by default, for demonstration use, and can be adjusted freely.
 
-For more parameter settings, please refer to [Key Parameter Description] 
+For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
 ### standalone
 
+[release v1,26](https://github.com/flian/webssh/releases/tag/V1.26)
+I will upload release jar in release page. please refer to download. 
+
+or you can build jar by following steps:
+
 1. Install software such as nodes
 
-2. CMD enters Vue2 web \ web, executes' npm run build ', and packages front-end resources
+2. CMD enters vue2-web\web, executes `npm run build`, and packages front-end resources
 
 (Optional, the dev branch will periodically submit compiled front-end code. To ensure the latest, you can compile the front-end page yourself.)
 
 
 
-3. Modify the parameters of websh in Vue2 sshserver \ src \ resources \ application prod.yml, as shown in [Key Parameter Description] (# Key Parameter Description)
+3. Modify the parameters of webssh in vue2-sshserver\src\resources\application-prod.yml, as shown in [Key Parameter Description](#Key Parameter Description)
 
-It is strongly recommended to modify the account and password information that allows logging in to websh.allowedUsers.
+It is strongly recommended to modify the account and password information that allows logging in to `webssh.allowedUsers`.
 
 
 
 4. cmd enters the project root directory, mvn package
 
-5. Copy vue2 sshserver \ target \ vue2 sshserver-1.26.jar to the server,
+5. Copy vue2-sshserver\target\vue2-sshserver-1.26.jar to the server,
 
 ```
-
-Using Java jar vue2 sshserver-1.26. jar -- webssh. allowedUsers=root: changeit@123 !:% Start the program
-
-among changeit@123 ! Change to your own password. If websh.allowedUsers is not set, the default root will generate a random password. Please pay attention to the console logs.
-
+Using Java jar vue2 sshserver-1.26.jar -- webssh. allowedUsers=root:changeit@123!:% 
 ```
 
-6. Browser access [http 5132]（ http://127.0.0.1:5132/webssh/index ）Or [https 5443]（ https://127.0.0.1:5443/webssh/index ）You can access it now
+6. Browser access [http 5132](http://127.0.0.1:5132/webssh/index) Or [https 5443](https://127.0.0.1:5443/webssh/index) You can access it now
 
-7. The default standalone will enable HTTPS, and 5132 will redirect to` https://127.0.0.1:5443/webssh/index `
+7. The default standalone will enable HTTPS, and 5132 will redirect to `https://127.0.0.1:5443/webssh/index`
 
-8. You can use the HTTP only mode by setting the startup parameter '-- spring. profiles. active=http'. (Not recommended to use, websh will directly operate the system, too sensitive)
+8. You can use the HTTP only mode by setting the startup parameter '--spring.profiles.active=http'. 
 
 9. It is recommended to generate and use your own SSL certificate when publishing the generation environment.
 
 
 
 ```
-
 Example of generating and configuring self signed certificates:
 
-For example, cd d: \ Execute command:
+For example, cd d:\ Execute command:
 
-Keytool - genkey - alias springboottomcat - storetype PKCS12- keyalg RSA - keysize 2048- keystore webshDefault. p12- validity 3650- dname "CN=websh, OU=NoOU, O=NoO, L=Chendu, ST=Sichuan, C=cn" - storepass“ webssh@Admin123 ! "- keypass" webssh@Admin123 ! “
+keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore websshDefault.p12 -validity 3650 -dname "CN=webssh, OU=NoOU, O=NoO, L=Chendu, ST=Sichuan, C=cn" -storepass "webssh@Admin123!"  -keypass "webssh@Admin123!"
 
 Configure alias, keystore, storepass, and keypass as needed
 
-After completion, generate a. p12 file with the name of the keystore configuration file in the root directory of d and copy it to the appropriate location
+After completion, generate a.p12 file with the name of the keystore configuration file in the root directory of d and copy it to the appropriate location
 
-Start the command with reference to application prod.yml, configure SSL file name, path, password, and other information
+Start the command with reference to application-prod.yml, configure SSL file name, path, password, and other information
 
 Subsequent versions will consider dynamically generating SSL files and configuring them during dynamic startup
 
-
-
 ```
 
-
-
-10. For more settings, please refer to [Key Parameter Description]
+10. For more settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
 ### Include in existing projects
 
-After incorporating it into existing projects, the main issue is the authentication issue. Let's assume that all existing projects include the front-end and back-end code of websh.
-
-As it is currently in the development and testing stages, please install websh locally (execute 'mvn install' from the command line) or your own private library when performing the following operations.
+ include it into existing projects, the major issue is the authentication issue. Let's assume that all existing projects include the front-end and back-end code of webssh.
 
 
 #### [Required] Project Dependency
-Under Spring Boot 2.5.14, the websh development environment supports versions larger than this and less than 3.
+Under Spring Boot 2.5.14, the webssh development environment supports versions larger than this and less than 3.
 
-The components that websh must rely on include the websocket and validation modules that come with springboot. The following are the project dependencies
+The components that webssh must rely on include the websocket and validation modules that come with springboot. The following are the project dependencies
 
 For example, please increase or decrease according to the project situation:
 
@@ -239,7 +233,7 @@ For example, please increase or decrease according to the project situation:
 
 
 
-At the same time, the following websh APIs need to be added to the project whitelist no matter what:
+At the same time, the following webssh APIs need to be added to the project whitelist no matter what:
 
 /Webssh/index
 
@@ -253,15 +247,15 @@ At the same time, the following websh APIs need to be added to the project white
 
 /Webssh/logout
 
-#### [Optional 1] Only enable websh authentication
+#### [Optional 1] Only enable webssh authentication
 
-Websh side configuration:
+webssh side configuration:
 
-The default configuration has enabled websh authentication, all you need to do is configure the 'websh. allowedUsers:' parameter in the project.
+The default configuration has enabled webssh authentication, all you need to do is configure the 'webssh. allowedUsers:' parameter in the project.
 
-Due to relying solely on websh's own authentication, please note that the password strength here is set to be complex enough, and be careful not to disclose the password.
+Due to relying solely on webssh's own authentication, please note that the password strength here is set to be complex enough, and be careful not to disclose the password.
 
-For more parameter settings, please refer to [Key Parameter Description] (# Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
 
 
@@ -270,7 +264,7 @@ Project side configuration:
 Due to only initiating webssh authentication, the project side needs to add '/webssh/* *' to the project's own whitelist.
 
 
-#### [Optional 2] Use project authentication to authenticate the websh interface
+#### [Optional 2] Use project authentication to authenticate the webssh interface
 
 Implement the 'WebSshProjectTokensApi. composeProjectHeaderTokens' method to set the corresponding parameters that the user's subsequent requests need to include in the header.
 
@@ -278,23 +272,23 @@ For example:
 
 In the SampleProjectHeaderController display, a "new ProjectHeaderParamVo (" Auth-COOKIE-TEST ", RandomUtils. generatePassword (8))" is returned
 
-In the subsequent request header of websh, there will be an AUTH.COOKIETEST parameter with a random string value set here.
+In the subsequent request header of webssh, there will be an AUTH.COOKIETEST parameter with a random string value set here.
 
-When implemented, the identity information of the current user is obtained here, and a token used by the project is returned. This way, all websh requests will go through the normal authentication process of the project.
-For more parameter settings, please refer to [Key Parameter Description] (# Key Parameter Description)
+When implemented, the identity information of the current user is obtained here, and a token used by the project is returned. This way, all webssh requests will go through the normal authentication process of the project.
+For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
 
 #### Configure webssh
 
-Finally, add '/webssh/index' to the normal menu and permission management of existing projects. Please stay tuned for more detailed planning of websh buttons and functional permissions in the future.
+Finally, add '/webssh/index' to the normal menu and permission management of existing projects. Please stay tuned for more detailed planning of webssh buttons and functional permissions in the future.
 
-For more parameter settings, please refer to [Key Parameter Description] (# Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
 ### Key parameter description
 
 ```
 
-Websh.allowedUsers: User configuration information in websh-independent authentication. Format "username: password: list of allowed IPs to log in"
+webssh.allowedUsers: User configuration information in webssh-independent authentication. Format "username: password: list of allowed IPs to log in"
 
 , default value "root: changeit@123 ! [RANDOM]:%, test: test@123 !: 127.0.0.1 "
 
@@ -330,19 +324,19 @@ And independently implement the WebSshLoginService interface.
 
 Webssh. shouldVerifyToken: Whether to enable independent authentication of webssh pages and APIs. Default value: true
 
-Websh by default includes a token authentication, and when true, there will be a separate login page,
+webssh by default includes a token authentication, and when true, there will be a separate login page,
 
-The authentication page will verify the user configured by websh.allowedUsers, and upon success, it will return a message
+The authentication page will verify the user configured by webssh.allowedUsers, and upon success, it will return a message
 
-Token is given to the front-end, and subsequent interface calls to websh will carry this token.
-
-
-
-Websh. tokenExpiration: The expiration time of the websh independent authentication token. Default value: 6, in hours.
+Token is given to the front-end, and subsequent interface calls to webssh will carry this token.
 
 
 
-Websh.savePass: Does the front-end "history" remember the password for SSH,
+webssh. tokenExpiration: The expiration time of the webssh independent authentication token. Default value: 6, in hours.
+
+
+
+webssh.savePass: Does the front-end "history" remember the password for SSH,
 
 After setting it to true, the SSH password will be stored in the local storage of the front-end. It is not recommended to enable it. The default value is false
 
@@ -354,7 +348,7 @@ It can be turned on when debugging source code is required. Default value: false
 
 
 
-Websh.forceCheckUserConfig2Pro: Is strict verification enabled for websh.allowedUsers
+webssh.forceCheckUserConfig2Pro: Is strict verification enabled for webssh.allowedUsers
 
 Configure user information. The default value is true After activation, the strength of the account will be verified.
 
@@ -373,13 +367,13 @@ The default value is 30 * 1000, indicating 30 seconds
 
 
 
-Websh.webSshTermPtyType: The ttype type of the jsch connection server, default value: xterm. Optional: vt100, etc.
+webssh.webSshTermPtyType: The ttype type of the jsch connection server, default value: xterm. Optional: vt100, etc.
 
 Please refer to the RFC for SSH2 for details.
 
 
 
-Websh.sshPrivateKeyOnly: Whether to enable password login authentication when JSCH connects to a remote server.
+webssh.sshPrivateKeyOnly: Whether to enable password login authentication when JSCH connects to a remote server.
 
 Default value: false Both the password and private key allow login.
 
@@ -391,13 +385,13 @@ Webssh. foreHttps: Do you want to force the activation of webssh https. Default 
 
 Project dependency mode is disabled here, and configuration follows the configuration of the main project
 
-Standalone defaults to true because the information running in websh is too sensitive, and HTTPS can slightly enhance security.
+Standalone defaults to true because the information running in webssh is too sensitive, and HTTPS can slightly enhance security.
 
 (It is strongly recommended that students in standalone mode generate their own SSL certificates and do not use default configurations)
 
 
 
-Websh.underContainer: The name of the container used by the application. Default value:,
+webssh.underContainer: The name of the container used by the application. Default value:,
 
 Only meaningful when combined with webssh. foreHttps=true
 
@@ -409,42 +403,38 @@ Enable HTTP to forcibly redirect to HTTPS, specific configuration parameters vue
 
 
 
-Websh.dateFormat: The date format involved on the webshpage. Default value: "yyyy MM dd HH: mm: ss"
+webssh.dateFormat: The date format involved on the websshpage. Default value: "yyyy MM dd HH: mm: ss"
 
 
 
-Websh.maxSshShellTermCorePoolSize: The maximum number of consoles that can be opened in websh. Default value: 1000
+webssh.maxSshShellTermCorePoolSize: The maximum number of consoles that can be opened in webssh. Default value: 1000
 
 
 
-Websh.randomPwdWord: The default value is [RANDOM]. When starting, random characters need to be generated in the password to generate a replacement string.
-
-
-
-
+webssh.randomPwdWord: The default value is [RANDOM]. When starting, random characters need to be generated in the password to generate a replacement string.
 
 ```
 
-### Websh API Description
+### webssh API Description
 ```
 
 /Webssh/index webssh homepage
 
-/Websh/check checks the validity of SSH account passwords
+/webssh/check checks the validity of SSH account passwords
 
 /Is webssh/shouldVerifyToken pull enabled for webssh independent authentication
 
 /Additional tokens required for webssh/projectHeader/params to pull webssh API requests
 
-/Websh/login: Websh independent authentication login interface
+/webssh/login: webssh independent authentication login interface
 
-/Websh/logout Websh independent authentication and logout interface
+/webssh/logout webssh independent authentication and logout interface
 
-/Websh/file/list pulls file directory information for the terminal
+/webssh/file/list pulls file directory information for the terminal
 
 /Download the file specified by the remote server using webssh/file/download
 
-/Websh/file/upload Upload the specified file to the specified directory
+/webssh/file/upload Upload the specified file to the specified directory
 
 
 
