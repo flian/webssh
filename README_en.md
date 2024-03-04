@@ -175,83 +175,58 @@ Subsequent versions will consider dynamically generating SSL files and configuri
 
 
 #### [Required] Project Dependency
-Under Spring Boot 2.5.14, the webssh development environment supports versions larger than this and less than 3.
+
+develop just test Under Spring Boot 2.5.14。
 
 The components that webssh must rely on include the websocket and validation modules that come with springboot. The following are the project dependencies
 
 For example, please increase or decrease according to the project situation:
 
 ```
-
-<dependency>
-
-<groupId>org. lotus. carp. webssh</groupId>
-
-<artifactId>webssh core</artifactId>
-
-<version>${project. version}</version>
-
-</dependency>
-
-<dependency>
-
-<groupId>org. lotus. carp. webssh</groupId>
-
-<artifactId>vue2 web</artifactId>
-
-<version>${project. version}</version>
-
-</dependency>
-
-<dependency>
-
-<groupId>org. springframework. boot</groupId>
-
-<artifactId>spring boot starter web</artifactId>
-
-</dependency>
-
-<dependency>
-
-<groupId>org. springframework. boot</groupId>
-
-<artifactId>spring boot starter websocket</artifactId>
-
-</dependency>
-
-<dependency>
-
-<groupId>org. springframework. boot</groupId>
-
-<artifactId>spring boot starter validation</artifactId>
-
-</dependency>
-
-
+        <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>webssh-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>vue2-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
 
 ```
 
+At the same time, the following webssh APIs need to be added to the project whitelist:
 
+/webssh/index
 
-At the same time, the following webssh APIs need to be added to the project whitelist no matter what:
+/webssh/check
 
-/Webssh/index
+/webssh/shouldVerifyToken
 
-/Webssh/check
+/webssh/projectHeader/params
 
-/Webssh/shouldVerifyToken
+/webssh/login
 
-/Webssh/projectHeader/params
-
-/Webssh/login
-
-/Webssh/logout
+/webssh/logout
 
 #### [Optional 1] Only enable webssh authentication
 
 webssh side configuration:
 
-The default configuration has enabled webssh authentication, all you need to do is configure the 'webssh. allowedUsers:' parameter in the project.
+The default configuration has enabled webssh authentication, all you need to do is configure the 'webssh.allowedUsers:' parameter in the project.
 
 Due to relying solely on webssh's own authentication, please note that the password strength here is set to be complex enough, and be careful not to disclose the password.
 
@@ -261,18 +236,18 @@ For more parameter settings, please refer to [Key Parameter Description](#Key Pa
 
 Project side configuration:
 
-Due to only initiating webssh authentication, the project side needs to add '/webssh/* *' to the project's own whitelist.
+Due to only initiating webssh authentication, the project side needs to add `/webssh/**` to the project's own whitelist.
 
 
 #### [Optional 2] Use project authentication to authenticate the webssh interface
 
-Implement the 'WebSshProjectTokensApi. composeProjectHeaderTokens' method to set the corresponding parameters that the user's subsequent requests need to include in the header.
+Implement the 'WebSshProjectTokensApi.composeProjectHeaderTokens' method to set the corresponding parameters that the user's subsequent requests need to include in the header.
 
 For example:
 
-In the SampleProjectHeaderController display, a "new ProjectHeaderParamVo (" Auth-COOKIE-TEST ", RandomUtils. generatePassword (8))" is returned
+In the SampleProjectHeaderController, a "new ProjectHeaderParamVo ("Auth-COOKIE-TEST", RandomUtils.generatePassword(8))" is returned
 
-In the subsequent request header of webssh, there will be an AUTH.COOKIETEST parameter with a random string value set here.
+In the subsequent request header of webssh, there will be an AUTH_COOKIE_TEST parameter with a random string value set here.
 
 When implemented, the identity information of the current user is obtained here, and a token used by the project is returned. This way, all webssh requests will go through the normal authentication process of the project.
 For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
@@ -280,7 +255,7 @@ For more parameter settings, please refer to [Key Parameter Description](#Key Pa
 
 #### Configure webssh
 
-Finally, add '/webssh/index' to the normal menu and permission management of existing projects. Please stay tuned for more detailed planning of webssh buttons and functional permissions in the future.
+Finally, add `/webssh/index` to the normal menu and permission management of existing projects. Please stay tuned for more detailed planning of webssh buttons and functional permissions in the future.
 
 For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
@@ -288,13 +263,13 @@ For more parameter settings, please refer to [Key Parameter Description](#Key Pa
 
 ```
 
-webssh.allowedUsers: User configuration information in webssh-independent authentication. Format "username: password: list of allowed IPs to log in"
+webssh.allowedUsers: User configuration information in webssh-independent authentication. Format "username:password:list of allowed IPs to log in"
 
-, default value "root: changeit@123 ! [RANDOM]:%, test: test@123 !: 127.0.0.1 "
+, default value "root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1 "
 
 Indicating meaning,
 
-Root: changeit@123 ! [RANDOM]:%
+Root:changeit@123![RANDOM]:%
 
 Allow login username: root
 
@@ -304,13 +279,13 @@ Allow login from any IP address.
 
 
 
-Test: test@123 !: 127.0.0.1
+Test:test@123!:127.0.0.1
 
 Allow login username: test
 
-Password: test@123 !
+Password: test@123!
 
-Allow login for IP: 127.0.1
+Allow login for IP: 127.0.0.1
 
 
 
@@ -322,7 +297,7 @@ And independently implement the WebSshLoginService interface.
 
 
 
-Webssh. shouldVerifyToken: Whether to enable independent authentication of webssh pages and APIs. Default value: true
+Webssh.shouldVerifyToken: Whether to enable independent authentication of webssh pages and APIs. Default value: true
 
 webssh by default includes a token authentication, and when true, there will be a separate login page,
 
@@ -332,7 +307,7 @@ Token is given to the front-end, and subsequent interface calls to webssh will c
 
 
 
-webssh. tokenExpiration: The expiration time of the webssh independent authentication token. Default value: 6, in hours.
+webssh.tokenExpiration: The expiration time of the webssh independent authentication token. Default value: 6, in hours.
 
 
 
@@ -342,7 +317,7 @@ After setting it to true, the SSH password will be stored in the local storage o
 
 
 
-Webssh. debugJsch2SystemError: Do you want to open the debug information for jsch,
+Webssh.debugJsch2SystemError: Do you want to open the debug information for jsch,
 
 It can be turned on when debugging source code is required. Default value: false
 
@@ -355,13 +330,13 @@ Configure user information. The default value is true After activation, the stre
 
 
 
-Webssh. enableRandomPwd: Should random strings be used to replace the webssh. allowedUsers configuration during startup
+Webssh.enableRandomPwd: Should random strings be used to replace the webssh. allowedUsers configuration during startup
 
 [RANDOM] field and print the generated password information on the console. The default value is true.
 
 
 
-Webssh. defaultConnectTimeOut: The default timeout for connecting to a remote ssh server using jsch
+Webssh.defaultConnectTimeOut: The default timeout for connecting to a remote ssh server using jsch
 
 The default value is 30 * 1000, indicating 30 seconds
 
@@ -381,7 +356,7 @@ In specific environments, it can be set to true, indicating that only private ke
 
 
 
-Webssh. foreHttps: Do you want to force the activation of webssh https. Default value: false
+Webssh.foreHttps: Do you want to force the activation of webssh https. Default value: false
 
 Project dependency mode is disabled here, and configuration follows the configuration of the main project
 
@@ -418,13 +393,13 @@ webssh.randomPwdWord: The default value is [RANDOM]. When starting, random chara
 ### webssh API Description
 ```
 
-/Webssh/index webssh homepage
+/webssh/index webssh homepage
 
 /webssh/check checks the validity of SSH account passwords
 
-/Is webssh/shouldVerifyToken pull enabled for webssh independent authentication
+/webssh/shouldVerifyToken check is  enabled for webssh independent authentication
 
-/Additional tokens required for webssh/projectHeader/params to pull webssh API requests
+/webssh/projectHeader/params pull Additional tokens required for  webssh API requests
 
 /webssh/login: webssh independent authentication login interface
 
@@ -432,7 +407,7 @@ webssh.randomPwdWord: The default value is [RANDOM]. When starting, random chara
 
 /webssh/file/list pulls file directory information for the terminal
 
-/Download the file specified by the remote server using webssh/file/download
+/webssh/file/download  download remote server file
 
 /webssh/file/upload Upload the specified file to the specified directory
 
@@ -440,9 +415,9 @@ webssh.randomPwdWord: The default value is [RANDOM]. When starting, random chara
 
 Websocket URL (ws/wss):
 
-/Establish Xterm terminal connection for webssh/term
+/webssh/term websocket for connect to remote server
 
-/Webssh/file/progress retrieves the upload progress of the specified file
+/webssh/file/progress retrieves the upload progress of the specified file
 
 
 ```
@@ -458,8 +433,8 @@ release to your private repository: mvn deploy -Dmaven.test.skip=true
 
 release maven plugin ： see [maven-release-plugin](https://maven.apache.org/maven-release/maven-release-plugin/) for more detail
 
-maven prepare ：mvn release:prepare
-maven perform ：mvn release:perform
+maven prepare : mvn release:prepare
+maven perform : mvn release:perform
 
 
 
