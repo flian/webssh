@@ -53,7 +53,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 ### docker独立部署
 
 
-v1.26示范例:
+v1.26示例:
 ``` 
 docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
 ```
@@ -61,8 +61,9 @@ docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -
 关键含义说明：
 
 浏览器访问 `http://127.0.0.1:5132/webssh/index` 或者`https://127.0.0.1:5443/webssh/index`即可访问.
-强烈建议自行修改其中'--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'配置的账户密码,其中"[RANDOM]"表示启动时随机参数字符串
-这里使用的默认账户配置，含义如下:
+强烈建议自行修改其中'--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'配置的账户密码,
+其中"[RANDOM]"表示启动时随机产生字符串占位符,这里使用的默认账户配置，
+上面的"--webssh.allowedUsers="参数配置含义含义如下:
 账户1：
 账户账户名：root
 账户密码：changeit@123! +（系统启动时会随机参数一串字符串），需要在控制台找最终的密码
