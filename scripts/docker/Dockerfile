@@ -26,4 +26,4 @@ RUN chmod +x $WORKDIR_PATH/entrypoint.sh
 
 EXPOSE 5443 5132
 
-ENTRYPOINT ["$WORKDIR_PATH/entrypoint.sh"]
+ENTRYPOINT ["/app/webssh/entrypoint.sh"]

@@ -3,7 +3,7 @@ set version=1.26
 
 ::package project
 cd ../
-::call mvn clean package -DskipTests
+call mvn clean package -DskipTests
 
 ::build local docker images
 docker build -f scripts/docker/Dockerfile -t lotus/webssh:%version% .
