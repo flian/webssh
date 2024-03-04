@@ -109,7 +109,7 @@ Docker profile startup will automatically generate an SSL certificate file on th
 
 Java memory is set to 1GB by default, for demonstration use, and can be adjusted freely.
 
-For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key-Parameter-Description)
 
 ### standalone
 
@@ -126,7 +126,7 @@ or you can build jar by following steps:
 
 
 
-3. Modify the parameters of webssh in vue2-sshserver\src\resources\application-prod.yml, as shown in [Key Parameter Description](#Key Parameter Description)
+3. Modify the parameters of webssh in vue2-sshserver\src\resources\application-prod.yml, as shown in [Key Parameter Description](#Key-Parameter-Description)
 
 It is strongly recommended to modify the account and password information that allows logging in to `webssh.allowedUsers`.
 
@@ -167,7 +167,7 @@ Subsequent versions will consider dynamically generating SSL files and configuri
 
 ```
 
-10. For more settings, please refer to [Key Parameter Description](#Key Parameter Description)
+10. For more settings, please refer to [Key Parameter Description](#Key-Parameter-Description)
 
 ### Include in existing projects
 
@@ -230,7 +230,7 @@ The default configuration has enabled webssh authentication, all you need to do 
 
 Due to relying solely on webssh's own authentication, please note that the password strength here is set to be complex enough, and be careful not to disclose the password.
 
-For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key-Parameter-Description)
 
 
 
@@ -250,16 +250,16 @@ In the SampleProjectHeaderController, a "new ProjectHeaderParamVo ("Auth-COOKIE-
 In the subsequent request header of webssh, there will be an AUTH_COOKIE_TEST parameter with a random string value set here.
 
 When implemented, the identity information of the current user is obtained here, and a token used by the project is returned. This way, all webssh requests will go through the normal authentication process of the project.
-For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key-Parameter-Description)
 
 
 #### Configure webssh
 
 Finally, add `/webssh/index` to the normal menu and permission management of existing projects. Please stay tuned for more detailed planning of webssh buttons and functional permissions in the future.
 
-For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key-Parameter-Description)
 
-### Key parameter description
+### Key-parameter-description
 
 ```
 
