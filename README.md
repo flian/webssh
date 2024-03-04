@@ -88,9 +88,9 @@ java内存默认设置1G，演示用，自由调整。
 强烈建议修改`--webssh.allowedUsers`设置允许登录webssh的账号密码信息。
 
 4. cmd 进入项目根目录，mvn package
-5. copy vue2-sshserver\target\vue2-sshserver-1.26-SNAPSHOT.jar到服务器，
+5. copy vue2-sshserver\target\vue2-sshserver-1.26.jar到服务器，
 ```
-使用 java -jar vue2-sshserver-1.26-SNAPSHOT.jar --webssh.allowedUsers=root:changeit@123!:% 启动程序.
+使用 java -jar vue2-sshserver-1.26.jar --webssh.allowedUsers=root:changeit@123!:% 启动程序.
 其中changeit@123!改为自己的密码。如果不设置webssh.allowedUsers,默认的root会产生一个随机密码，请注意观察控制台日志。
 ```
 6. 浏览器访问 `http://127.0.0.1:5132/webssh/index` 或者`https://127.0.0.1:5443/webssh/index`即可访问.
