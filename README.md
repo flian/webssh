@@ -89,7 +89,7 @@ keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2
 ``` 
 示范例:
 
-docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -e JAVA_OPTS='-Xmx1024M -Xms1024M' -e SPRING_BOOT_OPTS='--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1' foylian/webssh:1.26
+docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
 
 浏览器访问 `http://127.0.0.1:5132/webssh/index` 或者`https://127.0.0.1:5443/webssh/index`即可访问.
 强烈建议自行修改其中'--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'配置的账户密码，

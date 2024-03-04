@@ -25,6 +25,8 @@ COPY scripts/docker/entrypoint.sh $WORKDIR_PATH
 RUN chmod +x $WORKDIR_PATH/entrypoint.sh
 
 ENV WEBSSH_JAR_FULL_PATH=$JAR_FULL_PATH
+#ENV JAVA_OPTS=""
+#ENV SPRING_BOOT_OPTS=""
 
 EXPOSE 5443 5132
 
