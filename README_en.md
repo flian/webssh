@@ -109,7 +109,7 @@ Docker profile startup will automatically generate an SSL certificate file on th
 
 Java memory is set to 1GB by default, for demonstration use, and can be adjusted freely.
 
-For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
+For more parameter settings, please refer to [Key Parameter Description](#Key-Parameter-Description)
 
 ### standalone
 
@@ -259,7 +259,7 @@ Finally, add `/webssh/index` to the normal menu and permission management of exi
 
 For more parameter settings, please refer to [Key Parameter Description](#Key Parameter Description)
 
-### Key parameter description
+### Key-parameter-description
 
 ```
 
