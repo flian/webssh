@@ -21,7 +21,7 @@ import {
     Tabs,
     TabPane,
     Divider,
-    Tooltip
+    Tooltip, Select, Option
 } from 'element-ui'
 const element = {
     install: function (Vue) {
@@ -46,6 +46,8 @@ const element = {
         Vue.use(TabPane)
         Vue.use(Divider)
         Vue.use(Tooltip)
+        Vue.use(Select)
+        Vue.use(Option)
         Vue.prototype.$message = Message
     }
 }

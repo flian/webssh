@@ -19,7 +19,7 @@ public interface WebSshTermService {
      * @param webSocketSession
      * @return
      */
-    boolean initTermWebShhConnect(String sshInfo, WebSocketSession webSocketSession) throws IOException;
+    boolean initTermWebSshConnect(String sshInfo, WebSocketSession webSocketSession) throws IOException;
 
     /**
      * handle front message

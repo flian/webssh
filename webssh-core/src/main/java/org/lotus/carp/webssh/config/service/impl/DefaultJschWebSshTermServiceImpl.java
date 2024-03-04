@@ -118,7 +118,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
     }
 
     @Override
-    public boolean initTermWebShhConnect(String sshInfo, WebSocketSession webSocketSession) throws IOException {
+    public boolean initTermWebSshConnect(String sshInfo, WebSocketSession webSocketSession) throws IOException {
         try {
             CachedWebSocketSessionObject cachedObj = xTermCachedObjMap.get(webSocketSession.getId());
             if (null == cachedObj) {

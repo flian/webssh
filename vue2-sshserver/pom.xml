@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.lotus.carp.webssh</groupId>
         <artifactId>webssh</artifactId>
-        <version>1.26-SNAPSHOT</version>
+        <version>1.26</version>
     </parent>
 
     <groupId>org.lotus.carp.webssh</groupId>
@@ -60,5 +60,12 @@
                 </includes>
             </resource>
         </resources>
+        <finalName>vue2-sshserver-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>
