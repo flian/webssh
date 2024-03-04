@@ -49,5 +49,6 @@ export default {
     Password: '密码',
     usernameTip: '请输入用户名',
     passwordTip: '请输入密码',
-    pleaseSelect : '请选择'
+    pleaseSelect : '请选择',
+    PleaseSelLang: '请选择语言',
 }

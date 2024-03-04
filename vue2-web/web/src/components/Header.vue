@@ -92,12 +92,12 @@
                         </el-button>
                     </el-form-item>
                     <el-form-item size="small">
-                        <el-select v-model="selLang" @change="handleSetLanguage()"  placeholder="$t('pleaseSelect')">
+                        <el-select v-model="selLang" @change="handleSetLanguage()"  placeholder="$t('PleaseSelLang')">
                             <el-option
-                                v-for="item in langOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
+                                v-for="uo in langOptions"
+                                :key="uo.value"
+                                :label="uo.label"
+                                :value="uo.value">
                             </el-option>
                         </el-select>
                     </el-form-item>

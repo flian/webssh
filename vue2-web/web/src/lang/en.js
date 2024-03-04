@@ -49,5 +49,7 @@ export default {
     Password: 'Password',
     usernameTip: 'please type your username',
     passwordTip: 'please type your password',
-    pleaseSelect : 'please select',
+    pleaseSelect: 'please select',
+    PleaseSelLang: 'please select language',
+
 }
