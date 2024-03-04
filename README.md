@@ -14,7 +14,7 @@ java版本 webssh
 ![avatar](asset/1.png)
 ![avatar](asset/2.png)
 
-## 背景：
+## 背景
 
 由于所处特殊行业特殊原因，各地机房防火墙一般ssh协议（跨地域访问）都是封禁状态。
 同时很多地方机房都不提供诸如堡垒机等形式的运维工具、方法，
@@ -24,7 +24,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 由于业务、部署环境的特殊性，java目前市面上没有很合适的java版本的webssh可供使用.
 故参照 [go webssh](https://github.com/Jrohy/webssh) 实现了一版java版本的webssh。
 
-## 功能:
+## 功能
 
 实现的java版本的webssh。
 业务代码依赖webssh-core和vue2-web，配置参数即可随业务一起开启webssh功能。
@@ -37,7 +37,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 +---------+   websocket  +--------+    ssh    +-----------+
 ```
 
-### 主要功能：
+### 主要功能
 
 1. 密码方式登录ssh.
 2. 私钥方式登录ssh.
