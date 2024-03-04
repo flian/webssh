@@ -17,5 +17,5 @@ docker tag lotus/webssh:${version} foylian/webssh:${version}
 docker tag lotus/webssh:${version} foylian/webssh:latest
 
 #push images to docker hub
-docker push foylian/webssh:${version}
-docker push foylian/webssh:latest
+#docker push foylian/webssh:${version}
+#docker push foylian/webssh:latest
