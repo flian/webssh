@@ -3,7 +3,7 @@ server:
   ssl:
     protocol: TLS
     enabled: true
-    key-store: /app/webssh/websshRnDefault.p12
+    key-store: /app/webssh/websshDockerDefault.p12
     key-store-password: websshDocker@Admin123!
     key-store-type: PKCS12
     key-alias: springboottomcat
