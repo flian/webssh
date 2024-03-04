@@ -24,6 +24,8 @@ COPY vue2-sshserver/target/$JAR_FULL_NAME $JAR_FULL_PATH
 COPY scripts/docker/entrypoint.sh $WORKDIR_PATH
 RUN chmod +x $WORKDIR_PATH/entrypoint.sh
 
+ENV WEBSSH_JAR_FULL_PATH=$JAR_FULL_PATH
+
 EXPOSE 5443 5132
 
 ENTRYPOINT ["/app/webssh/entrypoint.sh"]
