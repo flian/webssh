@@ -55,23 +55,35 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 
 v1.26示例:
 ``` 
-docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
+docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
 ```
+
+可能有网络问题，不行试试 `--net=host` 参数？
 
 关键含义说明：
 
 浏览器访问 [http 5132](http://127.0.0.1:5132/webssh/index) 或者 [https 5443](https://127.0.0.1:5443/webssh/index) 即可访问.
 强烈建议自行修改其中'--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1'配置的账户密码,
+
 其中"[RANDOM]"表示启动时随机产生字符串占位符,这里使用的默认账户配置，
+test用户为简单密码，生产环境一定要换掉或者去掉.(因为可以在本地启用nginx等反向代理，强行制造访问端ip为127.0.0.1染过ip限制)
+
 上面的"--webssh.allowedUsers="参数配置含义含义如下:
+
 账户1：
+
 账户账户名：root
+
 账户密码：changeit@123! +（系统启动时会随机参数一串字符串），需要在控制台找最终的密码
+
 允许登录ip：任意ip
 
 账户2：
+
 账户账户名：test
+
 账户密码：test@123!
+
 允许登录ip：只允许客户端ip为127.0.0.1的电脑登录
 
 docker profile启动会在第一次启动时自动生成ssl证书文件，所以建议使用。
@@ -153,11 +165,17 @@ webssh必须依赖的组件包括springboot配套的websocket,validation两个�
 ```
 
 同时，无论如何都需要把以下webssh api加入项目白名单：
+
 /webssh/index
+
 /webssh/check
+
 /webssh/shouldVerifyToken
+
 /webssh/projectHeader/params
+
 /webssh/login
+
 /webssh/logout
 
 #### [可选1]只启用webssh认证
@@ -165,6 +183,7 @@ webssh必须依赖的组件包括springboot配套的websocket,validation两个�
 webssh端配置:
 默认配置已经开启了webssh认证，只需要项目里面配置'webssh.allowedUsers:'参数即可。
 由于只依赖webssh自己的认证，这里密码强度请注意设置足够复杂，并且请注意不要泄漏密码。
+
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 项目端配置：
@@ -178,28 +197,38 @@ webssh端配置:
 SampleProjectHeaderController示里里面返回了一个"new ProjectHeaderParamVo("AUTH_COOKIE_TEST", RandomUtils.generatePassword(8))"
 webssh后续请求头里面就会有一个AUTH_COOKIE_TEST参数，参数值为这里设置的一个随机字符串。
 实现时，这里获取当前用户的身份信息，返回一个项目使用的token，这样webssh请求都会经过项目的正常认证流程。
+
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 
 #### 配置webssh
 
 最后把`/webssh/index`加入已有项目的正常菜单、权限管理即可。更详细的webssh按钮、功能权限后续规划中，敬请期待。
+
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 ### 关键参数说明
 
-```
+
 webssh.allowedUsers: webssh独立认证中的用户配置信息。格式"用户名:密码：允许登录的ip列表"
 ,默认值“root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1”
+
 表示含义，
+
 root:changeit@123![RANDOM]:%
+
  允许登录用户名:root
+
  密码：changeit@123!+系统随机产生的随机字符，
+
  允许登录者的ip：允许任意ip登录。 
  
 test:test@123!:127.0.0.1
+
  允许登录用户名:test
+
  密码：test@123!
+
  允许登录者的ip：127.0.0.1
  
 强烈建议使用的时候自己配置这个参数，并且保密。
@@ -207,6 +236,7 @@ test:test@123!:127.0.0.1
 并且自行实现WebSshLoginService接口。
 
 webssh.shouldVerifyToken: 是否开启webssh页面及api的独立认证。默认值:true. 
+
 webssh默认包含一个token认证，为true时会有个独立登录页面，
 认证页面会验证webssh.allowedUsers配置的用户，成功后会返回一个
 token给前端，后续webssh的接口调用会带上这个token。
@@ -255,7 +285,6 @@ webssh.randomPwdWord： 默认值[RANDOM],启动时，密码中需要产生随�
 
 
 
-```
 
 ### webssh api说明
 ```

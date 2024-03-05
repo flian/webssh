@@ -106,7 +106,7 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
             return true;
         }
 
-        log.info("握手开始");
+        log.info("beforeHandshake start");
         // 获得请求参数
         Map<String, String> paramMap = decodeParamMap(request.getURI().getQuery());
         //set connection config.
@@ -132,7 +132,7 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
             log.info("ignore token verify.");
             return true;
         }
-        log.info("用户登录已失效");
+        log.info("token is invalid.. connection will be disconnect.");
         return false;
     }
 
@@ -146,7 +146,7 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
      */
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
-        log.info("握手完成");
+        log.info("afterHandshake done.");
     }
 
 }

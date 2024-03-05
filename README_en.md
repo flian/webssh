@@ -70,9 +70,11 @@ The business code relies on webssh core and vue2 web, and configuration paramete
 
 V1.26 Example:
 ``` 
-docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name java_webssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
+docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
 ```
 
+
+may need `--net=host` ?
 
 Key meaning explanation:
 
@@ -137,7 +139,7 @@ It is strongly recommended to modify the account and password information that a
 5. Copy vue2-sshserver\target\vue2-sshserver-1.26.jar to the server,
 
 ```
-Using Java jar vue2 sshserver-1.26.jar -- webssh. allowedUsers=root:changeit@123!:% 
+Java -jar vue2 sshserver-1.26.jar -- webssh. allowedUsers=root:changeit@123!:% 
 ```
 
 6. Browser access [http 5132](http://127.0.0.1:5132/webssh/index) Or [https 5443](https://127.0.0.1:5443/webssh/index) You can access it now
@@ -261,7 +263,7 @@ For more parameter settings, please refer to [Key Parameter Description](#Key-Pa
 
 ### Key-parameter-description
 
-```
+
 
 webssh.allowedUsers: User configuration information in webssh-independent authentication. Format "username:password:list of allowed IPs to log in"
 
@@ -366,7 +368,7 @@ Standalone defaults to true because the information running in webssh is too sen
 
 
 
-webssh.underContainer: The name of the container used by the application. Default value:,
+webssh.underContainer: The name of the container used by the application. Default value:“”,
 
 Only meaningful when combined with webssh. foreHttps=true
 
@@ -378,7 +380,7 @@ Enable HTTP to forcibly redirect to HTTPS, specific configuration parameters vue
 
 
 
-webssh.dateFormat: The date format involved on the websshpage. Default value: "yyyy MM dd HH: mm: ss"
+webssh.dateFormat: The date format involved on the websshpage. Default value: "yyyy-MM-dd HH:mm:ss"
 
 
 
@@ -388,9 +390,9 @@ webssh.maxSshShellTermCorePoolSize: The maximum number of consoles that can be o
 
 webssh.randomPwdWord: The default value is [RANDOM]. When starting, random characters need to be generated in the password to generate a replacement string.
 
-```
 
 ### webssh API Description
+
 ```
 
 /webssh/index webssh homepage
