@@ -162,7 +162,7 @@ public class DefaultWebSshLoginServiceImpl implements WebSshLoginService, Initia
 
 
     private void setAllowedUsers(String usersConfig) {
-        if ("prod".equals(env) &&
+        if (("docker".equals(env) || "prod".equals(env)) &&
                 webSshConfig.isShouldVerifyToken() &&
                 webSshConfig.isForceCheckUserConfig2Prod()) {
             if (usersConfig.equals(DEFAULT_USER_CONFIG) && !webSshConfig.isEnableRandomPwd()) {
