@@ -139,7 +139,7 @@ It is strongly recommended to modify the account and password information that a
 5. Copy vue2-sshserver\target\vue2-sshserver-1.26.jar to the server,
 
 ```
-Using Java jar vue2 sshserver-1.26.jar -- webssh. allowedUsers=root:changeit@123!:% 
+Java -jar vue2 sshserver-1.26.jar -- webssh. allowedUsers=root:changeit@123!:% 
 ```
 
 6. Browser access [http 5132](http://127.0.0.1:5132/webssh/index) Or [https 5443](https://127.0.0.1:5443/webssh/index) You can access it now
