@@ -63,7 +63,7 @@ docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e
 关键含义说明：
 
 浏览器访问 [http 5132](http://127.0.0.1:5132/webssh/index) 或者 [https 5443](https://127.0.0.1:5443/webssh/index) 即可访问.
-强烈建议自行修改其中**--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1**配置的账户密码,
+强烈建议自行修改其中"--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1"配置的账户密码,
 
 其中"[RANDOM]"表示启动时随机产生字符串占位符,这里使用的默认账户配置，
 test用户为简单密码，生产环境一定要换掉或者去掉.(因为可以在本地启用nginx等反向代理，强行制造访问端ip为127.0.0.1染过ip限制)
