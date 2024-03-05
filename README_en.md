@@ -263,7 +263,7 @@ For more parameter settings, please refer to [Key Parameter Description](#Key-Pa
 
 ### Key-parameter-description
 
-```
+
 
 webssh.allowedUsers: User configuration information in webssh-independent authentication. Format "username:password:list of allowed IPs to log in"
 
@@ -368,7 +368,7 @@ Standalone defaults to true because the information running in webssh is too sen
 
 
 
-webssh.underContainer: The name of the container used by the application. Default value:,
+webssh.underContainer: The name of the container used by the application. Default value:“”,
 
 Only meaningful when combined with webssh. foreHttps=true
 
@@ -380,7 +380,7 @@ Enable HTTP to forcibly redirect to HTTPS, specific configuration parameters vue
 
 
 
-webssh.dateFormat: The date format involved on the websshpage. Default value: "yyyy MM dd HH: mm: ss"
+webssh.dateFormat: The date format involved on the websshpage. Default value: "yyyy-MM-dd HH:mm:ss"
 
 
 
@@ -390,9 +390,9 @@ webssh.maxSshShellTermCorePoolSize: The maximum number of consoles that can be o
 
 webssh.randomPwdWord: The default value is [RANDOM]. When starting, random characters need to be generated in the password to generate a replacement string.
 
-```
 
 ### webssh API Description
+
 ```
 
 /webssh/index webssh homepage

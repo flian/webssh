@@ -165,11 +165,17 @@ webssh必须依赖的组件包括springboot配套的websocket,validation两个�
 ```
 
 同时，无论如何都需要把以下webssh api加入项目白名单：
+
 /webssh/index
+
 /webssh/check
+
 /webssh/shouldVerifyToken
+
 /webssh/projectHeader/params
+
 /webssh/login
+
 /webssh/logout
 
 #### [可选1]只启用webssh认证
@@ -177,6 +183,7 @@ webssh必须依赖的组件包括springboot配套的websocket,validation两个�
 webssh端配置:
 默认配置已经开启了webssh认证，只需要项目里面配置'webssh.allowedUsers:'参数即可。
 由于只依赖webssh自己的认证，这里密码强度请注意设置足够复杂，并且请注意不要泄漏密码。
+
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 项目端配置：
@@ -190,28 +197,38 @@ webssh端配置:
 SampleProjectHeaderController示里里面返回了一个"new ProjectHeaderParamVo("AUTH_COOKIE_TEST", RandomUtils.generatePassword(8))"
 webssh后续请求头里面就会有一个AUTH_COOKIE_TEST参数，参数值为这里设置的一个随机字符串。
 实现时，这里获取当前用户的身份信息，返回一个项目使用的token，这样webssh请求都会经过项目的正常认证流程。
+
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 
 #### 配置webssh
 
 最后把`/webssh/index`加入已有项目的正常菜单、权限管理即可。更详细的webssh按钮、功能权限后续规划中，敬请期待。
+
 其他更多参数设置，见[关键参数说明](#关键参数说明)
 
 ### 关键参数说明
 
-```
+
 webssh.allowedUsers: webssh独立认证中的用户配置信息。格式"用户名:密码：允许登录的ip列表"
 ,默认值“root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1”
+
 表示含义，
+
 root:changeit@123![RANDOM]:%
+
  允许登录用户名:root
+
  密码：changeit@123!+系统随机产生的随机字符，
+
  允许登录者的ip：允许任意ip登录。 
  
 test:test@123!:127.0.0.1
+
  允许登录用户名:test
+
  密码：test@123!
+
  允许登录者的ip：127.0.0.1
  
 强烈建议使用的时候自己配置这个参数，并且保密。
@@ -219,6 +236,7 @@ test:test@123!:127.0.0.1
 并且自行实现WebSshLoginService接口。
 
 webssh.shouldVerifyToken: 是否开启webssh页面及api的独立认证。默认值:true. 
+
 webssh默认包含一个token认证，为true时会有个独立登录页面，
 认证页面会验证webssh.allowedUsers配置的用户，成功后会返回一个
 token给前端，后续webssh的接口调用会带上这个token。
@@ -267,7 +285,6 @@ webssh.randomPwdWord： 默认值[RANDOM],启动时，密码中需要产生随�
 
 
 
-```
 
 ### webssh api说明
 ```
