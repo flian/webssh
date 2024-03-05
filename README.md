@@ -66,7 +66,7 @@ docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e
 强烈建议自行修改其中"--webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1"配置的账户密码,
 
 其中"[RANDOM]"表示启动时随机产生字符串占位符,这里使用的默认账户配置，
-test用户为简单密码，生产环境一定要换掉或者去掉.(因为可以在本地启用nginx等反向代理，强行制造访问端ip为127.0.0.1染过ip限制)
+test用户为简单密码，生产环境一定要换掉或者去掉.(因为可以在本地启用nginx等反向代理，强行制造访问端ip为127.0.0.1跳过ip限制)
 
 上面的"--webssh.allowedUsers="参数配置含义含义如下:
 
@@ -115,10 +115,12 @@ java -jar vue2-sshserver-1.26.jar --webssh.allowedUsers=root:changeit@123!:%``` 
 9. 建议发布生成环境时产生并使用自己的ssl证书。
 自签名证书生成及配置示例：
 例如，cd d:\执行命令：```keytool -genkey -alias springboottomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore websshDefault.p12 -validity 3650 -dname "CN=webssh, OU=NoOU, O=NoO, L=Chendu, ST=Sichuan, C=cn" -storepass "webssh@Admin123!"  -keypass "webssh@Admin123!"```
+
 其中alias,keystore,storepass,keypass按需要配置
+
 完成后在d根目录很产生keystore配置文件名的.p12文件，copy到合适的位置
-启动命令参考application-prod.yml，配置ssl文件名、路径、密码等信息
-后续版本会考虑动态启动时动态生成ssl文件并配置
+
+启动命令参考application-prod.yml，配置ssl文件名、路径、密码等信息,后续版本会考虑动态启动时动态生成ssl文件并配置
 
 10. 其他更多设置，见[关键参数说明](#关键参数说明)
 
