@@ -68,9 +68,14 @@ The business code relies on webssh core and vue2 web, and configuration paramete
 ### docker
 
 
-V1.26 Example:
+V1.26 Example(windows):
 ``` 
 docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
+```
+
+V1.26 Example(linux):
+``` 
+docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e JAVA_OPTS='-Xmx1024M -Xms1024M' -e SPRING_BOOT_OPTS='--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1' foylian/webssh:1.26
 ```
 
 
