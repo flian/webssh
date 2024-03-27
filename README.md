@@ -53,9 +53,15 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 ### docker独立部署
 
 
-v1.26示例:
+v1.26示例(windows):
 ``` 
 docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e JAVA_OPTS=“-Xmx1024M -Xms1024M” -e SPRING_BOOT_OPTS=“--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1” foylian/webssh:1.26
+```
+
+
+v1.26示例(linux):
+``` 
+docker run  -d -p 5132:5132 -p 5443:5443  --restart always  --name javawebssh -e JAVA_OPTS='-Xmx1024M -Xms1024M' -e SPRING_BOOT_OPTS='--spring.profiles.active=docker --webssh.allowedUsers=root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1' foylian/webssh:1.26
 ```
 
 可能有网络问题，不行试试 `--net=host` 参数？
