@@ -62,7 +62,7 @@ export default {
                 disableStdin: false, //是否应禁用输入。
                 cursorBlink: true,
                 cursorStyle: 'block',
-                logLevel: 'debug',
+                logLevel: 'info',
                 scrollback: 800,
                 windowsMode: true
             })

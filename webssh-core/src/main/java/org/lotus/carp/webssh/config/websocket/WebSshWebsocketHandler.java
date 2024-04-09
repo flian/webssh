@@ -73,6 +73,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         }
         if (null != cmd) {
             if (WebSshUrlCommandEnum.TERM.equals(cmd)) {
+                //current only add TERM session for future use.
                 WebSshWsSessionManager.add(sessionId, session);
             }
         }
@@ -85,7 +86,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                     session.sendMessage(new TextMessage("ssh connection info error, empty sshinfo."));
                     session.close();
                 }
-                if (!webSshTermService.initTermWebShhConnect(sshInfo, session)) {
+                if (!webSshTermService.initTermWebSshConnect(sshInfo, session)) {
                     //connect error,close session.
                     session.close();
                 }
@@ -145,7 +146,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         // 获得客户端传来的消息
         String payload = message.getPayload();
         Object token = session.getAttributes().get(webSshConfig.getTokenName());
-        log.info("server 接收到 " + token + " 发送的 " + payload);
+        log.debug("server 接收到 " + token + " 发送的 " + payload);
         switch (cmd) {
             case TERM: {
                 //term command get
@@ -157,6 +158,7 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                 //resize
                 if (message.getPayload().contains("resize")) {
                     String[] temps = message.getPayload().split(":");
+                    log.info("resize term,rows:{},cols:{}",Integer.parseInt(temps[1]), Integer.parseInt(temps[2]));
                     webSshTermService.handleTermWebSShResize(session, message,
                             Integer.parseInt(temps[1]), Integer.parseInt(temps[2]));
                     break;
