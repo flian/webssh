@@ -47,6 +47,7 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 6. 端口转发（TODO）
 7. 打包到已有应用中部署适配。
 8. navicat http代理。 (TODO)
+9. windows rdp支持。 TODO
 
 ## 部署方式
 

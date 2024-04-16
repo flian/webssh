@@ -63,6 +63,8 @@ The business code relies on webssh core and vue2 web, and configuration paramete
 
 8. Navicat HTTP proxy. (TODO)
 
+9. windows RDP support. TODO
+
 ## Deployment method
 
 ### docker
