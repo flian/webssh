@@ -10,7 +10,7 @@ TODO LIST：
 9. navicat mySQL/postgresSQL/SQLite http代理翻译 （ntunnel_mysql.php,ntunnel_pgsql.php,ntunnel_sqlite.php)
 10.请求webssh header可能需要带其他参数(示例）
 11. java rdp: https://www.cnblogs.com/jfqiu/p/3192364.html,https://blog.51cto.com/u_16213374/8287814
-12. Apache Guacamole: https://guacamole.apache.org/
+12. Apache Guacamole: https://guacamole.apache.org/,https://www.cnblogs.com/xuwujing/p/15096587.html
 
 其他信息：
 http tunnel for mysql:
