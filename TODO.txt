@@ -11,7 +11,7 @@ TODO LIST：
 10.请求webssh header可能需要带其他参数(示例）
 11. java rdp: https://www.cnblogs.com/jfqiu/p/3192364.html,https://blog.51cto.com/u_16213374/8287814
 12. Apache Guacamole: https://guacamole.apache.org/,https://www.cnblogs.com/xuwujing/p/15096587.html
-
+13. properJavaRDP,无法复制文件到服务器？ 已经登录后无法再登录问题？bug？
 其他信息：
 http tunnel for mysql:
 ntunnel_mysql.php for java
