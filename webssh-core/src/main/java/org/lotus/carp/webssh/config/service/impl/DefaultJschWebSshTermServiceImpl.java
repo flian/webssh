@@ -137,7 +137,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                 Channel channel = createXtermShellChannel(session, (inputStream, outputStream) -> {
                     finalCachedObj.setChannelInputStream(inputStream);
                     finalCachedObj.setChannelOutputStream(outputStream);
-                }, webSshConfig.getDefaultConnectTimeOut(), xTermShellSize(webSocketSession));
+                }, webSshConfig.getDefaultConnectTimeOut(), xTermShellSize(webSocketSession),composeSshInfo(sshInfo));
                 cachedObj.setSshChannel(channel);
                 xTermCachedObjMap.put(webSocketSession.getId(), cachedObj);
                 sendSshMessageBack(webSocketSession, channel);

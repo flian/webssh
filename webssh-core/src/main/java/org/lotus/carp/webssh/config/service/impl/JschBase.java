@@ -8,6 +8,7 @@ import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
+import org.lotus.carp.webssh.config.service.vo.XDisplayInfo;
 import org.lotus.carp.webssh.config.utils.WebSshUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
@@ -188,13 +189,28 @@ public class JschBase implements InitializingBean {
         if (PASSWORD_LOGIN_TYPE == loginType) {
             session.setPassword(sshInfoObject.getPassword());
         }
-
+        //setting x11 forwarding
+        initX11Forwarding(sshInfoObject,session);
         session.connect(connectTimeout);
 
+        //TODO use sshinfo direct exec java rdp?
         return session;
     }
 
-    private SshInfo composeSshInfo(String sshInfo) throws JsonProcessingException {
+    /**
+     * process x11 forwarding
+     * @param sshInfo
+     * @param session
+     */
+    void initX11Forwarding(SshInfo sshInfo,Session session){
+        if(sshInfo.isRdp()){
+            XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getXDisplay());
+            session.setX11Host(xDisplayInfo.getX11Host());
+            session.setX11Port(xDisplayInfo.getX11Port()+6000);
+        }
+    }
+
+    protected SshInfo composeSshInfo(String sshInfo) throws JsonProcessingException {
         return baseObjectMapper.readValue(deCodeBase64Str(sshInfo), SshInfo.class);
     }
 
@@ -212,7 +228,7 @@ public class JschBase implements InitializingBean {
      * @@param channelCall get channel input and output stream after channel create.
      */
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int[] ptySize) throws JSchException {
-        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize);
+        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize,null);
     }
 
     /**
@@ -228,8 +244,11 @@ public class JschBase implements InitializingBean {
      * @return
      * @throws JSchException
      */
-    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize) throws JSchException {
+    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize,SshInfo sshInfo) throws JSchException {
         Channel channel = session.openChannel("shell");
+        if(null != sshInfo && sshInfo.isRdp()){
+            channel.setXForwarding(true);
+        }
         ((ChannelShell) channel).setPtyType(getTermPtyType());
         ((ChannelShell) channel).setPtySize(ptySize[0], ptySize[1], ptySize[2], ptySize[3]);
         ((ChannelShell) channel).setPty(true);
