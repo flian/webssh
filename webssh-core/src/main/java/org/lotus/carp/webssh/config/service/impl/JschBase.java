@@ -65,18 +65,33 @@ public class JschBase implements InitializingBean {
     }
 
     private Session ensureGetOrCreateSession(String sshInfo, String token) throws IOException, JSchException {
-
-        String preFix = token;
-        if (ObjectUtils.isEmpty(preFix)) {
-            preFix = clientRemoteHost();
-        }
-
-        String cacheSessionKey = md5String(String.format("%s:%s", preFix, sshInfo));
+        String cacheSessionKey = getCacheSessionKey(sshInfo, token);
         Session result = sessionCache.getIfPresent(cacheSessionKey);
         if (null != result) {
             return result;
         }
         return createAndCacheOne(sshInfo, cacheSessionKey);
+    }
+
+    private String getCacheSessionKey(String sshInfo, String token) {
+        return getCacheSessionKey(sshInfo, token, null);
+    }
+
+    private String getCacheSessionKey(String sshInfo, String token, String clientIp) {
+        String preFix = token;
+        if (ObjectUtils.isEmpty(preFix)) {
+            preFix = clientIp;
+        }
+
+        if (ObjectUtils.isEmpty(preFix)) {
+            try {
+                preFix = clientRemoteHost();
+            } catch (Exception e) {
+                log.error("can't get client ip.", e);
+            }
+        }
+        String cacheSessionKey = md5String(String.format("%s:%s", preFix, sshInfo));
+        return cacheSessionKey;
     }
 
     private String md5String(String source) {
@@ -191,7 +206,7 @@ public class JschBase implements InitializingBean {
             session.setPassword(sshInfoObject.getPassword());
         }
         //setting x11 forwarding
-        initX11Forwarding(sshInfoObject,session);
+        initX11Forwarding(sshInfoObject, session);
         session.connect(connectTimeout);
 
         return session;
@@ -199,14 +214,15 @@ public class JschBase implements InitializingBean {
 
     /**
      * process x11 forwarding
+     *
      * @param sshInfo
      * @param session
      */
-    void initX11Forwarding(SshInfo sshInfo,Session session){
-        if(sshInfo.isRdp()){
+    void initX11Forwarding(SshInfo sshInfo, Session session) {
+        if (sshInfo.isRdp()) {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getXDisplay());
             session.setX11Host(xDisplayInfo.getX11Host());
-            session.setX11Port(xDisplayInfo.getX11Port()+6000);
+            session.setX11Port(xDisplayInfo.getX11Port() + 6000);
         }
     }
 
@@ -228,7 +244,7 @@ public class JschBase implements InitializingBean {
      * @@param channelCall get channel input and output stream after channel create.
      */
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int[] ptySize) throws JSchException {
-        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize,null);
+        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize, null);
     }
 
     /**
@@ -244,9 +260,9 @@ public class JschBase implements InitializingBean {
      * @return
      * @throws JSchException
      */
-    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize,SshInfo sshInfo) throws JSchException {
+    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize, SshInfo sshInfo) throws JSchException {
         Channel channel = session.openChannel("shell");
-        if(null != sshInfo && sshInfo.isRdp()){
+        if (null != sshInfo && sshInfo.isRdp()) {
             channel.setXForwarding(true);
         }
         ((ChannelShell) channel).setPtyType(getTermPtyType());
@@ -262,7 +278,7 @@ public class JschBase implements InitializingBean {
             if (null != channelCall) {
                 channelCall.applySetInputAndOutStream(inputStream, outputStream);
             }
-            if(null !=sshInfo && !sshInfo.isManualConnectRdp()){
+            if (null != sshInfo && !sshInfo.isManualConnectRdp()) {
                 //TODO exec properJava?
                 //create one thread and run properJava and cacheIt.
                 //while close xterm close thread .
@@ -356,6 +372,19 @@ public class JschBase implements InitializingBean {
                 .build();
         //init sub class.
         subInit();
+    }
+
+    /**
+     * delete session if present for file upload
+     * @param sshInfo
+     * @param token
+     * @param clientIp
+     */
+    public void ensureSessionClose(String sshInfo, String token, String clientIp) {
+        String sessionKey = getCacheSessionKey(sshInfo,token,clientIp);
+        if(sessionKey.contains(sessionKey)){
+            sessionCache.invalidate(sessionKey);
+        }
     }
 
     /**

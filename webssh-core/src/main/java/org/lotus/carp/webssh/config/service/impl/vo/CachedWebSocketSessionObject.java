@@ -45,6 +45,10 @@ public class CachedWebSocketSessionObject {
      */
     private OutputStream channelOutputStream;
 
+    /**
+     * client ip addr
+     */
+    private String clientIp;
 
     public boolean close() {
 

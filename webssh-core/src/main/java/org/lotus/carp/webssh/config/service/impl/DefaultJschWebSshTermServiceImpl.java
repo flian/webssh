@@ -132,6 +132,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                 cachedObj = new CachedWebSocketSessionObject();
                 cachedObj.setSshInfo(sshInfo);
                 cachedObj.setSshSession(session);
+                cachedObj.setClientIp(webSocketSession.getRemoteAddress().getAddress().getHostAddress());
                 // seems need to set... try set model....
                 CachedWebSocketSessionObject finalCachedObj = cachedObj;
                 Channel channel = createXtermShellChannel(session, (inputStream, outputStream) -> {
@@ -196,9 +197,14 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
     @Override
     public boolean onSessionClose(WebSocketSession webSocketSession) {
         if (xTermCachedObjMap.containsKey(webSocketSession.getId())) {
+            CachedWebSocketSessionObject cachedWebSocketSessionObject = xTermCachedObjMap.get(webSocketSession.getId());
+            String token = (String)webSocketSession.getAttributes().get(webSshConfig.getTokenName());
+            //ensure session create for file upload is closed.
+            ensureSessionClose(cachedWebSocketSessionObject.getSshInfo(),token,cachedWebSocketSessionObject.getClientIp());
             xTermCachedObjMap.get(webSocketSession.getId()).close();
             xTermCachedObjMap.remove(webSocketSession.getId());
         }
+
         return true;
     }
 }
