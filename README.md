@@ -37,6 +37,32 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 +---------+   websocket  +--------+    ssh    +-----------+
 ```
 
+### 更新日志
+
+#### v1.27 更新中
+1. rdp协议支持（可以通过linux webssh rdp协议远程连接windows服务器）
+使用场景，客户端（windows）透过webssh服务器（webssh主机或者其他linux服务器）访问远端windows服务器
+ 前置条件及测试步骤：
+  a.客户端需要安装xming并启动
+  b.中转服务器需要有X11支持。（centos需要安装xorg-x11-xauth xorg-x11-fonts-* xorg-x11-utils并且/etc/ssh/sshd_config中`X11Forwarding yes`
+  c. 可以常规通过webssh登录中转linux服务器中，输入xclock，如果windows客户端弹出时钟界面表示配置成功
+手动触发连接服务器模式：
+TBD
+
+连接中转服务器时直接触发模式：
+TBD
+
+
+
+#### v1.26 更新 2024-02-02 
+ 完成基本功能：
+1. 密码方式登录ssh.
+2. 私钥方式登录ssh.
+3. 文件上传下载.
+4. 独立部署.
+5. 独立的本地认证
+6. 打包到已有应用中部署适配。
+
 ### 主要功能
 
 1. 密码方式登录ssh.
