@@ -66,7 +66,7 @@ export default {
             fileList: [],
             downloadFilePath: '',
             currentPath: '',
-            pathSpan: 18,
+            pathSpan: 24,
             clientHeight: 0,
             selectTip: 'clickSelectFile',
             titleTip: 'uploadFile',
@@ -121,9 +121,9 @@ export default {
                 this.uploadWidth = '59%'
                 this.nameWidth = 220
             } else {
-                this.dialogWidth = '50%'
-                this.uploadWidth = '28%'
-                this.nameWidth = 220
+                this.dialogWidth = '70%'
+                this.uploadWidth = '48%'
+                this.nameWidth = 280
             }
         },
         openUploadDialog() {
@@ -262,7 +262,7 @@ export default {
         border: 0 none;
         border-bottom: 1px solid #ccc;
         border-radius: 0px;
-        width: 80%;
+        width: 100%;
     }
     .el-table--border tr,td{
         border: none!important;
