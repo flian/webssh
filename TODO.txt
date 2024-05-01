@@ -22,7 +22,7 @@ xorg-x11-utils
 2) Enable the following in the sshd_config file
 X11Forwarding yes
 3) Use an appropriate X-Server on your desktop
-
+4) clink(normally windows) should install xming.
 其他信息：
 http tunnel for mysql:
 ntunnel_mysql.php for java
