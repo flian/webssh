@@ -196,4 +196,42 @@ public class WebSshConfig {
      * default max shell thread
      */
     private int maxSshShellTermCorePoolSize = 1000;
+
+    /**
+     * is shell for windows rdp connection
+     * if this is true, it means use ssh to linux server then x11 forwarding to windows server
+     */
+    private boolean rdp = false;
+
+    /**
+     * is user manual collect to rdp windows server. default is true.
+     * set is false if you wish conenct to rdp server when connnect is create.
+     */
+    private boolean manualConnectRdp = true;
+
+    /**
+     * x11 forwarding
+     */
+    private String xDisplay = "localhost:0";
+
+    /**
+     * windows rdp port. -t NUM
+     */
+    private int rdpPort = 3389;
+
+    /**
+     *full-screen mode [with Linux KDE optimization]
+     */
+    private boolean rdpWindowsFullScreen = false;
+
+    /**
+     * rdp windows size. -g 1024x768
+     */
+    private String rpdWindowsSize = "1024x768";
+
+    /**
+     * rdp log level . default is : -l INFO
+     */
+    private String logLevel = "INFO";
+
 }

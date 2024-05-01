@@ -40,8 +40,19 @@ public class DefaultWebSshController extends BaseController implements WebSshApi
     @Override
     public WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo) {
         CheckResponseVo checkResponseVo = new CheckResponseVo();
+        //client should verify token setting.
         checkResponseVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
+        //client save ssh password setting
         checkResponseVo.setSavePass(webSshConfig.getSavePass());
+        //load default rdp config for client.
+        checkResponseVo.setRdp(webSshConfig.isRdp());
+        checkResponseVo.setManualConnectRdp(webSshConfig.isManualConnectRdp());
+        checkResponseVo.setXDisplay(webSshConfig.getXDisplay());
+        checkResponseVo.setRdpPort(webSshConfig.getRdpPort());
+        checkResponseVo.setRdpWindowsFullScreen(webSshConfig.isRdpWindowsFullScreen());
+        checkResponseVo.setRpdWindowsSize(webSshConfig.getRpdWindowsSize());
+        checkResponseVo.setLogLevel(webSshConfig.getLogLevel());
+
         return WebSshResponse.ok(checkResponseVo,DEFAULT_WEB_SSH_SUCCESS_MSG);
     }
 

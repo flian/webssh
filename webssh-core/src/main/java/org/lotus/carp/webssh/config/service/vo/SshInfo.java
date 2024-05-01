@@ -43,7 +43,7 @@ public class SshInfo {
      * is shell for windows rdp connection
      * if this is true, it means use ssh to linux server then x11 forwarding to windows server
      */
-    private boolean rdp = true;
+    private boolean rdp = false;
 
     /**
      * is user manual collect to rdp windows server. default is true.
@@ -59,7 +59,7 @@ public class SshInfo {
     /**
      * rdp server ip
      */
-    private String windowsIp = "192.168.2.7";
+    private String windowsIp = "";
 
     /**
      * rdp windows title. -T
