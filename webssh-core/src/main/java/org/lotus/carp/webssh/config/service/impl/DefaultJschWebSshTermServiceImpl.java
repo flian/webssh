@@ -152,7 +152,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                    if (null != sshInfoObject && !sshInfoObject.isManualConnectRdp()) {
+                    if (null != sshInfoObject && sshInfoObject.isRdp() && !sshInfoObject.isManualConnectRdp()) {
                         //exec properJava?
                         //create one thread and run properJava and cacheIt.
                         //while close xterm close thread.
@@ -173,12 +173,15 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
         } catch (JsonProcessingException e) {
             log.error("error parse sshInfo object。sshInfo:{},exception:{}", sshInfo, e);
             webSocketSession.sendMessage(new TextMessage(e.getMessage()));
+            webSocketSession.close();
         } catch (JSchException e) {
             log.error("error login to jsch.sshInfo:{},exception:{}", sshInfo, e);
             webSocketSession.sendMessage(new TextMessage(e.getMessage()));
+            webSocketSession.close();
         } catch (Exception e) {
             log.error("error when init ssh connection to server.sshInfo:{},exception:{}", sshInfo, e);
             webSocketSession.sendMessage(new TextMessage(e.getMessage()));
+            webSocketSession.close();
         }
         return false;
     }

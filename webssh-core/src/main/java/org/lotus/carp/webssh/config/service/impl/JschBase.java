@@ -249,6 +249,7 @@ public class JschBase implements InitializingBean {
      * @throws JSchException
      * @@param channelCall get channel input and output stream after channel create.
      */
+    @Deprecated
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int[] ptySize) throws JSchException {
         return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize, null);
     }
