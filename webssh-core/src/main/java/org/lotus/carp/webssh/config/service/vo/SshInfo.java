@@ -32,11 +32,18 @@ public class SshInfo {
      */
     private String logintype;
 
+
     /**
      * is shell for windows rdp connection
      * if this is true, it means use ssh to linux server then x11 forwarding to windows server
      */
     private boolean rdp = true;
+
+    /**
+     * is user manual collect to rdp windows server. default is true.
+     * set is false if you wish conenct to rdp server when connnect is create.
+     */
+    private boolean manualConnectRdp = true;
 
     /**
      * x11 forwarding

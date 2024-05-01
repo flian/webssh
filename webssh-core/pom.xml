@@ -44,5 +44,11 @@
             <artifactId>spring-boot-starter-validation</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--code please see @https://github.com/flian/properJavaRDP/tree/master -->
+        <dependency>
+            <groupId>net.propero.rdp</groupId>
+            <artifactId>properJavaRDP</artifactId>
+            <version>0.1.18-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

@@ -6,6 +6,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
+import net.propero.rdp.Rdesktop;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.service.vo.XDisplayInfo;
@@ -193,7 +194,6 @@ public class JschBase implements InitializingBean {
         initX11Forwarding(sshInfoObject,session);
         session.connect(connectTimeout);
 
-        //TODO use sshinfo direct exec java rdp?
         return session;
     }
 
@@ -261,6 +261,12 @@ public class JschBase implements InitializingBean {
             OutputStream outputStream = channel.getOutputStream();
             if (null != channelCall) {
                 channelCall.applySetInputAndOutStream(inputStream, outputStream);
+            }
+            if(null !=sshInfo && !sshInfo.isManualConnectRdp()){
+                //TODO exec properJava?
+                //create one thread and run properJava and cacheIt.
+                //while close xterm close thread .
+                Rdesktop.main(null);
             }
         } catch (IOException e) {
             log.error("error create xterm shell/", e);
