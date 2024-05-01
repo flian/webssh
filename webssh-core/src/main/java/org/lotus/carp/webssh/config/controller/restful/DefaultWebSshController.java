@@ -3,16 +3,16 @@ package org.lotus.carp.webssh.config.controller.restful;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.api.WebSshApi;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
-import org.lotus.carp.webssh.config.controller.vo.CheckRequestParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.CheckResponseVo;
-import org.lotus.carp.webssh.config.controller.vo.LoginVo;
-import org.lotus.carp.webssh.config.controller.vo.LogoutVo;
+import org.lotus.carp.webssh.config.controller.vo.*;
+import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLogoutResultVo;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -44,16 +44,26 @@ public class DefaultWebSshController extends BaseController implements WebSshApi
         checkResponseVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
         //client save ssh password setting
         checkResponseVo.setSavePass(webSshConfig.getSavePass());
-        //load default rdp config for client.
-        checkResponseVo.setRdp(webSshConfig.isRdp());
-        checkResponseVo.setDirectConnectRdpServer(webSshConfig.isDirectConnectRdpServer());
-        checkResponseVo.setXDisplay(webSshConfig.getXDisplay());
-        checkResponseVo.setRdpPort(webSshConfig.getRdpPort());
-        checkResponseVo.setRdpWindowsFullScreen(webSshConfig.isRdpWindowsFullScreen());
-        checkResponseVo.setRpdWindowsSize(webSshConfig.getRpdWindowsSize());
-        checkResponseVo.setLogLevel(webSshConfig.getLogLevel());
-
         return WebSshResponse.ok(checkResponseVo,DEFAULT_WEB_SSH_SUCCESS_MSG);
+    }
+
+    @Override
+    public WebSshResponse<DefaultConfigVo> defaultConfig(DefaultConfigRequestParamsVo defaultConfigRequestParamsVo) {
+        DefaultConfigVo defaultConfigVo = new DefaultConfigVo();
+        //client should verify token setting.
+        defaultConfigVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
+        //client save ssh password setting
+        defaultConfigVo.setSavePass(webSshConfig.getSavePass());
+        //load default rdp config for client.
+        defaultConfigVo.setRdp(webSshConfig.isRdp());
+        defaultConfigVo.setDirectConnectRdpServer(webSshConfig.isDirectConnectRdpServer());
+        defaultConfigVo.setXDisplay(webSshConfig.getXDisplay());
+        defaultConfigVo.setRdpPort(webSshConfig.getRdpPort());
+        defaultConfigVo.setRdpWindowsFullScreen(webSshConfig.isRdpWindowsFullScreen());
+        defaultConfigVo.setRpdWindowsSize(webSshConfig.getRpdWindowsSize());
+        defaultConfigVo.setLogLevel(webSshConfig.getLogLevel());
+
+        return WebSshResponse.ok(defaultConfigVo,DEFAULT_WEB_SSH_SUCCESS_MSG);
     }
 
     @Override

@@ -39,6 +39,11 @@
                                   :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
                                   show-password></el-input>
                     </el-form-item>
+                    <el-checkbox v-model="rdpConfig.rdp">rdp</el-checkbox>
+                    <el-checkbox v-model="rdpConfig.directConnectRdpServer">directConnectRdpServer</el-checkbox>
+                    <el-form-item label="Port" size="small" prop="windows server ip">
+                        <el-input v-model="rdpConfig.windowsIp" />
+                    </el-form-item>
                     <el-dialog :title="$t('privateKey')" :visible.sync="textareaVisible" :close-on-click-modal="false">
                         <el-input :rows="8" v-model="sshInfo.password" type="textarea"
                                   :placeholder="$t('keyTip')"></el-input>
@@ -126,7 +131,7 @@
 </template>
 
 <script>
-import {getProjectHeaders, getShouldVerifyToken, login, logout} from '@/api/common'
+import {getProjectHeaders, getSystemDefaultConfig,getShouldVerifyToken, login, logout} from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
@@ -142,6 +147,7 @@ export default {
             foreShowLogin: false,
             loginLoading: false,
             textareaVisible: false,
+            rdpConfig: {},
             login: {
                 form: {
                     username: 'test',
@@ -293,12 +299,18 @@ export default {
             self.$store.state.projectExchangeToken = projectExchangeToken;
         }
 
+        //get should valid token info
         getShouldVerifyToken().then(function (shouldVerifyToken) {
             self.$store.state.shouldValidToken = shouldVerifyToken.data;
             if (!self.$store.state.shouldValidToken) {
                 //no need token verify,sending token null.
                 self.handleProjectTokens(self, '');
             }
+        });
+
+        getSystemDefaultConfig().then(function (defaultConfigResponse){
+            self.$store.state.defaultRdpConfig = defaultConfigResponse;
+            self.rdpConfig =  Object.assign({}, defaultConfigResponse);
         });
     },
     computed: {
