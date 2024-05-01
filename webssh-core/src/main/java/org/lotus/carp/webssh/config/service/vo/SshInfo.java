@@ -59,7 +59,7 @@ public class SshInfo {
     /**
      * rdp server ip
      */
-    private String windowsIp = "";
+    private String windowsIp = "192.168.2.16";
 
     /**
      * rdp windows title. -T
@@ -101,16 +101,16 @@ public class SshInfo {
      */
     private String rdpDiskDeviceMap;
 
-    public boolean isRdpArgumentsValid() {
+    public RdpValidResult isRdpArgumentsValid() {
         if (StringUtils.isEmpty(windowsIp)) {
             log.warn("rdp ip is empty.");
-            return false;
+            return RdpValidResult.RdpValidResultError(String.format("rdp ip is empty. ip=%s",windowsIp));
         }
         if (rdpPort <= 0) {
-            log.warn("rdp ip is invalid.");
-            return false;
+            log.warn("rdp port is invalid.");
+            return RdpValidResult.RdpValidResultError(String.format("rdp port is invalid. port=%s",rdpPort));
         }
-        return true;
+        return RdpValidResult.OK;
     }
 
     public String[] buildArgs() {

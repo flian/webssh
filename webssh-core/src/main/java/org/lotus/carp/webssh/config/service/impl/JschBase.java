@@ -8,6 +8,7 @@ import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
+import org.lotus.carp.webssh.config.service.vo.RdpValidResult;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.service.vo.XDisplayInfo;
 import org.lotus.carp.webssh.config.utils.WebSshUtils;
@@ -226,8 +227,9 @@ public class JschBase implements InitializingBean {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getXDisplay());
             session.setX11Host(xDisplayInfo.getX11Host());
             session.setX11Port(xDisplayInfo.getX11Port() + 6000);
-            if (!sshInfo.isRdpArgumentsValid()) {
-                throw new WebSshBusinessException("invalid rdp arguments. please check log for detail.");
+            RdpValidResult validResult = sshInfo.isRdpArgumentsValid();
+            if (!validResult.isOk()) {
+                throw new WebSshBusinessException("invalid rdp arguments. please check log for detail." + validResult.getErrorMsg());
             }
         }
     }
