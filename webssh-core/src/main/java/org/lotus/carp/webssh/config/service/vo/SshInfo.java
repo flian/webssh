@@ -46,10 +46,10 @@ public class SshInfo {
     private boolean rdp = false;
 
     /**
-     * is user manual collect to rdp windows server. default is true.
-     * set is false if you wish conenct to rdp server when connnect is create.
+     * is direct connect  to rdp windows server. default is false.
+     * set is true if you wish conenct to rdp server when connnect is create.
      */
-    private boolean manualConnectRdp = true;
+    private boolean directConnectRdpServer = false;
 
     /**
      * x11 forwarding
@@ -59,7 +59,7 @@ public class SshInfo {
     /**
      * rdp server ip
      */
-    private String windowsIp = "192.168.2.16";
+    private String windowsIp = "";
 
     /**
      * rdp windows title. -T

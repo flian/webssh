@@ -227,9 +227,11 @@ public class JschBase implements InitializingBean {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getXDisplay());
             session.setX11Host(xDisplayInfo.getX11Host());
             session.setX11Port(xDisplayInfo.getX11Port() + 6000);
-            RdpValidResult validResult = sshInfo.isRdpArgumentsValid();
-            if (!validResult.isOk()) {
-                throw new WebSshBusinessException("invalid rdp arguments. please check log for detail." + validResult.getErrorMsg());
+            if(sshInfo.isDirectConnectRdpServer()){
+                RdpValidResult validResult = sshInfo.isRdpArgumentsValid();
+                if (!validResult.isOk()) {
+                    throw new WebSshBusinessException("invalid rdp arguments. please check log for detail." + validResult.getErrorMsg());
+                }
             }
         }
     }

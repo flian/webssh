@@ -28,10 +28,10 @@ public class CheckResponseVo {
     private boolean rdp = false;
 
     /**
-     * is user manual collect to rdp windows server. default is true.
-     * set is false if you wish conenct to rdp server when connnect is create.
+     * is direct connect  to rdp windows server. default is false.
+     * set is true if you wish conenct to rdp server when connnect is create.
      */
-    private boolean manualConnectRdp = true;
+    private boolean directConnectRdpServer = false;
 
     /**
      * x11 forwarding

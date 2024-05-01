@@ -152,18 +152,21 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                    if (null != sshInfoObject && sshInfoObject.isRdp() && !sshInfoObject.isManualConnectRdp()) {
-                        //exec properJava?
-                        //create one thread and run properJava and cacheIt.
-                        //while close xterm close thread.
-                        try {
-                            Rdesktop.main(sshInfoObject.buildArgs());
-                        } catch (RdesktopException e) {
-                            log.error("error while execute rdp client.", e);
-                            sendMessage2Websocket(webSocketSession,String.format("error while execute rdp client.error:%s",e.getMessage()));
+                    if (null != sshInfoObject && sshInfoObject.isRdp()) {
+                        //TODO copy properJavaRDP jar to path.
+                        if(sshInfoObject.isDirectConnectRdpServer()){
+                            //exec properJava?
+                            //create one thread and run properJava and cacheIt.
+                            //while close xterm close thread.
+                            //start rdp.
+                            try {
+                                Rdesktop.main(sshInfoObject.buildArgs());
+                            } catch (RdesktopException e) {
+                                log.error("error while execute rdp client.", e);
+                                sendMessage2Websocket(webSocketSession,String.format("error while execute rdp client.error:%s",e.getMessage()));
+                            }
                         }
                     }
-                    //TODO else download properJavaRDP jar to /temp and run it?
                 }));
 
                 xTermCachedObjMap.put(webSocketSession.getId(), cachedObj);

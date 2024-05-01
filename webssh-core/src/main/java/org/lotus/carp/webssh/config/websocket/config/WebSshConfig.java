@@ -1,7 +1,6 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ public class WebSshConfig {
     public static final String DEFAULT_USER_CONFIG = "root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1";
 
     /**
-     *  config to enable random password
+     * config to enable random password
      */
     public boolean enableRandomPwd = true;
 
@@ -107,7 +106,7 @@ public class WebSshConfig {
     /**
      * ssh term ptyType
      */
-    private String webSshTermPtyType ="xterm";
+    private String webSshTermPtyType = "xterm";
 
     /**
      * col – terminal width
@@ -158,9 +157,8 @@ public class WebSshConfig {
      * you may need config your own HttpsConfig for other contain.
      * spring boot supported contain: tomcat,jetty,undertow,netty,webflux,
      * you need config your own httpsConfig except tomcat.
-     *
      */
-    private String underContainer ="";
+    private String underContainer = "";
 
     /**
      * will try to auto generate https key while there is not present in classpath.
@@ -204,10 +202,10 @@ public class WebSshConfig {
     private boolean rdp = false;
 
     /**
-     * is user manual collect to rdp windows server. default is true.
-     * set is false if you wish conenct to rdp server when connnect is create.
+     * is direct connect  to rdp windows server. default is false.
+     * set is true if you wish conenct to rdp server when connnect is create.
      */
-    private boolean manualConnectRdp = true;
+    private boolean directConnectRdpServer = false;
 
     /**
      * x11 forwarding
@@ -220,7 +218,7 @@ public class WebSshConfig {
     private int rdpPort = 3389;
 
     /**
-     *full-screen mode [with Linux KDE optimization]
+     * full-screen mode [with Linux KDE optimization]
      */
     private boolean rdpWindowsFullScreen = false;
 
@@ -234,4 +232,24 @@ public class WebSshConfig {
      */
     private String logLevel = "INFO";
 
+    /**
+     * if system will copy properJavaRdpJar to properJavaRdpJarFilePath if not present.
+     * default is true: it will check if not present, system will copy to path first.
+     */
+    private boolean copyProperJavaRdpJarIfNotPresent = true;
+
+    /**
+     * java full command, example /usr/bin/java
+     */
+    private String javaFullPath = "java";
+
+    /**
+     * default java rdp full jar name
+     */
+    private String properJavaRdpJar = "properJavaRDP-0.1.18-SNAPSHOT-jar-with-dependencies.jar";
+
+    /**
+     * proper java RDP jar full path.
+     */
+    private String properJavaRdpJarFilePath = "/tmp";
 }
