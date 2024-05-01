@@ -1,6 +1,11 @@
 package org.lotus.carp.webssh.config.service.vo;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h3>javaWebSSH</h3>
@@ -10,6 +15,7 @@ import lombok.Data;
  * @date : 2024-02-02 15:46
  **/
 @Data
+@Slf4j
 public class SshInfo {
     /**
      * linux server ip
@@ -56,9 +62,9 @@ public class SshInfo {
     private String windowsIp;
 
     /**
-     * rdp windows title. -t
+     * rdp windows title. -T
      */
-    private String title = "java-web-ssh properJavaRDP";
+    private String title = "java-web-ssh properJavaRDP - %s";
 
     /**
      * windows rdp port. -t NUM
@@ -76,6 +82,11 @@ public class SshInfo {
     private String rdpPassword;
 
     /**
+     *full-screen mode [with Linux KDE optimization]
+     */
+    private boolean rdpWindowsFullScreen = false;
+
+    /**
      * rdp windows size. -g 1024x768
      */
     private String rpdWindowsSize = "1024x768";
@@ -90,4 +101,59 @@ public class SshInfo {
      */
     private String rdpDiskDeviceMap;
 
+    public boolean isRdpArgumentsValid() {
+        if (StringUtils.isEmpty(windowsIp)) {
+            log.warn("rdp ip is empty.");
+            return false;
+        }
+        if (rdpPort <= 0) {
+            log.warn("rdp ip is invalid.");
+            return false;
+        }
+        return true;
+    }
+
+    public String[] buildArgs() {
+        List<String> args = new ArrayList<>();
+        if (!StringUtils.isEmpty(title)) {
+            args.add("-T");
+            args.add(String.format(title,windowsIp));
+        }
+        if(rdpPort > 0){
+            args.add("-t");
+            args.add(""+rdpPort);
+        }
+
+        if(!StringUtils.isEmpty(rdpUser)){
+            args.add("-u");
+            args.add(rdpUser);
+        }
+
+        if(!StringUtils.isEmpty(rdpPassword)){
+            args.add("-p");
+            args.add(rdpPassword);
+        }
+
+        if(rdpWindowsFullScreen){
+            args.add("-fl");
+        }else if(!StringUtils.isEmpty(rpdWindowsSize)){
+            args.add("-g");
+            args.add(rpdWindowsSize);
+        }
+
+        if (!StringUtils.isEmpty(logLevel)) {
+            args.add("-l");
+            args.add(logLevel);
+        }
+
+        if (!StringUtils.isEmpty(rdpDiskDeviceMap)) {
+            args.add("--disk_device_map");
+            args.add(rdpDiskDeviceMap);
+        }
+
+        args.add(windowsIp);
+        String[] result = new String[args.size()];
+        args.toArray(result);
+        return result;
+    }
 }

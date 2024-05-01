@@ -50,6 +50,11 @@ public class CachedWebSocketSessionObject {
      */
     private String clientIp;
 
+    /**
+     * rdp thread holder.
+     */
+    private Thread rdpThread;
+
     public boolean close() {
 
         if (null != sshChannel) {

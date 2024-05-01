@@ -6,8 +6,11 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import lombok.extern.slf4j.Slf4j;
+import net.propero.rdp.Rdesktop;
+import net.propero.rdp.RdesktopException;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
+import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.TextMessage;
@@ -140,6 +143,29 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                     finalCachedObj.setChannelOutputStream(outputStream);
                 }, webSshConfig.getDefaultConnectTimeOut(), xTermShellSize(webSocketSession),composeSshInfo(sshInfo));
                 cachedObj.setSshChannel(channel);
+
+                //try start rdp thread and cache it.
+                cachedObj.setRdpThread(new Thread(()->{
+                    SshInfo sshInfoObject = null;
+                    try {
+                        sshInfoObject = composeSshInfo(sshInfo);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (null != sshInfoObject && !sshInfoObject.isManualConnectRdp()) {
+                        //exec properJava?
+                        //create one thread and run properJava and cacheIt.
+                        //while close xterm close thread.
+                        try {
+                            Rdesktop.main(sshInfoObject.buildArgs());
+                        } catch (RdesktopException e) {
+                            log.error("error while execute rdp client.", e);
+                            sendMessage2Websocket(webSocketSession,String.format("error while execute rdp client.error:%s",e.getMessage()));
+                        }
+                    }
+                    //TODO else download properJavaRDP jar to /temp and run it?
+                }));
+
                 xTermCachedObjMap.put(webSocketSession.getId(), cachedObj);
                 sendSshMessageBack(webSocketSession, channel);
             }
@@ -194,6 +220,14 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
         return true;
     }
 
+    /**
+     * @param webSocketSession
+     * @return
+     */
+    public  CachedWebSocketSessionObject getCachedWebSocketSessionObject(WebSocketSession webSocketSession){
+        return xTermCachedObjMap.get(webSocketSession.getId());
+    }
+
     @Override
     public boolean onSessionClose(WebSocketSession webSocketSession) {
         if (xTermCachedObjMap.containsKey(webSocketSession.getId())) {
@@ -201,6 +235,13 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
             String token = (String)webSocketSession.getAttributes().get(webSshConfig.getTokenName());
             //ensure session create for file upload is closed.
             ensureSessionClose(cachedWebSocketSessionObject.getSshInfo(),token,cachedWebSocketSessionObject.getClientIp());
+
+            //stop rdp thread while close session.
+            Thread rdpThread = cachedWebSocketSessionObject.getRdpThread();
+            if(null != rdpThread && rdpThread.isAlive()){
+                rdpThread.stop();
+            }
+
             xTermCachedObjMap.get(webSocketSession.getId()).close();
             xTermCachedObjMap.remove(webSocketSession.getId());
         }

@@ -7,7 +7,9 @@ import com.google.common.cache.CacheBuilder;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import net.propero.rdp.Rdesktop;
+import net.propero.rdp.RdesktopException;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
+import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
 import org.lotus.carp.webssh.config.service.vo.XDisplayInfo;
 import org.lotus.carp.webssh.config.utils.WebSshUtils;
@@ -16,8 +18,11 @@ import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -223,6 +228,9 @@ public class JschBase implements InitializingBean {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getXDisplay());
             session.setX11Host(xDisplayInfo.getX11Host());
             session.setX11Port(xDisplayInfo.getX11Port() + 6000);
+            if (!sshInfo.isRdpArgumentsValid()) {
+                throw new WebSshBusinessException("invalid rdp arguments. please check log for detail.");
+            }
         }
     }
 
@@ -278,14 +286,9 @@ public class JschBase implements InitializingBean {
             if (null != channelCall) {
                 channelCall.applySetInputAndOutStream(inputStream, outputStream);
             }
-            if (null != sshInfo && !sshInfo.isManualConnectRdp()) {
-                //TODO exec properJava?
-                //create one thread and run properJava and cacheIt.
-                //while close xterm close thread .
-                Rdesktop.main(null);
-            }
+
         } catch (IOException e) {
-            log.error("error create xterm shell/", e);
+            log.error("error create xterm shell.", e);
             return null;
         }
 
@@ -376,15 +379,31 @@ public class JschBase implements InitializingBean {
 
     /**
      * delete session if present for file upload
+     *
      * @param sshInfo
      * @param token
      * @param clientIp
      */
     public void ensureSessionClose(String sshInfo, String token, String clientIp) {
-        String sessionKey = getCacheSessionKey(sshInfo,token,clientIp);
-        if(sessionKey.contains(sessionKey)){
+        String sessionKey = getCacheSessionKey(sshInfo, token, clientIp);
+        if (sessionKey.contains(sessionKey)) {
             sessionCache.invalidate(sessionKey);
         }
+    }
+
+    public CachedWebSocketSessionObject getCachedWebSocketSessionObject(WebSocketSession webSocketSession) {
+        return null;
+    }
+
+    public void sendMessage2Websocket(WebSocketSession webSocketSession, String message) {
+        if (null != webSocketSession && webSocketSession.isOpen() && !StringUtils.isEmpty(message)) {
+            try {
+                webSocketSession.sendMessage(new TextMessage(message));
+            } catch (IOException e) {
+                log.error("send message error.", e);
+            }
+        }
+
     }
 
     /**
