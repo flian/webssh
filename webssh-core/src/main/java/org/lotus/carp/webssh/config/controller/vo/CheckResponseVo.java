@@ -11,7 +11,14 @@ import lombok.Data;
  **/
 @Data
 public class CheckResponseVo {
+    /**
+     * client should save password?
+     */
     private boolean savePass;
+
+    /**
+     * client should verify token,if not token present,will show login form.
+     */
     private boolean shouldVerifyToken;
 
     /**
