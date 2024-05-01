@@ -51,5 +51,5 @@ export default {
     passwordTip: 'please type your password',
     pleaseSelect: 'please select',
     PleaseSelLang: 'please select language',
-
+    clearUploaded: 'clean',
 }

@@ -22,7 +22,9 @@
                         <el-upload ref="upload" multiple drag :action="uploadUrl" :data="uploadData" :before-upload="beforeUpload" :on-progress="uploadProgress" :on-success="uploadSuccess">
                             <i class="el-icon-upload"></i>
                             <div class="el-upload__text">{{ $t(this.selectTip) }}</div>
-                            <div class="el-upload__tip" slot="tip">{{ this.uploadTip }}</div>
+                            <div class="el-upload__tip" slot="tip">
+                                {{ this.uploadTip }}
+                                <el-button  size="small" icon="el-icon-delete" circle type="info" @click="cleanUploaded()">{{ $t('clearUploaded') }}</el-button></div>
                         </el-upload>
                     </el-dialog>
                 </el-col>
@@ -73,7 +75,7 @@ export default {
             uploadTip: '',
             dialogWidth: '70%',
             uploadWidth: '32%',
-            nameWidth: 120,
+            nameWidth: 520,
             progressPercent: 0
         }
     },
@@ -119,11 +121,11 @@ export default {
             } else if (clientWidth >= 600 && clientWidth < 1000) {
                 this.dialogWidth = '80%'
                 this.uploadWidth = '59%'
-                this.nameWidth = 220
+                this.nameWidth = 150
             } else {
                 this.dialogWidth = '70%'
                 this.uploadWidth = '48%'
-                this.nameWidth = 280
+                this.nameWidth = 520
             }
         },
         openUploadDialog() {
@@ -248,6 +250,10 @@ export default {
                 }
             }
             this.$store.commit('SET_TERMLIST', termList)
+        },
+        //clean finished upload files.
+        cleanUploaded(){
+            this.$refs.upload.clearFiles();
         }
     }
 }

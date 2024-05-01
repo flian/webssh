@@ -51,4 +51,5 @@ export default {
     passwordTip: '请输入密码',
     pleaseSelect : '请选择',
     PleaseSelLang: '请选择语言',
+    clearUploaded: '清空'
 }
