@@ -199,7 +199,7 @@ public class WebSshConfig {
      * is shell for windows rdp connection
      * if this is true, it means use ssh to linux server then x11 forwarding to windows server
      */
-    private boolean rdp = false;
+    private boolean rdp = true;
 
     /**
      * is direct connect  to rdp windows server. default is false.
@@ -211,6 +211,11 @@ public class WebSshConfig {
      * x11 forwarding
      */
     private String x11Display = "localhost:0";
+
+    /**
+     * rdp server ip
+     */
+    private String windowsIp = "192.168.2.16";
 
     /**
      * windows rdp port. -t NUM

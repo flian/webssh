@@ -39,19 +39,21 @@
                                   :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
                                   show-password></el-input>
                     </el-form-item>
-                    <el-checkbox v-model="sshInfo.rdpConfig.rdp">enableRdp</el-checkbox>
-                    <el-checkbox v-model="sshInfo.rdpConfig.directConnectRdpServer">directRdp</el-checkbox>
-                    <div v-show="showRdpConfig">
-                        <el-form-item label="WindowsServerIp" size="small" prop="windowsServerIp" >
+                    <div style="margin-bottom: 20px;margin-top: 10px">
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdp">Rdp</el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.directConnectRdpServer">RdpServer</el-checkbox>
+                    </div>
+                    <div v-show="showRdpConfig" style="margin-bottom: 20px;margin-top: 10px">
+                        <el-form-item label="RdpIp" size="small" prop="RdpIp" >
                             <el-input v-model="sshInfo.rdpConfig.windowsIp" />
                         </el-form-item>
-                        <el-form-item label="rdpPort" size="small" prop="rdpPort" >
+                        <el-form-item label="RdpPort" size="small" prop="RdpPort" >
                             <el-input v-model="sshInfo.rdpConfig.rdpPort" />
                         </el-form-item>
                         <el-form-item label="xDisplay" size="small" prop="xDisplay" >
                             <el-input v-model="sshInfo.rdpConfig.x11Display" />
                         </el-form-item>
-                        <el-form-item label="shareFolder" size="small" prop="shareFolder" >
+                        <el-form-item label="ShareFolder" size="small" prop="ShareFolder" >
                             <el-input v-model="sshInfo.rdpConfig.rdpDiskDeviceMap" />
                         </el-form-item>
                         <el-form-item size="small">
