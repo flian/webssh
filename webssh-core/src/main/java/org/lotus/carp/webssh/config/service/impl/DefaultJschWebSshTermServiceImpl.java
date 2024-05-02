@@ -145,7 +145,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                 cachedObj.setSshChannel(channel);
 
                 //try start rdp thread and cache it.
-                cachedObj.setRdpThread(new Thread(()->{
+                /*cachedObj.setRdpThread(new Thread(()->{
                     SshInfo sshInfoObject = null;
                     try {
                         sshInfoObject = composeSshInfo(sshInfo);
@@ -167,7 +167,7 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                             }
                         }
                     }
-                }));
+                }));*/
 
                 xTermCachedObjMap.put(webSocketSession.getId(), cachedObj);
                 sendSshMessageBack(webSocketSession, channel);
