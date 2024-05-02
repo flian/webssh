@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.config.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -48,7 +49,7 @@ public class JschBase implements InitializingBean {
 
     private static boolean jschLoggerInitialized = false;
 
-    private ObjectMapper baseObjectMapper = new ObjectMapper();
+    private ObjectMapper baseObjectMapper = (new ObjectMapper()).disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     Cache<String, Session> sessionCache;
 
@@ -223,12 +224,12 @@ public class JschBase implements InitializingBean {
      * @param session
      */
     void initX11Forwarding(SshInfo sshInfo, Session session) {
-        if (sshInfo.isRdp()) {
-            XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getX11Display());
+        if (!ObjectUtils.isEmpty(sshInfo.getRdpConfig()) && sshInfo.getRdpConfig().isRdp()) {
+            XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getRdpConfig().getX11Display());
             session.setX11Host(xDisplayInfo.getX11Host());
             session.setX11Port(xDisplayInfo.getX11Port() + 6000);
-            if(sshInfo.isDirectConnectRdpServer()){
-                RdpValidResult validResult = sshInfo.isRdpArgumentsValid();
+            if(sshInfo.getRdpConfig().isDirectConnectRdpServer()){
+                RdpValidResult validResult = sshInfo.getRdpConfig().isRdpArgumentsValid();
                 if (!validResult.isOk()) {
                     throw new WebSshBusinessException("invalid rdp arguments. please check log for detail." + validResult.getErrorMsg());
                 }
@@ -273,7 +274,7 @@ public class JschBase implements InitializingBean {
      */
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize, SshInfo sshInfo) throws JSchException {
         Channel channel = session.openChannel("shell");
-        if (null != sshInfo && sshInfo.isRdp()) {
+        if (null != sshInfo && null != sshInfo.getRdpConfig() && sshInfo.getRdpConfig().isRdp()) {
             channel.setXForwarding(true);
         }
         ((ChannelShell) channel).setPtyType(getTermPtyType());

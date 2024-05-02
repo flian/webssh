@@ -152,15 +152,15 @@ public class DefaultJschWebSshTermServiceImpl extends JschBase implements WebSsh
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
-                    if (null != sshInfoObject && sshInfoObject.isRdp()) {
+                    if (null != sshInfoObject && null != sshInfoObject.getRdpConfig() && sshInfoObject.getRdpConfig().isRdp()) {
                         //TODO copy properJavaRDP jar to path.
-                        if(sshInfoObject.isDirectConnectRdpServer()){
+                        if(sshInfoObject.getRdpConfig().isDirectConnectRdpServer()){
                             //exec properJava?
                             //create one thread and run properJava and cacheIt.
                             //while close xterm close thread.
                             //start rdp.
                             try {
-                                Rdesktop.main(sshInfoObject.buildArgs());
+                                Rdesktop.main(sshInfoObject.getRdpConfig().buildArgs());
                             } catch (RdesktopException e) {
                                 log.error("error while execute rdp client.", e);
                                 sendMessage2Websocket(webSocketSession,String.format("error while execute rdp client.error:%s",e.getMessage()));
