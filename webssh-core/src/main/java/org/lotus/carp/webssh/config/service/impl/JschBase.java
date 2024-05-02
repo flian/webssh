@@ -210,8 +210,8 @@ public class JschBase implements InitializingBean {
         if (PASSWORD_LOGIN_TYPE == loginType) {
             session.setPassword(sshInfoObject.getPassword());
         }
-        //setting x11 forwarding
-        initX11Forwarding(sshInfoObject, session);
+        //x11 setting
+        initX11Setting(sshInfoObject, session);
         session.connect(connectTimeout);
 
         return session;
