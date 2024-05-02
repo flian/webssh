@@ -57,7 +57,7 @@ public class DefaultWebSshController extends BaseController implements WebSshApi
         //load default rdp config for client.
         defaultConfigVo.setRdp(webSshConfig.isRdp());
         defaultConfigVo.setDirectConnectRdpServer(webSshConfig.isDirectConnectRdpServer());
-        defaultConfigVo.setXDisplay(webSshConfig.getXDisplay());
+        defaultConfigVo.setX11Display(webSshConfig.getX11Display());
         defaultConfigVo.setRdpPort(webSshConfig.getRdpPort());
         defaultConfigVo.setRdpWindowsFullScreen(webSshConfig.isRdpWindowsFullScreen());
         defaultConfigVo.setRpdWindowsSize(webSshConfig.getRpdWindowsSize());

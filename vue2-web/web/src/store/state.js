@@ -10,7 +10,7 @@ export default {
         rdpConfig: {
             rdp: false,
             directConnectRdpServer: false,
-            xDisplay: '',
+            x11Display: '',
             windowsIp: '',
             rdpPort: '',
             rdpWindowsFullScreen: false,

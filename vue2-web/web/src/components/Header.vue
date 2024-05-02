@@ -41,7 +41,7 @@
                     </el-form-item>
                     <el-checkbox v-model="sshInfo.rdpConfig.rdp">enableRdp</el-checkbox>
                     <el-checkbox v-model="sshInfo.rdpConfig.directConnectRdpServer">directRdp</el-checkbox>
-                    <div :visiable.sync="showRdpConfig">
+                    <div v-show="showRdpConfig">
                         <el-form-item label="WindowsServerIp" size="small" prop="windowsServerIp" >
                             <el-input v-model="sshInfo.rdpConfig.windowsIp" />
                         </el-form-item>
@@ -49,18 +49,18 @@
                             <el-input v-model="sshInfo.rdpConfig.rdpPort" />
                         </el-form-item>
                         <el-form-item label="xDisplay" size="small" prop="xDisplay" >
-                            <el-input v-model="sshInfo.rdpConfig.xDisplay" />
+                            <el-input v-model="sshInfo.rdpConfig.x11Display" />
                         </el-form-item>
                         <el-form-item label="shareFolder" size="small" prop="shareFolder" >
                             <el-input v-model="sshInfo.rdpConfig.rdpDiskDeviceMap" />
                         </el-form-item>
                         <el-form-item size="small">
-                            <el-select v-model="sshInfo.rdpConfig.rpdWindowsSize">
+                            <el-select v-model="sshInfo.rdpConfig.rpdWindowsSize" filterable allow-create>
                                 <el-option
                                     v-for="s in rdpScreenSizeOptions"
-                                    :key="s.value"
+                                    :key="s.label"
                                     :label="s.label"
-                                    :value="s.value">
+                                    :value="s.label">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -175,7 +175,7 @@ export default {
         return {
             selLang: '',
             langOptions: [{label:'中文',value:'zh'},{label:'English',value:'en'}],
-            rdpScreenSizeOptions: [{label:'Full Screen',value:'Full'},{label:'1024x768',value: '1024x768'},{label:'800x600',value: '800x600'}],
+            rdpScreenSizeOptions: [{label:'Full Screen'},{label:'1024x768'},{label:'800x600'}],
             rdpLogLevels: [{label:'INFO'},{label:'DEBUG'},{label:'WARN'},{label:'ERROR'}, {label:'FATAL'}],
             foreShowLogin: false,
             loginLoading: false,
@@ -341,8 +341,8 @@ export default {
         });
 
         getSystemDefaultConfig().then(function (defaultConfigResponse){
-            self.$store.state.defaultRdpConfig = defaultConfigResponse;
-            self.$store.state.sshInfo.rdpConfig =  Object.assign(self.$store.state.sshInfo.rdpConfig, defaultConfigResponse);
+            self.$store.state.defaultRdpConfig = defaultConfigResponse.data;
+            self.$store.state.sshInfo.rdpConfig =  Object.assign(self.$store.state.sshInfo.rdpConfig, defaultConfigResponse.data);
         });
     },
     computed: {

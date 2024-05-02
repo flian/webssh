@@ -54,7 +54,7 @@ public class SshInfo {
     /**
      * x11 forwarding
      */
-    private String xDisplay = "localhost:0";
+    private String x11Display = "localhost:0";
 
     /**
      * rdp server ip

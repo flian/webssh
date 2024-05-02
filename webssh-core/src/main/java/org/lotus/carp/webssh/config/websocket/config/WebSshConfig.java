@@ -210,7 +210,7 @@ public class WebSshConfig {
     /**
      * x11 forwarding
      */
-    private String xDisplay = "localhost:0";
+    private String x11Display = "localhost:0";
 
     /**
      * windows rdp port. -t NUM
