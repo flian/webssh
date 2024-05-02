@@ -223,14 +223,15 @@ public class JschBase implements InitializingBean {
      * @param sshInfo
      * @param session
      */
-    void initX11Forwarding(SshInfo sshInfo, Session session) {
+    void initX11Setting(SshInfo sshInfo, Session session) {
+        //X11 server should be MobaXterm.
         if (!ObjectUtils.isEmpty(sshInfo.getRdpConfig()) && sshInfo.getRdpConfig().isRdp()) {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getRdpConfig().getX11Display());
-
+            //FIXME page should auto detect your ip.
             session.setX11Host(xDisplayInfo.getX11Host());
             log.info("session.setX11Host:{}",xDisplayInfo.getX11Host());
 
-            int port = xDisplayInfo.getX11Port() + 6000;
+            int port = xDisplayInfo.getX11Port();
             session.setX11Port(port);
             log.info("session.setX11Port:{}",port);
             if(sshInfo.getRdpConfig().isDirectConnectRdpServer()){
@@ -279,8 +280,9 @@ public class JschBase implements InitializingBean {
      */
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize, SshInfo sshInfo) throws JSchException {
         Channel channel = session.openChannel("shell");
+        //FIXME XForwarding should be next topic.
         if (null != sshInfo && null != sshInfo.getRdpConfig() && sshInfo.getRdpConfig().isRdp()) {
-            channel.setXForwarding(true);
+           // channel.setXForwarding(true);
         }
         ((ChannelShell) channel).setPtyType(getTermPtyType());
         ((ChannelShell) channel).setPtySize(ptySize[0], ptySize[1], ptySize[2], ptySize[3]);
