@@ -39,11 +39,42 @@
                                   :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
                                   show-password></el-input>
                     </el-form-item>
-                    <el-checkbox v-model="rdpConfig.rdp">rdp</el-checkbox>
-                    <el-checkbox v-model="rdpConfig.directConnectRdpServer">directConnectRdpServer</el-checkbox>
-                    <el-form-item label="Port" size="small" prop="windows server ip">
-                        <el-input v-model="rdpConfig.windowsIp" />
-                    </el-form-item>
+                    <el-checkbox v-model="sshInfo.rdpConfig.rdp">enableRdp</el-checkbox>
+                    <el-checkbox v-model="sshInfo.rdpConfig.directConnectRdpServer">directRdp</el-checkbox>
+                    <div :visiable.sync="showRdpConfig">
+                        <el-form-item label="WindowsServerIp" size="small" prop="windowsServerIp" >
+                            <el-input v-model="sshInfo.rdpConfig.windowsIp" />
+                        </el-form-item>
+                        <el-form-item label="rdpPort" size="small" prop="rdpPort" >
+                            <el-input v-model="sshInfo.rdpConfig.rdpPort" />
+                        </el-form-item>
+                        <el-form-item label="xDisplay" size="small" prop="xDisplay" >
+                            <el-input v-model="sshInfo.rdpConfig.xDisplay" />
+                        </el-form-item>
+                        <el-form-item label="shareFolder" size="small" prop="shareFolder" >
+                            <el-input v-model="sshInfo.rdpConfig.rdpDiskDeviceMap" />
+                        </el-form-item>
+                        <el-form-item size="small">
+                            <el-select v-model="sshInfo.rdpConfig.rpdWindowsSize">
+                                <el-option
+                                    v-for="s in rdpScreenSizeOptions"
+                                    :key="s.value"
+                                    :label="s.label"
+                                    :value="s.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item size="small">
+                            <el-select v-model="sshInfo.rdpConfig.logLevel">
+                                <el-option
+                                    v-for="s in rdpLogLevels"
+                                    :key="s.label"
+                                    :label="s.label"
+                                    :value="s.label">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </div>
                     <el-dialog :title="$t('privateKey')" :visible.sync="textareaVisible" :close-on-click-modal="false">
                         <el-input :rows="8" v-model="sshInfo.password" type="textarea"
                                   :placeholder="$t('keyTip')"></el-input>
@@ -144,10 +175,11 @@ export default {
         return {
             selLang: '',
             langOptions: [{label:'中文',value:'zh'},{label:'English',value:'en'}],
+            rdpScreenSizeOptions: [{label:'Full Screen',value:'Full'},{label:'1024x768',value: '1024x768'},{label:'800x600',value: '800x600'}],
+            rdpLogLevels: [{label:'INFO'},{label:'DEBUG'},{label:'WARN'},{label:'ERROR'}, {label:'FATAL'}],
             foreShowLogin: false,
             loginLoading: false,
             textareaVisible: false,
-            rdpConfig: {},
             login: {
                 form: {
                     username: 'test',
@@ -310,13 +342,16 @@ export default {
 
         getSystemDefaultConfig().then(function (defaultConfigResponse){
             self.$store.state.defaultRdpConfig = defaultConfigResponse;
-            self.rdpConfig =  Object.assign({}, defaultConfigResponse);
+            self.$store.state.sshInfo.rdpConfig =  Object.assign(self.$store.state.sshInfo.rdpConfig, defaultConfigResponse);
         });
     },
     computed: {
         ...mapState(['sshInfo']),
         privateKey() {
             return this.sshInfo.logintype === 1
+        },
+        showRdpConfig(){
+            return this.sshInfo.rdpConfig.rdp && this.sshInfo.rdpConfig.directConnectRdpServer;
         },
         showLogin() {
             const shouldValidToken = this.$store.state.shouldValidToken;

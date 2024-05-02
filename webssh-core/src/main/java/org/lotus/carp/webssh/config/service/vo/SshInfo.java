@@ -134,7 +134,7 @@ public class SshInfo {
             args.add(rdpPassword);
         }
 
-        if(rdpWindowsFullScreen){
+        if(rdpWindowsFullScreen || (!StringUtils.isEmpty(rpdWindowsSize) && !rpdWindowsSize.contains("x"))){
             args.add("-fl");
         }else if(!StringUtils.isEmpty(rpdWindowsSize)){
             args.add("-g");

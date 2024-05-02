@@ -6,7 +6,18 @@ export default {
         username: 'root',
         port: 22,
         password: '',
-        logintype: 0
+        logintype: 0,
+        rdpConfig: {
+            rdp: false,
+            directConnectRdpServer: false,
+            xDisplay: '',
+            windowsIp: '',
+            rdpPort: '',
+            rdpWindowsFullScreen: false,
+            rpdWindowsSize: '',
+            logLevel: 'INFO',
+            rdpDiskDeviceMap: ''
+        }
     },
     sshList: Object.prototype.hasOwnProperty.call(localStorage, 'sshList') ? localStorage.getItem('sshList') : null,
     termList: [],
