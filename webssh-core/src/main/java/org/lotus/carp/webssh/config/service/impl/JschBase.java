@@ -226,8 +226,13 @@ public class JschBase implements InitializingBean {
     void initX11Forwarding(SshInfo sshInfo, Session session) {
         if (!ObjectUtils.isEmpty(sshInfo.getRdpConfig()) && sshInfo.getRdpConfig().isRdp()) {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getRdpConfig().getX11Display());
+
             session.setX11Host(xDisplayInfo.getX11Host());
-            session.setX11Port(xDisplayInfo.getX11Port() + 6000);
+            log.info("session.setX11Host:{}",xDisplayInfo.getX11Host());
+
+            int port = xDisplayInfo.getX11Port() + 6000;
+            session.setX11Port(port);
+            log.info("session.setX11Port:{}",port);
             if(sshInfo.getRdpConfig().isDirectConnectRdpServer()){
                 RdpValidResult validResult = sshInfo.getRdpConfig().isRdpArgumentsValid();
                 if (!validResult.isOk()) {
