@@ -40,9 +40,27 @@
                                   show-password></el-input>
                     </el-form-item>
                     <div style="margin-bottom: 20px;margin-top: 10px">
-                        <el-checkbox v-model="sshInfo.rdpConfig.rdp">Rdp</el-checkbox>
-                        <el-checkbox v-model="sshInfo.rdpConfig.rdpServer">RdpServer</el-checkbox>
-                        <el-checkbox v-model="sshInfo.rdpConfig.autoConnect" :disabled="!showRdpConfig">autoConnect</el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdp">
+                            Rdp
+                            <el-tooltip placement="right">
+                                <div slot="content">勾选启用rdp</div>
+                                <i class="el-icon-question icon-color"></i>
+                            </el-tooltip>
+                        </el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdpServer">
+                            RdpServer
+                            <el-tooltip placement="right">
+                                <div slot="content">勾选配置rdp服务器信息</div>
+                                <i class="el-icon-question icon-color"></i>
+                            </el-tooltip>
+                        </el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.autoConnect" :disabled="!showRdpConfig">
+                            autoConnect
+                            <el-tooltip placement="right">
+                                <div slot="content">勾选自动连接rdp服务器。你也可以关闭此次，手动下载rdp客户端，然后执行rdp命令连接远程服务器</div>
+                                <i class="el-icon-question icon-color"></i>
+                            </el-tooltip>
+                        </el-checkbox>
                     </div>
                     <div v-show="showRdpConfig" style="margin-bottom: 20px;margin-top: 10px">
                         <el-form-item label="RdpIp" size="small" prop="RdpIp" >
