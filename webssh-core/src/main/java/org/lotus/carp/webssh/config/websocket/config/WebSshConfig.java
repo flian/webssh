@@ -251,7 +251,7 @@ public class WebSshConfig {
     /**
      * default java rdp full jar name
      */
-    private String properJavaRdpJar = "properJavaRDP-0.1.18-SNAPSHOT-jar-with-dependencies.jar";
+    private String properJavaRdpJar = "properJavaRDP-0.1.18-jar-with-dependencies.jar";
 
     /**
      * proper java RDP jar full path.
