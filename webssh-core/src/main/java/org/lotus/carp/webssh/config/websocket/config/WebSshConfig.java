@@ -265,5 +265,5 @@ public class WebSshConfig {
     /**
      * proper java RDP jar full path.
      */
-    private String properJavaRdpJarFilePath = "/tmp";
+    private String properJavaRdpJarFilePath = "/tmp/properJavaRdp";
 }

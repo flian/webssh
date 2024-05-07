@@ -5,6 +5,7 @@ import org.lotus.carp.webssh.config.controller.api.WebSshFileApi;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshController;
 import org.lotus.carp.webssh.config.controller.restful.DefaultWebSshFileController;
 import org.lotus.carp.webssh.config.service.WebSshFileService;
+import org.lotus.carp.webssh.config.service.WebSshJavaRdpService;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.DefaultJschWebSshFileServiceImpl;
@@ -25,6 +26,15 @@ import javax.annotation.Resource;
  **/
 @Configuration
 public class DefaultBeanConfig {
+
+    @ConditionalOnMissingBean
+    @Resource
+    @Bean
+    public WebSshJavaRdpService defaultWebSshJavaRdpService() {
+        return new WebSshJavaRdpService(){};
+    }
+
+
     @ConditionalOnMissingBean
     @Resource
     @Bean

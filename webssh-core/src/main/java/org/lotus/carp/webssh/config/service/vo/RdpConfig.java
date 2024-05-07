@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Slf4j
@@ -83,6 +84,28 @@ public class RdpConfig {
         return false;
     }
 
+    /**
+     * should ensure properJavaRDP jar in temp folder
+     * @return
+     */
+    public boolean shouldEnsureProperJavaRDPJarExist(){
+        if(rdp && rdpServer && autoConnect){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * should auto connect rdp server
+     * @return
+     */
+    public boolean shouldSendAutoConnectRdpCmd(){
+        if(rdp && rdpServer && autoConnect){
+            return true;
+        }
+        return false;
+    }
+
     public RdpValidResult isRdpArgumentsValid() {
         if (StringUtils.isEmpty(windowsIp)) {
             log.warn("rdp ip is empty.");
@@ -94,8 +117,7 @@ public class RdpConfig {
         }
         return RdpValidResult.OK;
     }
-
-    public String[] buildArgs() {
+    public List<String> buildArgsList(){
         List<String> args = new ArrayList<>();
         if (!StringUtils.isEmpty(title)) {
             args.add("-T");
@@ -132,10 +154,19 @@ public class RdpConfig {
             args.add("--disk_device_map");
             args.add(rdpDiskDeviceMap);
         }
-
         args.add(windowsIp);
+        return args;
+    }
+
+    public String[] buildArgs() {
+        List<String> args = buildArgsList();
         String[] result = new String[args.size()];
         args.toArray(result);
         return result;
+    }
+
+    public String buildArgsStr(){
+        List<String> args = buildArgsList();
+        return args.stream().collect(Collectors.joining(" "));
     }
 }
