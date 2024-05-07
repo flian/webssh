@@ -49,6 +49,7 @@
             <groupId>net.propero.rdp</groupId>
             <artifactId>properJavaRDP</artifactId>
             <version>0.1.18</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
