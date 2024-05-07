@@ -45,11 +45,13 @@
             <scope>provided</scope>
         </dependency>
         <!--code please see @https://github.com/flian/properJavaRDP/tree/master -->
+        <!--
         <dependency>
             <groupId>net.propero.rdp</groupId>
             <artifactId>properJavaRDP</artifactId>
             <version>0.1.18</version>
             <scope>provided</scope>
         </dependency>
+        -->
     </dependencies>
 </project>
