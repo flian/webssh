@@ -28,10 +28,14 @@ public class DefaultConfigVo {
     private boolean rdp = false;
 
     /**
-     * is direct connect  to rdp windows server. default is false.
-     * set is true if you wish conenct to rdp server when connnect is create.
+     * enable this to config rdp server info
      */
-    private boolean directConnectRdpServer = false;
+    private boolean rdpServer = false;
+
+    /**
+     * if rdp = true and rdpServer=true, if this is true, it will direct connect rdp server by config.
+     */
+    private boolean autoConnect = false;
 
     /**
      * x11 forwarding
@@ -62,4 +66,9 @@ public class DefaultConfigVo {
      * rdp log level . default is : -l INFO
      */
     private String logLevel = "INFO";
+
+    /**
+     * java rdp client downlaod url
+     */
+    private String properJavaRDPDownloadUrl = "/webssh/properJavaRDPDownload";
 }

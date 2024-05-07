@@ -202,10 +202,19 @@ public class WebSshConfig {
     private boolean rdp = true;
 
     /**
-     * is direct connect  to rdp windows server. default is false.
-     * set is true if you wish conenct to rdp server when connnect is create.
+     * enable this to config rdp server info
      */
-    private boolean directConnectRdpServer = false;
+    private boolean rdpServer = false;
+
+    /**
+     * if rdp = true and rdpServer=true, if this is true, it will direct connect rdp server by config.
+     */
+    private boolean autoConnect = false;
+
+    /**
+     * x11 display format
+     */
+    private String x11DisplayFormat="%s:0";
 
     /**
      * x11 forwarding

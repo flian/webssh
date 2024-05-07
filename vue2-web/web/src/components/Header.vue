@@ -41,7 +41,8 @@
                     </el-form-item>
                     <div style="margin-bottom: 20px;margin-top: 10px">
                         <el-checkbox v-model="sshInfo.rdpConfig.rdp">Rdp</el-checkbox>
-                        <el-checkbox v-model="sshInfo.rdpConfig.directConnectRdpServer">RdpServer</el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdpServer">RdpServer</el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.autoConnect">autoConnect</el-checkbox>
                     </div>
                     <div v-show="showRdpConfig" style="margin-bottom: 20px;margin-top: 10px">
                         <el-form-item label="RdpIp" size="small" prop="RdpIp" >

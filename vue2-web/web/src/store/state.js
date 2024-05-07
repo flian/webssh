@@ -9,14 +9,16 @@ export default {
         logintype: 0,
         rdpConfig: {
             rdp: false,
-            directConnectRdpServer: false,
+            rdpServer: false,
+            autoConnect: false,
             x11Display: '',
             windowsIp: '',
             rdpPort: '',
             rdpWindowsFullScreen: false,
             rpdWindowsSize: '',
             logLevel: 'INFO',
-            rdpDiskDeviceMap: ''
+            rdpDiskDeviceMap: '',
+            properJavaRDPDownloadUrl: ''
         }
     },
     sshList: Object.prototype.hasOwnProperty.call(localStorage, 'sshList') ? localStorage.getItem('sshList') : null,

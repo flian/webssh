@@ -227,14 +227,14 @@ public class JschBase implements InitializingBean {
         //X11 server should be MobaXterm.
         if (!ObjectUtils.isEmpty(sshInfo.getRdpConfig()) && sshInfo.getRdpConfig().isRdp()) {
             XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getRdpConfig().getX11Display());
-            //FIXME page should auto detect your ip.
+            //page should auto detect your ip.
             session.setX11Host(xDisplayInfo.getX11Host());
             log.info("session.setX11Host:{}",xDisplayInfo.getX11Host());
 
             int port = xDisplayInfo.getX11Port();
             session.setX11Port(port);
             log.info("session.setX11Port:{}",port);
-            if(sshInfo.getRdpConfig().isDirectConnectRdpServer()){
+            if(sshInfo.getRdpConfig().isRdpServer() && sshInfo.getRdpConfig().isAutoConnect()){
                 RdpValidResult validResult = sshInfo.getRdpConfig().isRdpArgumentsValid();
                 if (!validResult.isOk()) {
                     throw new WebSshBusinessException("invalid rdp arguments. please check log for detail." + validResult.getErrorMsg());
@@ -281,7 +281,7 @@ public class JschBase implements InitializingBean {
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize, SshInfo sshInfo) throws JSchException {
         Channel channel = session.openChannel("shell");
         //FIXME XForwarding should be next topic.
-        if (null != sshInfo && null != sshInfo.getRdpConfig() && sshInfo.getRdpConfig().isRdp()) {
+        if (null != sshInfo && null != sshInfo.getRdpConfig() && sshInfo.getRdpConfig().shouldEnableXForwarding()) {
            // channel.setXForwarding(true);
         }
         ((ChannelShell) channel).setPtyType(getTermPtyType());

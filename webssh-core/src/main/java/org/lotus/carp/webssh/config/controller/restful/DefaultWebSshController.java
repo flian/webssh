@@ -4,15 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.api.WebSshApi;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.vo.*;
-import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLogoutResultVo;
+import org.lotus.carp.webssh.config.utils.WebSshUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +47,7 @@ public class DefaultWebSshController extends BaseController implements WebSshApi
     }
 
     @Override
-    public WebSshResponse<DefaultConfigVo> defaultConfig(DefaultConfigRequestParamsVo defaultConfigRequestParamsVo) {
+    public WebSshResponse<DefaultConfigVo> defaultConfig(HttpServletRequest request,DefaultConfigRequestParamsVo defaultConfigRequestParamsVo) {
         DefaultConfigVo defaultConfigVo = new DefaultConfigVo();
         //client should verify token setting.
         defaultConfigVo.setShouldVerifyToken(webSshConfig.isShouldVerifyToken());
@@ -56,14 +55,19 @@ public class DefaultWebSshController extends BaseController implements WebSshApi
         defaultConfigVo.setSavePass(webSshConfig.getSavePass());
         //load default rdp config for client.
         defaultConfigVo.setRdp(webSshConfig.isRdp());
-        defaultConfigVo.setDirectConnectRdpServer(webSshConfig.isDirectConnectRdpServer());
-        defaultConfigVo.setX11Display(webSshConfig.getX11Display());
+        defaultConfigVo.setRdpServer(webSshConfig.isRdpServer());
+        defaultConfigVo.setAutoConnect(webSshConfig.isAutoConnect());
+        String remoteIp = WebSshUtils.getIpAddr(request);
+        String x11Display =  webSshConfig.getX11Display();
+        if(!StringUtils.isEmpty(remoteIp)){
+            x11Display = String.format(webSshConfig.getX11DisplayFormat(),remoteIp);
+        }
+        defaultConfigVo.setX11Display(x11Display);
         defaultConfigVo.setWindowsIp(webSshConfig.getWindowsIp());
         defaultConfigVo.setRdpPort(webSshConfig.getRdpPort());
         defaultConfigVo.setRdpWindowsFullScreen(webSshConfig.isRdpWindowsFullScreen());
         defaultConfigVo.setRpdWindowsSize(webSshConfig.getRpdWindowsSize());
         defaultConfigVo.setLogLevel(webSshConfig.getLogLevel());
-
         return WebSshResponse.ok(defaultConfigVo,DEFAULT_WEB_SSH_SUCCESS_MSG);
     }
 

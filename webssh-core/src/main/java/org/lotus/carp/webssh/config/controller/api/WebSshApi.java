@@ -41,7 +41,7 @@ public interface WebSshApi {
      */
     @GetMapping("/systemDefaultConfig")
     @ResponseBody
-    default WebSshResponse<DefaultConfigVo> defaultConfig(DefaultConfigRequestParamsVo defaultConfigRequestParamsVo) {
+    default WebSshResponse<DefaultConfigVo> defaultConfig(HttpServletRequest request,DefaultConfigRequestParamsVo defaultConfigRequestParamsVo) {
         throw new WebSshBusinessException("Please implements me!");
     }
 
