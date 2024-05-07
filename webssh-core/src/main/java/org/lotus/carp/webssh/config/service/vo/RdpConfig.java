@@ -77,7 +77,6 @@ public class RdpConfig {
     private String rdpDiskDeviceMap;
 
     public boolean shouldEnableXForwarding(){
-        //FIXME XForwarding should be next topic.
         if(rdp && rdpServer && autoConnect){
             return true;
         }
