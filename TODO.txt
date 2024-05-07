@@ -27,6 +27,7 @@ X11Forwarding yes
 http tunnel for mysql:
 ntunnel_mysql.php for java
 mongo http tunnel for java
+try https://github.com/OndraZizka/php-in-java?
 
 http 代理tcp流量
 https://blog.twofei.com/877/
