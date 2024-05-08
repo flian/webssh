@@ -10,4 +10,13 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  * @date : 2024-05-08 11:30
  **/
 public class QuercusViewResolver extends UrlBasedViewResolver {
+    public QuercusViewResolver() {
+        setViewClass(requiredViewClass());
+    }
+
+
+    @Override
+    protected Class requiredViewClass() {
+        return QuercusView.class;
+    }
 }

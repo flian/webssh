@@ -1,4 +1,4 @@
-package org.lotus.carp.webssh.navicat;
+package org.lotus.carp.webssh.navicat.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;

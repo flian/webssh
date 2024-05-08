@@ -11,7 +11,7 @@ public class WebSshNavicatTunnelConst {
     /**
      * webssh url prefix.
      */
-    public static final String WEB_SSH_PREFIX = "/webssh";
+    public static final String WEB_SSH_PREFIX = "/php";
 
     /**
      * navicat ntunnel prefix
@@ -31,13 +31,13 @@ public class WebSshNavicatTunnelConst {
     /**
      * mysql ntunnel url
      */
-    public static final String WEB_SSH_NAVICAT_MYSQL_FILE = WEB_SSH_NAVICAT_MAPPING + "/" + "ntunnel_mysql.php";
+    public static final String WEB_SSH_NAVICAT_MYSQL_FILE = WEB_SSH_NAVICAT_PHP_FOLDER + "/" + "ntunnel_mysql.php";
     /**
      * pgsql ntunnel url
      */
-    public static final String WEB_SSH_NAVICAT_PGSQL_FILE = WEB_SSH_NAVICAT_MAPPING + "/" + "ntunnel_pgsql.php";
+    public static final String WEB_SSH_NAVICAT_PGSQL_FILE = WEB_SSH_NAVICAT_PHP_FOLDER + "/" + "ntunnel_pgsql.php";
     /**
      * sqlite ntunnel url
      */
-    public static final String WEB_SSH_NAVICAT_SQLITE_FILE = WEB_SSH_NAVICAT_MAPPING + "/" + "ntunnel_sqlite.php";
+    public static final String WEB_SSH_NAVICAT_SQLITE_FILE = WEB_SSH_NAVICAT_PHP_FOLDER + "/" + "ntunnel_sqlite.php";
 }
