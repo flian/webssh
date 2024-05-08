@@ -20,6 +20,9 @@
         <maven-compiler.version>3.10.0</maven-compiler.version>
         <jsh.version>0.2.16</jsh.version>
         <guavacache.version>31.0.1-jre</guavacache.version>
+        <mysql.jdbc.version>8.0.33</mysql.jdbc.version>
+        <pgsql.jdbc.verison>42.7.3</pgsql.jdbc.verison>
+        <sqlite.jdbc.version>3.45.3.0</sqlite.jdbc.version>
     </properties>
 
     <modules>
@@ -41,6 +44,24 @@
                 <artifactId>guava</artifactId>
                 <version>${guavacache.version}</version>
             </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.jdbc.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite.jdbc.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${pgsql.jdbc.verison}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <dependencies>

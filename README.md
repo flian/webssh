@@ -52,7 +52,10 @@ TBD
 连接中转服务器时直接触发模式：
 TBD
 
-
+2. navicat ntunnel for mysql,pgsql,sqlite
+   mysql 隧道: /php/navicat/ntunnel/mysql?token={}
+   pgsql 隧道: /php/navicat/ntunnel/pgsql?token={}
+   sqlite 隧道: /php/navicat/ntunnel/sqlite?token={}
 
 #### v1.26 更新 2024-02-02 
  完成基本功能：

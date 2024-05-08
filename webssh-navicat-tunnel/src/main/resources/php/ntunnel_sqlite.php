@@ -3,7 +3,7 @@
 //set allowTestMenu to false to disable System/Server test page
 $allowTestMenu = true;
 
-header("Content-Type: text/plain; charset=x-user-defined");
+header("Content-Type: text/plain;");
 error_reporting(0);
 set_time_limit(0);
 
