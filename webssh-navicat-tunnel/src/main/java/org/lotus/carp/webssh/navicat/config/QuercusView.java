@@ -115,14 +115,7 @@ public class QuercusView extends AbstractUrlBasedView {
                         prependPage.executeTop(env);
                     }
                 }
-
-                try{
-                    env.executeTop();
-                }catch (Exception e){
-                    log.error("QuercusExitException:",e);
-                }
-
-
+                env.executeTop();
                 StringValue append
                         = quercus.getIniValue("auto_append_file").toStringValue(env);
                 if (append.length() > 0) {
@@ -181,11 +174,11 @@ public class QuercusView extends AbstractUrlBasedView {
         }
     }
 
-    InputStream phpScriptStream(HttpServletRequest req){
+    InputStream phpScriptStream(HttpServletRequest req) {
         String scriptPath = getUrl();
-        if(!StringUtils.isEmpty(scriptPath) && scriptPath.contains(WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_PHP_FOLDER)){
-            InputStream result =  QuercusView.class.getClassLoader().getResourceAsStream(scriptPath);
-            if(null != result){
+        if (!StringUtils.isEmpty(scriptPath) && scriptPath.contains(WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_PHP_FOLDER)) {
+            InputStream result = QuercusView.class.getClassLoader().getResourceAsStream(scriptPath);
+            if (null != result) {
                 return result;
             }
         }
