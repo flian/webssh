@@ -31,17 +31,17 @@ public class NavicatNTunnelController {
             throw  new WebSshBusinessException("invalid access. reason: invalid token.");
         }
     }
-    @GetMapping("/mysql")
+    @RequestMapping("/mysql")
     public String mysqlNTunnel(@RequestParam(value = "token",required = false) String token){
         validateToken(token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_MYSQL_FILE;
     }
-    @GetMapping("/pgsql")
+    @RequestMapping("/pgsql")
     public String pgsqlNTunnel(@RequestParam(value = "token",required = false) String token){
         validateToken(token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_PGSQL_FILE;
     }
-    @GetMapping("/sqlite")
+    @RequestMapping("/sqlite")
     public String sqliteNTunnel(@RequestParam(value = "token",required = false) String token){
         validateToken(token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_SQLITE_FILE;

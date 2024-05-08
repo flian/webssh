@@ -5,7 +5,7 @@ $allowTestMenu = true;
 
 $use_mysqli = function_exists("mysqli_connect");
 
-header("Content-Type: text/plain; charset=x-user-defined");
+header("Content-Type: text/plain;");
 error_reporting(0);
 set_time_limit(0);
 

@@ -18,8 +18,8 @@ public class QuercusConfig {
     @Bean
     public ViewResolver resolver(){
         QuercusViewResolver quercusViewResolver = new QuercusViewResolver();
-        quercusViewResolver.setPrefix("php");
-        quercusViewResolver.setSuffix(".php");
+        //quercusViewResolver.setPrefix("php");
+        //quercusViewResolver.setSuffix(".php");
         quercusViewResolver.setOrder(0);
         return quercusViewResolver;
     }

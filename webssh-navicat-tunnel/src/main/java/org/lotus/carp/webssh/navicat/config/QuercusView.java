@@ -13,9 +13,12 @@ import com.caucho.util.L10N;
 import com.caucho.vfs.*;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.*;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Map;
 
 @Slf4j
@@ -56,12 +59,9 @@ public class QuercusView extends AbstractUrlBasedView {
         QuercusHttpServletRequest _request = new QuercusHttpServletRequestImpl(request);
         QuercusHttpServletResponse _response = new QuercusHttpServletResponseImpl(response);
         try {
-            Path path = getPath(request);
-
             QuercusPage page;
-
             try {
-                page = getQuercus().parse(path);
+                page = getQuercus().parse(Vfs.openRead(phpScriptStream(request)));
             } catch (FileNotFoundException ex) {
                 // php/2001
                 log.error(ex.toString(), ex);
@@ -116,7 +116,12 @@ public class QuercusView extends AbstractUrlBasedView {
                     }
                 }
 
-                env.executeTop();
+                try{
+                    env.executeTop();
+                }catch (Exception e){
+                    log.error("QuercusExitException:",e);
+                }
+
 
                 StringValue append
                         = quercus.getIniValue("auto_append_file").toStringValue(env);
@@ -176,28 +181,17 @@ public class QuercusView extends AbstractUrlBasedView {
         }
     }
 
-    Path getPath(HttpServletRequest req) {
+    InputStream phpScriptStream(HttpServletRequest req){
         String scriptPath = getUrl();
-        QuercusHttpServletRequest  _req = new QuercusHttpServletRequestImpl(req);
-        String pathInfo = QuercusRequestAdapter.getPagePathInfo(_req);
-
-        Path pwd = new FilePath(System.getProperty("user.dir"));
-
-        Path path = pwd.lookup(req.getRealPath(scriptPath));
-
-        if (path.isFile())
-            return path;
-
-        // XXX: include
-
-        String fullPath;
-        if (pathInfo != null)
-            fullPath = scriptPath + pathInfo;
-        else
-            fullPath = scriptPath;
-
-        return pwd.lookup(req.getRealPath(fullPath));
+        if(!StringUtils.isEmpty(scriptPath) && scriptPath.contains(WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_PHP_FOLDER)){
+            InputStream result =  QuercusView.class.getClassLoader().getResourceAsStream(scriptPath);
+            if(null != result){
+                return result;
+            }
+        }
+        throw new WebSshBusinessException("can't find php file.");
     }
+
 
     /**
      * Returns the Quercus instance.
