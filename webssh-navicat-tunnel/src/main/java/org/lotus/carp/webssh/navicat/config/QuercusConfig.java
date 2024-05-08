@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
  * <h3>webssh</h3>
@@ -20,7 +21,8 @@ public class QuercusConfig {
         QuercusViewResolver quercusViewResolver = new QuercusViewResolver();
         //quercusViewResolver.setPrefix("php");
         //quercusViewResolver.setSuffix(".php");
-        quercusViewResolver.setOrder(0);
+        quercusViewResolver.setViewNames(".php");
+        quercusViewResolver.setOrder(1);
         return quercusViewResolver;
     }
 }
