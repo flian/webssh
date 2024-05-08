@@ -28,6 +28,7 @@ http tunnel for mysql:
 ntunnel_mysql.php for java
 mongo http tunnel for java
 try https://github.com/OndraZizka/php-in-java?
+try https://blog.csdn.net/cuxiong8996/article/details/107153655
 
 http 代理tcp流量
 https://blog.twofei.com/877/
