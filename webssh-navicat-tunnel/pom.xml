@@ -19,6 +19,16 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>webssh-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.caucho/quercus -->
         <dependency>
             <groupId>com.caucho</groupId>
@@ -26,5 +36,10 @@
             <version>${quercus.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
