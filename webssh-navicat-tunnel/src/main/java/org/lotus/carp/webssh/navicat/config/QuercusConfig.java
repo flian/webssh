@@ -21,8 +21,8 @@ public class QuercusConfig {
         QuercusViewResolver quercusViewResolver = new QuercusViewResolver();
         //quercusViewResolver.setPrefix("php");
         //quercusViewResolver.setSuffix(".php");
-        quercusViewResolver.setViewNames(".php");
-        quercusViewResolver.setOrder(1);
+        quercusViewResolver.setViewNames("*.php");
+        quercusViewResolver.setOrder(0);
         return quercusViewResolver;
     }
 }
