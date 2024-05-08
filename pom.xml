@@ -23,6 +23,7 @@
     </properties>
 
     <modules>
+        <module>webssh-navicat-tunnel</module>
         <module>webssh-core</module>
         <module>vue2-web</module>
         <module>vue2-sshserver</module>

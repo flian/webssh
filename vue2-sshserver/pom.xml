@@ -21,6 +21,11 @@
     <dependencies>
         <dependency>
             <groupId>org.lotus.carp.webssh</groupId>
+            <artifactId>webssh-navicat-tunnel</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lotus.carp.webssh</groupId>
             <artifactId>webssh-core</artifactId>
             <version>${project.version}</version>
         </dependency>
