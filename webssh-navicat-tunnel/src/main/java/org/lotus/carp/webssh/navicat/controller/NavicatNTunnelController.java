@@ -45,4 +45,9 @@ public class NavicatNTunnelController {
         validateToken(token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_SQLITE_FILE;
     }
+    @RequestMapping("/php_info")
+    public String phpInfo(@RequestParam(value = "token",required = false) String token){
+        validateToken(token);
+        return WebSshNavicatTunnelConst.WEB_SSH_PHP_INFO_FILE;
+    }
 }

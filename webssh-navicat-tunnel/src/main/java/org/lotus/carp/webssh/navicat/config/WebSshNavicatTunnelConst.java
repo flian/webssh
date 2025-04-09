@@ -42,6 +42,11 @@ public class WebSshNavicatTunnelConst {
     public static final String WEB_SSH_NAVICAT_SQLITE_FILE = WEB_SSH_NAVICAT_PHP_FOLDER + "/" + "ntunnel_sqlite.php";
 
     /**
+     * php info url
+     */
+    public static final String WEB_SSH_PHP_INFO_FILE = WEB_SSH_NAVICAT_PHP_FOLDER + "/" + "php_info.php";
+
+    /**
      * mongo admin page URL
      */
     public static final String WEB_SSH_MONGO_ADMIN_URL = WEB_SSH_PREFIX + "/dbadmin/mongoAdmin";
