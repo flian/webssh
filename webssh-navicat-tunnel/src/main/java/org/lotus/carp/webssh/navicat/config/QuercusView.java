@@ -14,6 +14,7 @@ import com.caucho.vfs.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.MongoExtension;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.*;
 
@@ -48,6 +49,9 @@ public class QuercusView extends AbstractUrlBasedView {
         getQuercus().setPwd(new FilePath(_servletContext.getRealPath("/")));
         Path phpIniPath = this.getQuercus().getPwd().lookup("/Users/cwnuzj/codes/github/webssh/webssh-navicat-tunnel/src/main/resources/php.ini");
         _quercus.setIniFile(phpIniPath);
+        //FIXME mongo extend?
+        MongoExtension mongoExtension = new MongoExtension(new Env(getQuercus()));
+        getQuercus().addInitModule(mongoExtension);
         //this.getQuercus().setIni("extension","/usr/local/opt/mongodb@8.4/mongodb.so");
         getQuercus().init();
         getQuercus().start();
