@@ -132,7 +132,7 @@ class get {
         $quoteStyle = (!is_null($quoteStyle) ? $quoteStyle : ENT_COMPAT);
         $charset = (!is_null($charset) ? $charset : 'UTF-8');
         return (self::$isPhp523orNewer ? htmlentities($string, $quoteStyle, $charset, $doubleEncode)
-                                       : htmlentities($string, $quoteStyle, $charset));
+                                       : htmlentities($string, $quoteStyle, $charset,false));
     }
 
     /**
@@ -1275,9 +1275,20 @@ var dom = function(id) {
     public static function formatProperties(array $properties) {
         $return = array();
         foreach ($properties as $name => $value) {
-            $return[] = $name . '="' . get::htmlentities($value) . '"';
+            self::printDebugInPageInfo($value);
+            $defaultValue = 'TBD';
+            $ppValue = $value;
+            if(empty($value)){
+                $ppValue = $defaultValue;
+            }
+            $return[] = $name . '="' . get::htmlentities($ppValue) . '"';
         }
         return implode(' ', $return);
+    }
+    public static function printDebugInPageInfo($val){
+        echo '###### begin #######';
+        echo $val;
+        echo '##### end ########';
     }
 
     /**

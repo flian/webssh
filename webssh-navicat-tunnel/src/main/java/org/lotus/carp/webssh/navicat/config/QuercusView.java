@@ -103,6 +103,9 @@ public class QuercusView extends AbstractUrlBasedView {
 
             env = quercus.createEnv(page, ws, _request, _response);
 
+            //load mongoExtension const
+            MongoExtension.loadConst(env);
+
             // retro... thanks, Spring
             for (Object entryObj : model.entrySet()) {
                 Map.Entry entry = (Map.Entry) entryObj;

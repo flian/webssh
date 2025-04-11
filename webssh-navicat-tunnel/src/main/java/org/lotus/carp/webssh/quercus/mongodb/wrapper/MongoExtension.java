@@ -1,6 +1,8 @@
 package org.lotus.carp.webssh.quercus.mongodb.wrapper;
 
 import com.caucho.quercus.QuercusContext;
+import com.caucho.quercus.env.Env;
+import com.caucho.quercus.env.LongValue;
 import com.caucho.quercus.module.*;
 
 
@@ -16,6 +18,13 @@ public class MongoExtension extends AbstractQuercusModule {
     @Override
     public String[] getLoadedExtensions() {
         return new String[] { "mongo" };
+    }
+
+    public static void loadConst(Env env){
+        // 注册常量
+        for (String constant : MONGODB_CONSTANTS) {
+            env.addConstant(constant, LongValue.create(1),true);
+        }
     }
 
     public  MongoExtension(QuercusContext quercusContext) {
