@@ -819,6 +819,7 @@ class moadminComponent {
         }
 
         $this->mongo['listCollections'] = self::$model->listCollections();
+
         if ($action == 'editObject') {
             $this->mongo[$action] = (isset($_GET['_id'])
                                      ? self::$model->$action($_GET['collection'], $_GET['_id'], $_GET['idtype']) : '');
