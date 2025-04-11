@@ -79,7 +79,7 @@ public class QuercusMongoClient extends EnvCloseable {
         for (Document db : dbs) {
             ArrayValue dbInfo = new ArrayValueImpl();
             dbInfo.put(env.createString("name"), env.createString(db.getString("name")));
-            dbInfo.put(env.createString("sizeOnDisk"), env.createString(""+db.getDouble("sizeOnDisk")));
+            dbInfo.put(env.createString("sizeOnDisk"), env.createString(""+db.getLong("sizeOnDisk")));
             dbInfo.put(env.createString("empty"), env.createString(db.getBoolean("empty")?"true":"false"));
 
             result.put(env.createString(db.getString("name")), dbInfo);

@@ -360,11 +360,14 @@ class moadminModel {
      */
     public static $databaseWhitelist = array();
 
+    public function listDBs(){
+        return $this->_db->listDBs();
+    }
     /**
      * Gets list of databases
      * @return array
      */
-    public function listDbs() {
+    /*public function listDbs() {
         $return = array();
         $restrictDbs = (bool) self::$databaseWhitelist;
         $dbs = $this->_db->selectDB('admin')->command(array('listDatabases' => 1));
@@ -381,7 +384,7 @@ class moadminModel {
             $return[$key] = ++$dbCount . '. ' . $val;
         }
         return $return;
-    }
+    }*/
 
     /**
      * Generate system info and stats
@@ -773,7 +776,8 @@ class moadminComponent {
         if (class_exists('mvc')) {
             mvc::$view = '#moadmin';
         }
-        $this->mongo['dbs'] = self::$model->listDbs();
+        //$this->mongo['dbs'] = self::$model->listDbs();
+        $this->mongo['dbs'] = self::$model->listDBs();
         if (isset($_GET['db'])) {
             if (strpos($_GET['db'], '.') !== false) {
                 $_GET['db'] = $_GET['newdb'];
