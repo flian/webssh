@@ -31,28 +31,3 @@ public class QuercusMongoId {
 }
 
 // MongoCursor 类
-class QuercusMongoCursor implements Iterator<Value> {
-    private MongoCursor<Document> cursor;
-    private Env env;
-
-    public QuercusMongoCursor(Env env, MongoCursor<Document> cursor) {
-        this.env = env;
-        this.cursor = cursor;
-    }
-
-    public boolean hasNext() {
-        return this.cursor.hasNext();
-    }
-
-    public Value next() {
-        Document doc = this.cursor.next();
-        // 将 Document 转换为 PHP 数组
-        // 实现转换逻辑...
-        //FIXME 转换
-        return null;
-    }
-
-    public void close() {
-        this.cursor.close();
-    }
-}

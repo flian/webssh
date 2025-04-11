@@ -19,6 +19,7 @@ public class MongoExtension extends AbstractQuercusModule {
     }
 
     public  MongoExtension(QuercusContext quercusContext) {
+
         quercusContext.addJavaClass("MongoClient",QuercusMongoClient.class);
         quercusContext.addJavaClass("MongoDB",QuercusMongoDB.class);
         quercusContext.addJavaClass("MongoCollection",QuercusMongoCollection.class);

@@ -4,6 +4,8 @@ import com.caucho.quercus.env.*;
 import com.mongodb.*;
 
 import org.bson.*;
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusWrapperUtils;
+
 import java.util.*;
 /**
  * @author : foy
@@ -60,16 +62,18 @@ public class QuercusMongoClient extends EnvCloseable {
 
         if (dbName.equals("admin") || dbName.equals("local") ||
                 dbName.equals("config") || dbName.matches("^[a-zA-Z0-9_-]+$")) {
-            return env.wrapJava(this.mongoClient.getDatabase(dbName), env.getJavaClassDefinition(QuercusMongoDB.class)//QuercusMongoDB.class
-            );
+            return QuercusWrapperUtils.wrapJava(env,this.mongoClient.getDatabase(dbName),QuercusMongoDB.class);
+            /*return env.wrapJava(this.mongoClient.getDatabase(dbName), env.getJavaClassDefinition(QuercusMongoDB.class)*///QuercusMongoDB.class
+            //);
         }
 
         return UnsetValue.UNSET;
     }
 
     public Value selectDB(Env env, StringValue dbName) {
-        return env.wrapJava(this.mongoClient.getDatabase(dbName.toString()), env.getJavaClassDefinition(QuercusMongoDB.class)//QuercusMongoDB.class
-        );
+        return QuercusWrapperUtils.wrapJava(env,this.mongoClient.getDatabase(dbName.toString()),QuercusMongoDB.class);
+       /* return env.wrapJava(this.mongoClient.getDatabase(dbName.toString()), env.getJavaClassDefinition(QuercusMongoDB.class)//QuercusMongoDB.class
+        );*/
     }
 
     public Value listDBs(Env env) {

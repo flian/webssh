@@ -5,8 +5,10 @@ import com.caucho.quercus.env.*;
 import com.mongodb.client.*;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.UpdateResult;
+
 import org.bson.*;
 import org.bson.conversions.Bson;
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusWrapperUtils;
 
 import java.util.*;
 
@@ -32,9 +34,9 @@ public class QuercusMongoCollection {
 
         Document doc = convertToDocument(env, document);
         this.collection.insertOne(doc, insertOptions);
-
-        return env.wrapJava(doc.getObjectId("_id"), env.getJavaClassDefinition(QuercusMongoId.class)//QuercusMongoId.class
-        );
+        return QuercusWrapperUtils.wrapJava(env,doc.getObjectId("_id"),QuercusMongoId.class);
+        /*return env.wrapJava(doc.getObjectId("_id"), env.getJavaClassDefinition(QuercusMongoId.class)//QuercusMongoId.class
+        );*/
     }
 
     public Value batchInsert(Env env, ArrayValue documents, ArrayValue options) {
@@ -51,8 +53,9 @@ public class QuercusMongoCollection {
 
         ArrayValue result = new ArrayValueImpl();
         for (Document doc : docs) {
-            result.append(env.wrapJava(doc.getObjectId("_id"), env.getJavaClassDefinition(QuercusMongoId.class)//QuercusMongoId.class
-            ));
+            result.append(QuercusWrapperUtils.wrapJava(env,doc.getObjectId("_id"),QuercusMongoId.class));
+            /*result.append(env.wrapJava(doc.getObjectId("_id"), env.getJavaClassDefinition(QuercusMongoId.class)//QuercusMongoId.class
+            ));*/
         }
 
         return result;
@@ -67,9 +70,9 @@ public class QuercusMongoCollection {
         if (projection != null) {
             cursor.projection(projection);
         }
-
-        return env.wrapJava(cursor.iterator(), env.getJavaClassDefinition(QuercusMongoCursor.class)//QuercusMongoCursor.class
-        );
+        return QuercusWrapperUtils.wrapJava(env,cursor.iterator(),QuercusMongoCursor.class);
+        /*return env.wrapJava(cursor.iterator(), env.getJavaClassDefinition(QuercusMongoCursor.class)//QuercusMongoCursor.class
+        );*/
     }
 
     public Value findOne(Env env, ArrayValue query, ArrayValue fields) {
@@ -81,6 +84,10 @@ public class QuercusMongoCollection {
                 : this.collection.find(filter).first();
 
         return doc != null ? convertToArray(env, doc) : BooleanValue.FALSE;
+    }
+
+    public Value count(Env env){
+        return convertToValue(env,this.collection.countDocuments());
     }
 
     public Value update(Env env, ArrayValue criteria, ArrayValue newObj, ArrayValue options) {

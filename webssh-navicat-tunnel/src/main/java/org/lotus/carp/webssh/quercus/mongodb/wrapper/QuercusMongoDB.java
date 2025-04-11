@@ -3,6 +3,7 @@ import com.caucho.quercus.env.*;
 import com.mongodb.client.*;
 import com.mongodb.client.model.CreateCollectionOptions;
 import org.bson.*;
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusWrapperUtils;
 
 /**
  * @author : foy
@@ -16,18 +17,21 @@ public class QuercusMongoDB {
     }
 
     public Value __getField(Env env, StringValue name) {
-        return env.wrapJava(
+        return QuercusWrapperUtils.wrapJava(env,this.db.getCollection(name.toString()),QuercusMongoCollection.class);
+        /*return env.wrapJava(
                 this.db.getCollection(name.toString()),
                 env.getJavaClassDefinition(QuercusMongoCollection.class)//QuercusMongoCollection.class
-        );
+        );*/
     }
 
     public Value selectCollection(Env env, StringValue name) {
-        return env.wrapJava(
+        return QuercusWrapperUtils.wrapJava(env,this.db.getCollection(name.toString()),QuercusMongoCollection.class);
+        /*return env.wrapJava(
                 this.db.getCollection(name.toString()),
                 env.getJavaClassDefinition(QuercusMongoCollection.class)//QuercusMongoCollection.class
-        );
+        );*/
     }
+
 
     public Value createCollection(Env env, StringValue name, ArrayValue options) {
         CreateCollectionOptions createOptions = new CreateCollectionOptions();
