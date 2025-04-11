@@ -29,6 +29,7 @@ public class QuercusMongoCollection {
         InsertOneOptions insertOptions = new InsertOneOptions();
 
         if (options != null) {
+            //FIXME options
             // 处理选项...
         }
 
@@ -126,7 +127,7 @@ public class QuercusMongoCollection {
             if (value.isArray()) {
                 doc.put(key, convertToDocument(env, (ArrayValue) value));
             } else {
-                doc.put(key, convertValue(value));
+                doc.put(key, convertValue(value,env));
             }
         }
 
@@ -137,7 +138,7 @@ public class QuercusMongoCollection {
         return convertToDocument(env, array);
     }
 
-    private Object convertValue(Value value) {
+    private Object convertValue(Value value,Env env) {
         if (value.isNull()) {
             return null;
         } else if (value.isBoolean()) {
@@ -149,7 +150,7 @@ public class QuercusMongoCollection {
         } else if (value.isString()) {
             return value.toString();
         } else if (value.isArray()) {
-            // 处理数组...
+            return convertToDocument(env, (ArrayValue) value);
         }
 
         return value.toString();
@@ -183,6 +184,11 @@ public class QuercusMongoCollection {
             return env.createString((String) value);
         } else if (value instanceof List) {
             // 处理列表...
+            ArrayValue result = new ArrayValueImpl();
+            for(Object o:(List<?>)value){
+                result.add(env.wrapJava(o));
+            }
+            return result;
         }
 
         return env.createString(value.toString());

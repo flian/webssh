@@ -25,6 +25,7 @@ public class MongoExtension extends AbstractQuercusModule {
         quercusContext.addJavaClass("MongoCollection",QuercusMongoCollection.class);
         quercusContext.addJavaClass("MongoId",QuercusMongoId.class);
         quercusContext.addJavaClass("MongoCursor",QuercusMongoCursor.class);
+
         /*Env env = Env.getCurrent();
         // 注册常量
         for (String constant : MONGODB_CONSTANTS) {
