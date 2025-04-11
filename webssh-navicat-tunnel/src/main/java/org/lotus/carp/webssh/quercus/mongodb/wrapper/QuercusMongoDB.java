@@ -5,6 +5,9 @@ import com.mongodb.client.model.CreateCollectionOptions;
 import org.bson.*;
 import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusWrapperUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author : foy
  * @date : 2025/4/10:14:47
@@ -54,7 +57,10 @@ public class QuercusMongoDB {
         ArrayValue result = new ArrayValueImpl();
 
         for (Document coll : collections) {
-            result.append(env.createString(String.format("%s.%s",db.getName(),coll.getString("name"))));
+            Map<String,String> colMap = new HashMap<>();
+            colMap.put(String.format("%s.%s",db.getName(),coll.getString("name")),coll.getString("name"));
+            result.add(new JavaMapAdapter(env,colMap));
+            //result.append(env.createString(String.format("%s.%s",db.getName(),coll.getString("name"))));
         }
 
         return result;
