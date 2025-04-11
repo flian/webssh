@@ -54,7 +54,7 @@ public class QuercusMongoDB {
         ArrayValue result = new ArrayValueImpl();
 
         for (Document coll : collections) {
-            result.append(env.createString(coll.getString("name")));
+            result.append(env.createString(String.format("%s.%s",db.getName(),coll.getString("name"))));
         }
 
         return result;

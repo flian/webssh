@@ -1275,7 +1275,7 @@ var dom = function(id) {
     public static function formatProperties(array $properties) {
         $return = array();
         foreach ($properties as $name => $value) {
-            self::printDebugInPageInfo($value);
+            //self::printDebugInPageInfo($value);
             $defaultValue = 'TBD';
             $ppValue = $value;
             if(empty($value)){
