@@ -47,8 +47,8 @@ public class QuercusView extends AbstractUrlBasedView {
             //this._quercus.setIni("extension","/usr/local/opt/mongodb@8.4/mongodb.so");
         }
         getQuercus().setPwd(new FilePath(_servletContext.getRealPath("/")));
-        Path phpIniPath = this.getQuercus().getPwd().lookup("/Users/cwnuzj/codes/github/webssh/webssh-navicat-tunnel/src/main/resources/php.ini");
-        _quercus.setIniFile(phpIniPath);
+        /*Path phpIniPath = this.getQuercus().getPwd().lookup("/Users/cwnuzj/codes/github/webssh/webssh-navicat-tunnel/src/main/resources/php.ini");
+        _quercus.setIniFile(phpIniPath);*/
         //FIXME mongo extend?
         MongoExtension mongoExtension = new MongoExtension(getQuercus());
         getQuercus().addInitModule(mongoExtension);
