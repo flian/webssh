@@ -294,7 +294,9 @@ class moadminModel {
      */
     protected function _mongo() {
         $connection = (!MONGO_CONNECTION ? 'mongodb://localhost:27017' : MONGO_CONNECTION);
+
         $Mongo = (class_exists('MongoClient') === true ? 'MongoClient' : 'Mongo');
+
         return (!REPLICA_SET ? new $Mongo($connection) : new $Mongo($connection, array('replicaSet' => true)));
     }
 
@@ -314,6 +316,7 @@ class moadminModel {
                 $this->_db = $this->_mongo();
                 $this->mongo = $this->_db->selectDB($db);
             } catch (MongoConnectionException $e) {
+                echo $e;
                 throw new cannotConnectToMongoServer();
             }
         }
