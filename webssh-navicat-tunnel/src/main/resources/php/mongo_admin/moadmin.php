@@ -131,8 +131,9 @@ class get {
     public static function htmlentities($string, $quoteStyle = ENT_COMPAT, $charset = 'UTF-8', $doubleEncode = false) {
         $quoteStyle = (!is_null($quoteStyle) ? $quoteStyle : ENT_COMPAT);
         $charset = (!is_null($charset) ? $charset : 'UTF-8');
-        return (self::$isPhp523orNewer ? htmlentities($string, $quoteStyle, $charset, $doubleEncode)
-                                       : htmlentities($string, $quoteStyle, $charset,false));
+        return htmlentities($string, $quoteStyle, $charset);
+        /*return (self::$isPhp523orNewer ? htmlentities($string, $quoteStyle, $charset, $doubleEncode)
+                                       : htmlentities($string, $quoteStyle, $charset,false));*/
     }
 
     /**
@@ -1266,6 +1267,11 @@ var dom = function(id) {
         return $return;
     }
 
+    public static function htmlentities($string, $quoteStyle = ENT_COMPAT, $charset = 'UTF-8', $doubleEncode = false) {
+        $quoteStyle = (!is_null($quoteStyle) ? $quoteStyle : ENT_COMPAT);
+        $charset = (!is_null($charset) ? $charset : 'UTF-8');
+        return htmlentities($string, $quoteStyle, $charset);
+    }
     /**
      * Takes an array of key-value pairs and formats them in the syntax of HTML-container properties
      *
@@ -1278,10 +1284,11 @@ var dom = function(id) {
             //self::printDebugInPageInfo($value);
             $defaultValue = 'TBD';
             $ppValue = $value;
-            if(empty($value)){
+            if(empty($value) || !trim($value)){
                 $ppValue = $defaultValue;
             }
-            $return[] = $name . '="' . get::htmlentities($ppValue) . '"';
+            $return[] = $name . '="' . self::htmlentities($ppValue) . '"';
+            //$return[] = $name . '="' . get::htmlentities($ppValue) . '"';
         }
         return implode(' ', $return);
     }
@@ -1806,11 +1813,13 @@ class formHelper {
                 if (!$useValues) {
                     $value = $text;
                 }
-                $return .= '<option value="' . get::htmlentities($value) . '"';
+                $return .= '<option value="' . htmlentities($value) . '"';
+                //$return .= '<option value="' . get::htmlentities($value) . '"';
                 if (in_array((string) $value, $values)) {
                     $return .= ' selected="selected"';
                 }
-                $return .= '>' . get::htmlentities($text) . '</option>';
+                $return .= '>' . htmlentities($text) . '</option>';
+                //$return .= '>' . get::htmlentities($text) . '</option>';
             }
         }
         $return .= '</select>';
