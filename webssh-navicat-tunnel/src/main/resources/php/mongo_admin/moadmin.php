@@ -557,6 +557,7 @@ class moadminModel {
      * @return array
      */
     public function listRows($collection) {
+
         foreach ($this->sort as $key => $val) { //cast vals to int
             $sort[$key] = (int) $val;
         }
@@ -856,6 +857,7 @@ class moadminComponent {
         }
         if ($action == 'listRows') {
             $this->mongo['listIndexes'] = self::$model->listIndexes($_GET['collection']);
+            $this->mongo['listRows'] = self::$model->listRows($_GET['collection']);
         } else if ($action == 'dropCollection') {
             return load::redirect(get::url() . '?db=' . urlencode($_GET['db']));
         }
