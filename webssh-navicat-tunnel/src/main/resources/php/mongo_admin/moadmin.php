@@ -2414,7 +2414,8 @@ if (isset($mo->mongo['listRows'])) {
     echo $form->close();
     echo '</div>';
 
-    $objCount = $mo->mongo['listRows']->count(true); //count of rows returned
+   // $objCount = $mo->mongo['listRows']->count(true); //count of rows returned
+    $objCount = $mo->mongo['listRows']->count();
     $paginator = number_format($mo->mongo['count']) . ' objects'; //count of rows in collection
     if ($objCount && $mo->mongo['count'] != $objCount) {
         $skip = (isset($_GET['skip']) ? $_GET['skip'] : 0);
