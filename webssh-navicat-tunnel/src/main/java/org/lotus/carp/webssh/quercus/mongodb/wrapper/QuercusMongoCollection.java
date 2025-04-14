@@ -62,6 +62,12 @@ public class QuercusMongoCollection {
         return result;
     }
 
+    public Value getIndexInfo(Env env){
+        ListIndexesIterable<Document> indexes = this.collection.listIndexes();
+        return QuercusWrapperUtils.wrapJava(env,indexes.iterator(),QuercusMongoCursor.class);
+        //return env.wrapJava(this.collection.listIndexes());
+    }
+
     public Value find(Env env, ArrayValue query, ArrayValue fields) {
         Bson filter = convertToBson(env, query);
         Bson projection = fields != null ? convertToBson(env, fields) : null;
