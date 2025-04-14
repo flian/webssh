@@ -14,6 +14,8 @@ import org.lotus.carp.webssh.quercus.mongodb.wrapper.QuercusMongoCursor;
 import org.lotus.carp.webssh.quercus.mongodb.wrapper.QuercusMongoDB;
 import org.lotus.carp.webssh.quercus.mongodb.wrapper.QuercusMongoId;
 
+import java.util.Objects;
+
 
 /**
  * @author : foy
@@ -21,7 +23,7 @@ import org.lotus.carp.webssh.quercus.mongodb.wrapper.QuercusMongoId;
  **/
 public class QuercusWrapperUtils {
 
-    public static Value wrapJava(Env env,Object me, Class<?> target){
+    public static Value wrapJava(Env env,Object me, Class<?> target,Object... values){
         if (me == null) {
             return NullValue.NULL;
         }
@@ -43,7 +45,11 @@ public class QuercusWrapperUtils {
             }else if(QuercusMongoId.class.equals(target)){
                 return env.wrapJava(new QuercusMongoId((ObjectId)me));
             }else if(QuercusMongoCursor.class.equals(target)){
-                return env.wrapJava(new QuercusMongoCursor(env, (MongoCursor<Document>) me));
+                QuercusMongoCursor cursor = new QuercusMongoCursor(env, (MongoCursor<Document>) me);
+                if(Objects.nonNull(values) && values.length > 0){
+                    cursor.setCount((long)values[0]);
+                }
+                return env.wrapJava(cursor);
             }
             def = env.getJavaClassDefinition(me.getClass());
         }

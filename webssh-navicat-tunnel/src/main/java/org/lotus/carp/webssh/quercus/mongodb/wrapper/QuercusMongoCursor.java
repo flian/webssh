@@ -1,9 +1,11 @@
 package org.lotus.carp.webssh.quercus.mongodb.wrapper;
 
+import com.caucho.quercus.env.ArrayValue;
 import com.caucho.quercus.env.Env;
 import com.caucho.quercus.env.Value;
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusWrapperUtils;
 
 import java.util.Iterator;
 
@@ -15,6 +17,10 @@ public class QuercusMongoCursor implements Iterator<Value> {
     private MongoCursor<Document> cursor;
     private Env env;
 
+
+
+    private long count;
+
     public QuercusMongoCursor(Env env, MongoCursor<Document> cursor) {
         this.env = env;
         this.cursor = cursor;
@@ -22,6 +28,10 @@ public class QuercusMongoCursor implements Iterator<Value> {
 
     public boolean hasNext() {
         return this.cursor.hasNext();
+    }
+
+    public Value getNext(){
+        return next();
     }
 
     public Value next() {
@@ -32,8 +42,26 @@ public class QuercusMongoCursor implements Iterator<Value> {
         return env.wrapJava(doc);
     }
 
+    public Value sort(Env env, ArrayValue fields){
+        //FIXME need impl
+        return QuercusWrapperUtils.wrapJava(env,cursor,QuercusMongoCursor.class);
+    }
+
+    public Value count(Env env){
+        //FIXME fix it
+        return env.wrapJava(count);
+    }
+
     public void close() {
         this.cursor.close();
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
     }
 }
 
