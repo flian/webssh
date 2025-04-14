@@ -59,8 +59,8 @@ public class QuercusMongoDB {
         for (Document coll : collections) {
             Map<String,String> colMap = new HashMap<>();
             colMap.put(String.format("%s.%s",db.getName(),coll.getString("name")),coll.getString("name"));
-            result.add(new JavaMapAdapter(env,colMap));
-            //result.append(env.createString(String.format("%s.%s",db.getName(),coll.getString("name"))));
+            //result.add(new JavaMapAdapter(env,colMap));
+            result.append(env.createString(String.format("%s.%s",db.getName(),coll.getString("name"))));
         }
 
         return result;

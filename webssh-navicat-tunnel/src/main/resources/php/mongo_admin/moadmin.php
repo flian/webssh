@@ -2294,6 +2294,7 @@ if (isset($mo->mongo['listCollections'])) {
        . ' &nbsp; &nbsp; &nbsp; [' . $html->link($baseUrl . '?action=getStats', 'stats') . ']');
     echo $form->close();
 
+
     if (!$mo->mongo['listCollections']) {
         echo $html->div('No collections exist');
     } else {
