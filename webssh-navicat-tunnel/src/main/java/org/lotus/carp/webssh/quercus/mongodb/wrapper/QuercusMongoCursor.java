@@ -44,7 +44,12 @@ public class QuercusMongoCursor implements Iterator<Value> {
 
     public Value sort(Env env, ArrayValue fields){
         //FIXME need impl
-        return QuercusWrapperUtils.wrapJava(env,cursor,QuercusMongoCursor.class);
+        return QuercusWrapperUtils.wrapJava(env,cursor,QuercusMongoCursor.class,count);
+    }
+
+    public Value skip(Env env,Integer skip){
+        //FIXME need impl
+        return QuercusWrapperUtils.wrapJava(env,cursor,QuercusMongoCursor.class,count);
     }
 
     public Value count(Env env){

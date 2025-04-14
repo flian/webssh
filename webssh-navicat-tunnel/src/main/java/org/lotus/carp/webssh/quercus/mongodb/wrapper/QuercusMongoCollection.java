@@ -133,18 +133,18 @@ public class QuercusMongoCollection {
 
     private Document convertToDocument(Env env, ArrayValue array) {
         Document doc = new Document();
+        if(null != array && !array.isEmpty()){
+            for (Map.Entry<Value, Value> entry : array.entrySet()) {
+                String key = entry.getKey().toString();
+                Value value = entry.getValue();
 
-        for (Map.Entry<Value, Value> entry : array.entrySet()) {
-            String key = entry.getKey().toString();
-            Value value = entry.getValue();
-
-            if (value.isArray()) {
-                doc.put(key, convertToDocument(env, (ArrayValue) value));
-            } else {
-                doc.put(key, convertValue(value,env));
+                if (value.isArray()) {
+                    doc.put(key, convertToDocument(env, (ArrayValue) value));
+                } else {
+                    doc.put(key, convertValue(value,env));
+                }
             }
         }
-
         return doc;
     }
 
