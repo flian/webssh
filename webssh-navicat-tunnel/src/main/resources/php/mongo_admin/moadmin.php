@@ -1,5 +1,4 @@
 <?php error_reporting(E_ALL | E_STRICT);
-import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusUtils;
 /**
  * phpMoAdmin - built on a stripped-down version of the high-performance Vork Enterprise Framework
  *
@@ -51,8 +50,6 @@ define('OBJECT_LIMIT', 100);
  * Contributing-developers of the phpMoAdmin project should set this to true, everyone else can leave this as false
  */
 define('DEBUG_MODE', false);
-
-
 
 /**
  * Vork core-functionality tools
@@ -134,9 +131,8 @@ class get {
     public static function htmlentities($string, $quoteStyle = ENT_COMPAT, $charset = 'UTF-8', $doubleEncode = false) {
         $quoteStyle = (!is_null($quoteStyle) ? $quoteStyle : ENT_COMPAT);
         $charset = (!is_null($charset) ? $charset : 'UTF-8');
-        return htmlentities($string, $quoteStyle, $charset);
-        /*return (self::$isPhp523orNewer ? htmlentities($string, $quoteStyle, $charset, $doubleEncode)
-                                       : htmlentities($string, $quoteStyle, $charset,false));*/
+        return (self::$isPhp523orNewer ? htmlentities($string, $quoteStyle, $charset)
+                                       : htmlentities($string, $quoteStyle, $charset));
     }
 
     /**
@@ -298,9 +294,7 @@ class moadminModel {
      */
     protected function _mongo() {
         $connection = (!MONGO_CONNECTION ? 'mongodb://localhost:27017' : MONGO_CONNECTION);
-
         $Mongo = (class_exists('MongoClient') === true ? 'MongoClient' : 'Mongo');
-
         return (!REPLICA_SET ? new $Mongo($connection) : new $Mongo($connection, array('replicaSet' => true)));
     }
 
@@ -320,7 +314,6 @@ class moadminModel {
                 $this->_db = $this->_mongo();
                 $this->mongo = $this->_db->selectDB($db);
             } catch (MongoConnectionException $e) {
-                echo $e;
                 throw new cannotConnectToMongoServer();
             }
         }
@@ -367,6 +360,7 @@ class moadminModel {
     public function listDBs(){
         return $this->_db->listDBs();
     }
+
     /**
      * Gets list of databases
      * @return array
@@ -560,7 +554,6 @@ class moadminModel {
      * @return array
      */
     public function listRows($collection) {
-
         foreach ($this->sort as $key => $val) { //cast vals to int
             $sort[$key] = (int) $val;
         }
@@ -643,9 +636,6 @@ class moadminModel {
             $this->colKeys = phpMoAdmin::getArrayKeys($col->findOne());
         }
 
-
-
-
         //get keys of last or much-later object
         if ($this->count > 1) {
             $curLast = $col->find()->sort($sort);
@@ -655,8 +645,6 @@ class moadminModel {
             $this->colKeys = array_merge($this->colKeys, phpMoAdmin::getArrayKeys($curLast->getNext()));
             ksort($this->colKeys);
         }
-
-
         return $cur;
     }
 
@@ -779,6 +767,7 @@ class moadminComponent {
                      . '&collection=' . urlencode($_GET['collection']));
     }
 
+
     /**
      * Routes requests and sets return data
      */
@@ -786,7 +775,6 @@ class moadminComponent {
         if (class_exists('mvc')) {
             mvc::$view = '#moadmin';
         }
-        //$this->mongo['dbs'] = self::$model->listDbs();
         $this->mongo['dbs'] = self::$model->listDBs();
         if (isset($_GET['db'])) {
             if (strpos($_GET['db'], '.') !== false) {
@@ -828,7 +816,6 @@ class moadminComponent {
         }
 
         $this->mongo['listCollections'] = self::$model->listCollections();
-
         if ($action == 'editObject') {
             $this->mongo[$action] = (isset($_GET['_id'])
                                      ? self::$model->$action($_GET['collection'], $_GET['_id'], $_GET['idtype']) : '');
@@ -865,8 +852,6 @@ class moadminComponent {
         }
         if ($action == 'listRows') {
             $this->mongo['listIndexes'] = self::$model->listIndexes($_GET['collection']);
-            //$this->mongo['listRows'] = self::$model->listRows($_GET['collection']);
-
         } else if ($action == 'dropCollection') {
             return load::redirect(get::url() . '?db=' . urlencode($_GET['db']));
         }
@@ -1279,11 +1264,6 @@ var dom = function(id) {
         return $return;
     }
 
-    public static function htmlentities($string, $quoteStyle = ENT_COMPAT, $charset = 'UTF-8', $doubleEncode = false) {
-        $quoteStyle = (!is_null($quoteStyle) ? $quoteStyle : ENT_COMPAT);
-        $charset = (!is_null($charset) ? $charset : 'UTF-8');
-        return htmlentities($string, $quoteStyle, $charset);
-    }
     /**
      * Takes an array of key-value pairs and formats them in the syntax of HTML-container properties
      *
@@ -1293,21 +1273,9 @@ var dom = function(id) {
     public static function formatProperties(array $properties) {
         $return = array();
         foreach ($properties as $name => $value) {
-            //self::printDebugInPageInfo($value);
-            $defaultValue = 'TBD';
-            $ppValue = $value;
-            if(empty($value) || !trim($value)){
-                $ppValue = $defaultValue;
-            }
-            $return[] = $name . '="' . self::htmlentities($ppValue) . '"';
-            //$return[] = $name . '="' . get::htmlentities($ppValue) . '"';
+            $return[] = $name . '="' . get::htmlentities($value) . '"';
         }
         return implode(' ', $return);
-    }
-    public static function printDebugInPageInfo($val){
-        echo '###### begin #######';
-        echo $val;
-        echo '##### end ########';
     }
 
     /**
@@ -1825,13 +1793,11 @@ class formHelper {
                 if (!$useValues) {
                     $value = $text;
                 }
-                $return .= '<option value="' . htmlentities($value) . '"';
-                //$return .= '<option value="' . get::htmlentities($value) . '"';
+                $return .= '<option value="' . get::htmlentities($value) . '"';
                 if (in_array((string) $value, $values)) {
                     $return .= ' selected="selected"';
                 }
-                $return .= '>' . htmlentities($text) . '</option>';
-                //$return .= '>' . get::htmlentities($text) . '</option>';
+                $return .= '>' . get::htmlentities($text) . '</option>';
             }
         }
         $return .= '</select>';
@@ -1993,17 +1959,13 @@ class phpMoAdmin {
      */
     public static function getArrayKeys(array $array, $path = '', $drillDownDepthCount = 0) {
         $return = array();
-        //    QuercusUtils::printValues("kv:"+$k+":"+$v);
-
         if ($drillDownDepthCount) {
             $path .= '.';
         }
         if (++$drillDownDepthCount < self::DRILL_DOWN_DEPTH_LIMIT) {
             foreach ($array as $key => $val) {
-
                 $id = $path . $key;
                 $return[$id] = $id;
-
                 if (is_array($val)) {
                     $return = array_merge($return, self::getArrayKeys($val, $id, $drillDownDepthCount));
                 }
@@ -2310,7 +2272,6 @@ if (isset($mo->mongo['listCollections'])) {
        . ' &nbsp; &nbsp; &nbsp; [' . $html->link($baseUrl . '?action=getStats', 'stats') . ']');
     echo $form->close();
 
-
     if (!$mo->mongo['listCollections']) {
         echo $html->div('No collections exist');
     } else {
@@ -2430,7 +2391,7 @@ if (isset($mo->mongo['listRows'])) {
     echo $form->close();
     echo '</div>';
 
-   // $objCount = $mo->mongo['listRows']->count(true); //count of rows returned
+    //$objCount = $mo->mongo['listRows']->count(true); //count of rows returned
     $objCount = $mo->mongo['listRows']->count();
     $paginator = number_format($mo->mongo['count']) . ' objects'; //count of rows in collection
     if ($objCount && $mo->mongo['count'] != $objCount) {
@@ -2571,11 +2532,7 @@ mo.submitQuery = function() {
         $chunkUrl = $baseUrl . '?db=' . $dbUrl . '&action=listRows&collection=' . urlencode(substr($collection, 0, -7))
                   . '.files#';
     }
-
-
-
     foreach ($mo->mongo['listRows'] as $row) {
-
         $showEdit = true;
         $id = $idString = $row['_id'];
         if (is_object($idString)) {
