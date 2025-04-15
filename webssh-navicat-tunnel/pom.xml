@@ -59,10 +59,11 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>${mongodb.jdbc.version}</version>
         </dependency>
+        <!-- https://github.com/bbottema/java-socks-proxy-server java socket server -->
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>${mongodb.jdbc.version}</version>
+            <groupId>com.github.bbottema</groupId>
+            <artifactId>java-socks-proxy-server</artifactId>
+            <version>4.1.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>

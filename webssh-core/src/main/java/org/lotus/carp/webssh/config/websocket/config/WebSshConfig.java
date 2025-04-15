@@ -266,4 +266,17 @@ public class WebSshConfig {
      * proper java RDP jar full path.
      */
     private String properJavaRdpJarFilePath = "/tmp/properJavaRdp";
+
+    /**
+     * java socket proxy port
+     */
+    private int socketProxyPort = 9527;
+    /**
+     * java socket proxy username
+     */
+    private String socketProxyUserName="websshSocket5";
+    /**
+     * java socket proxy password
+     */
+    private String socketProxyPassword="changeit@!@#!";
 }
