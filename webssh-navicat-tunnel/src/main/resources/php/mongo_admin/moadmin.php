@@ -2023,7 +2023,10 @@ if ($isAuthenticated) {
         exit(0);
     }
     $mo = new moadminComponent;
-    $listRows = $mo->mongo['listRows']->listRows();
+    $listRows = null;
+    if(isset($mo->mongo['listRows'])){
+        $listRows = $mo->mongo['listRows']->listRows();
+    }
     if (isset($_GET['export']) && isset($listRows)) {
         $rows = array();
         foreach ($listRows as $row) {
@@ -2329,7 +2332,10 @@ if (isset($listRows)) {
        . $form->close();
     $js = "$('#collectionname').hide(); $('#renamecollectionform').show(); void(0);";
     echo '<h1 id="collectionname">' . $html->link('javascript: ' . $js, $collection) . '</h1>';
-    $listIdx =$mo->mongo['listIndexes']->listRows();
+    $listIdx = null;
+    if(isset($mo->mongo['listIndexes'])){
+        $listIdx = $mo->mongo['listIndexes']->listRows();
+    }
     if (isset($listIdx)) {
         echo '<ol id="indexes" style="display: none; margin-bottom: 10px;">';
         echo $form->open(array('method' => 'get'));
