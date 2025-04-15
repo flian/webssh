@@ -1,4 +1,5 @@
 <?php error_reporting(E_ALL | E_STRICT);
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusUtils;
 /**
  * phpMoAdmin - built on a stripped-down version of the high-performance Vork Enterprise Framework
  *
@@ -50,6 +51,8 @@ define('OBJECT_LIMIT', 100);
  * Contributing-developers of the phpMoAdmin project should set this to true, everyone else can leave this as false
  */
 define('DEBUG_MODE', false);
+
+
 
 /**
  * Vork core-functionality tools
@@ -640,6 +643,9 @@ class moadminModel {
             $this->colKeys = phpMoAdmin::getArrayKeys($col->findOne());
         }
 
+
+
+
         //get keys of last or much-later object
         if ($this->count > 1) {
             $curLast = $col->find()->sort($sort);
@@ -649,6 +655,7 @@ class moadminModel {
             $this->colKeys = array_merge($this->colKeys, phpMoAdmin::getArrayKeys($curLast->getNext()));
             ksort($this->colKeys);
         }
+        QuercusUtils::printValues("colKeys:"+$this->colKeys);
         return $cur;
     }
 
@@ -1984,12 +1991,14 @@ class phpMoAdmin {
      */
     public static function getArrayKeys(array $array, $path = '', $drillDownDepthCount = 0) {
         $return = array();
+
         if ($drillDownDepthCount) {
             $path .= '.';
         }
         if (++$drillDownDepthCount < self::DRILL_DOWN_DEPTH_LIMIT) {
             foreach ($array as $key => $val) {
-                $return[$id] = $id = $path . $key;
+                $id = $path . $key;
+                $return[$id] = $id;
                 if (is_array($val)) {
                     $return = array_merge($return, self::getArrayKeys($val, $id, $drillDownDepthCount));
                 }
