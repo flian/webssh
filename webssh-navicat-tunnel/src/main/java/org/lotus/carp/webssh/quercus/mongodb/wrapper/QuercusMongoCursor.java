@@ -9,6 +9,8 @@ import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusWrapperUtils;
 
 import java.util.Iterator;
 
+import static org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusUtils.convertDocumentToValue;
+
 /**
  * @author : foy
  * @date : 2025/4/11:14:45
@@ -38,8 +40,8 @@ public class QuercusMongoCursor implements Iterator<Value> {
         Document doc = this.cursor.next();
         // 将 Document 转换为 PHP 数组
         // 实现转换逻辑...
-        //FIXME 转换
-        return env.wrapJava(doc);
+        return convertDocumentToValue(env,doc);
+        //env.wrapJava(doc);
     }
 
     public Value sort(Env env, ArrayValue fields){

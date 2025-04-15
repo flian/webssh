@@ -655,7 +655,8 @@ class moadminModel {
             $this->colKeys = array_merge($this->colKeys, phpMoAdmin::getArrayKeys($curLast->getNext()));
             ksort($this->colKeys);
         }
-        QuercusUtils::printValues("colKeys:"+$this->colKeys);
+
+
         return $cur;
     }
 
@@ -864,7 +865,8 @@ class moadminComponent {
         }
         if ($action == 'listRows') {
             $this->mongo['listIndexes'] = self::$model->listIndexes($_GET['collection']);
-            $this->mongo['listRows'] = self::$model->listRows($_GET['collection']);
+            //$this->mongo['listRows'] = self::$model->listRows($_GET['collection']);
+
         } else if ($action == 'dropCollection') {
             return load::redirect(get::url() . '?db=' . urlencode($_GET['db']));
         }
@@ -1991,14 +1993,17 @@ class phpMoAdmin {
      */
     public static function getArrayKeys(array $array, $path = '', $drillDownDepthCount = 0) {
         $return = array();
+        //    QuercusUtils::printValues("kv:"+$k+":"+$v);
 
         if ($drillDownDepthCount) {
             $path .= '.';
         }
         if (++$drillDownDepthCount < self::DRILL_DOWN_DEPTH_LIMIT) {
             foreach ($array as $key => $val) {
+
                 $id = $path . $key;
                 $return[$id] = $id;
+
                 if (is_array($val)) {
                     $return = array_merge($return, self::getArrayKeys($val, $id, $drillDownDepthCount));
                 }
@@ -2566,7 +2571,11 @@ mo.submitQuery = function() {
         $chunkUrl = $baseUrl . '?db=' . $dbUrl . '&action=listRows&collection=' . urlencode(substr($collection, 0, -7))
                   . '.files#';
     }
+
+
+
     foreach ($mo->mongo['listRows'] as $row) {
+
         $showEdit = true;
         $id = $idString = $row['_id'];
         if (is_object($idString)) {
