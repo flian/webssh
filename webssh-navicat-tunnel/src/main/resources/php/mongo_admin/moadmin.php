@@ -1,4 +1,5 @@
 <?php error_reporting(E_ALL | E_STRICT);
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.utils.QuercusUtils;
 /**
  * phpMoAdmin - built on a stripped-down version of the high-performance Vork Enterprise Framework
  *
@@ -2532,8 +2533,10 @@ mo.submitQuery = function() {
         $chunkUrl = $baseUrl . '?db=' . $dbUrl . '&action=listRows&collection=' . urlencode(substr($collection, 0, -7))
                   . '.files#';
     }
-    foreach ($mo->mongo['listRows'] as $row) {
+
+    foreach ($mo->mongo['listRows']->listRows() as $row) {
         $showEdit = true;
+
         $id = $idString = $row['_id'];
         if (is_object($idString)) {
             $idString = '(' . get_class($idString) . ') ' . $idString;

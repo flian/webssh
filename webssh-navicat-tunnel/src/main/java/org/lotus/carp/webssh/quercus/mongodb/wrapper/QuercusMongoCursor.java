@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.quercus.mongodb.wrapper;
 
 import com.caucho.quercus.env.ArrayValue;
+import com.caucho.quercus.env.ArrayValueImpl;
 import com.caucho.quercus.env.Env;
 import com.caucho.quercus.env.Value;
 import com.mongodb.client.MongoCursor;
@@ -61,6 +62,16 @@ public class QuercusMongoCursor implements Iterator<Value> {
 
     public void close() {
         this.cursor.close();
+    }
+
+    public ArrayValue listRows(Env env){
+        ArrayValue result = new ArrayValueImpl();
+        int i=0;
+        while (cursor.hasNext()){
+            result.put(env.wrapJava(i),next());
+            i++;
+        }
+        return result;
     }
 
     public long getCount() {
