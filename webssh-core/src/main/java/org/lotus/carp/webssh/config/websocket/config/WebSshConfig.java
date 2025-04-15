@@ -270,7 +270,7 @@ public class WebSshConfig {
     /**
      * java socket proxy port
      */
-    private int socketProxyPort = 9527;
+    private int socketProxyPort = 9688;
     /**
      * java socket proxy username
      */
