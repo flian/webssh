@@ -2023,10 +2023,10 @@ if ($isAuthenticated) {
         exit(0);
     }
     $mo = new moadminComponent;
-
-    if (isset($_GET['export']) && isset($mo->mongo['listRows'])) {
+    $listRows = $mo->mongo['listRows']->listRows();
+    if (isset($_GET['export']) && isset($listRows)) {
         $rows = array();
-        foreach ($mo->mongo['listRows'] as $row) {
+        foreach ($listRows as $row) {
             $rows[] = serialize($row);
         }
         $filename = get::htmlentities($_GET['db']);
@@ -2319,7 +2319,8 @@ $(document).ready(function() {
 echo '</div>'; //end of dbcollnav
 $dbcollnavJs = '$("#dbcollnav").after(\'<a id="dbcollnavlink" href="javascript: $(\\\'#dbcollnav\\\').show();'
              . ' $(\\\'#dbcollnavlink\\\').hide(); void(0);">[Show Database &amp; Collection selection]</a>\').hide();';
-if (isset($mo->mongo['listRows'])) {
+//$listRows = $mo->mongo['listRows']->listRows();
+if (isset($listRows)) {
     echo $form->open(array('action' => $baseUrl . '?db=' . $dbUrl . '&action=renameCollection',
                                   'style' => 'width: 600px; display: none;', 'id' => 'renamecollectionform'))
        . $form->hidden(array('name' => 'collectionfrom', 'value' => $collection))
@@ -2328,8 +2329,8 @@ if (isset($mo->mongo['listRows'])) {
        . $form->close();
     $js = "$('#collectionname').hide(); $('#renamecollectionform').show(); void(0);";
     echo '<h1 id="collectionname">' . $html->link('javascript: ' . $js, $collection) . '</h1>';
-
-    if (isset($mo->mongo['listIndexes'])) {
+    $listIdx =$mo->mongo['listIndexes']->listRows();
+    if (isset($listIdx)) {
         echo '<ol id="indexes" style="display: none; margin-bottom: 10px;">';
         echo $form->open(array('method' => 'get'));
         echo '<div id="indexInput">'
@@ -2346,7 +2347,7 @@ if (isset($mo->mongo['listRows'])) {
            . $form->hidden(array('name' => 'db', 'value' => get::htmlentities($db)))
            . $form->hidden(array('name' => 'collection', 'value' => $collection))
            . $form->close();
-        foreach ($mo->mongo['listIndexes'] as $indexArray) {
+        foreach ($listIdx as $indexArray) {
             $index = '';
             foreach ($indexArray['key'] as $key => $direction) {
                 $index .= (!$index ? $key : ', ' . $key);
@@ -2534,7 +2535,7 @@ mo.submitQuery = function() {
                   . '.files#';
     }
 
-    foreach ($mo->mongo['listRows']->listRows() as $row) {
+    foreach ($listRows as $row) {
         $showEdit = true;
 
         $id = $idString = $row['_id'];
