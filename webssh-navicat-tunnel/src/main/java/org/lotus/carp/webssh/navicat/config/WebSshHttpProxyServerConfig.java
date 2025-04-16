@@ -35,6 +35,10 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        if(!webSshConfig.isEnableHttpProxy()){
+            log.info("EnableHttpProxy is false. server will not start http proxy.");
+            return;
+        }
         HttpProxyServerConfig config = new HttpProxyServerConfig();
         //enable HTTPS support
         //If not enabled, HTTPS will not be intercepted, but forwarded directly to the raw packet.
@@ -92,7 +96,7 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
                     }
 
                 })
-                .start(webSshConfig.getHttpProxyBindIp(), webSshConfig.getHttpProxyBIndPort());
+                .startAsync(webSshConfig.getHttpProxyBindIp(), webSshConfig.getHttpProxyBIndPort());
 
         log.info("start http proxy server done.");
     }

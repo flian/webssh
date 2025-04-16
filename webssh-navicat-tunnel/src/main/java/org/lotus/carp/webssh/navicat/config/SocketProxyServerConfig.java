@@ -24,7 +24,11 @@ public class SocketProxyServerConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        log.info("starting java socket5 proxy server...");
+        if(!webSshConfig.isEnableSocketProxy()){
+            log.info("enableSocketProxy is false. server will not start socket proxy.");
+            return;
+        }
+        log.info(String.format("starting java socket5 proxy server on port:%s...",webSshConfig.getSocketProxyPort()));
         socksProxyServer = new SocksServer(webSshConfig.getSocketProxyPort()).setAuthenticator(new UsernamePasswordAuthenticator(false) {
             @Override
             public boolean validate(String username, String password) {

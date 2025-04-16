@@ -268,6 +268,10 @@ public class WebSshConfig {
     private String properJavaRdpJarFilePath = "/tmp/properJavaRdp";
 
     /**
+     * is enabled server as a socket proxy.
+     */
+    private boolean enableSocketProxy = false;
+    /**
      * java socket proxy port
      */
     private int socketProxyPort = 9688;
@@ -280,6 +284,10 @@ public class WebSshConfig {
      */
     private String socketProxyPassword="changeit@!@#!";
 
+    /**
+     * is enabled server as http proxy .
+     */
+    private boolean enableHttpProxy = false;
     /**
      * http proxy server bind ip
      */
