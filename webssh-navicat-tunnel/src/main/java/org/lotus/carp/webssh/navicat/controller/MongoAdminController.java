@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.navicat.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.controller.restful.BaseController;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.navicat.config.WebSshNavicatTunnelConst;
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
  **/
 @Controller
 @Slf4j
-public class MongoAdminController {
+public class MongoAdminController extends BaseController {
     @Resource
     private WebSshLoginService webSshLoginService;
 
