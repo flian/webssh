@@ -59,11 +59,17 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>${mongodb.jdbc.version}</version>
         </dependency>
-        <!-- https://github.com/bbottema/java-socks-proxy-server java socket server -->
+        <!--  socket proxy lib: https://github.com/bbottema/java-socks-proxy-server java socket server -->
         <dependency>
             <groupId>com.github.bbottema</groupId>
             <artifactId>java-socks-proxy-server</artifactId>
             <version>4.1.2</version>
+        </dependency>
+        <!-- http proxy lib: https://github.com/monkeyWie/proxyee -->
+        <dependency>
+            <groupId>com.github.monkeywie</groupId>
+            <artifactId>proxyee</artifactId>
+            <version>1.7.6</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>

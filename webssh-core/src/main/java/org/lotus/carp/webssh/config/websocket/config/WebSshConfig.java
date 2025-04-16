@@ -279,4 +279,26 @@ public class WebSshConfig {
      * java socket proxy password
      */
     private String socketProxyPassword="changeit@!@#!";
+
+    /**
+     * http proxy server bind ip
+     */
+    private String httpProxyBindIp =  null;
+
+    /**
+     * is debug http proxy enabled.
+     */
+    private boolean debugHttpProxy = false;
+    /**
+     * http proxy server bind port
+     */
+    private int httpProxyBIndPort = 9966;
+    /**
+     * http proxy server username
+     */
+    private String httpProxyUserName="websshHttpProxyUser";
+    /**
+     * http proxy password
+     */
+    private String httpProxyPassword="changeit@!@#!";
 }
