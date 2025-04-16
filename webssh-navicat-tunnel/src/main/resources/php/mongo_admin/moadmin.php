@@ -298,8 +298,14 @@ class moadminModel {
         $connection = (!MONGO_CONNECTION ? 'mongodb://localhost:27017' : MONGO_CONNECTION);
         $connectUrl = $_GET['monUrl'];
         if(isset($connectUrl)){
+            //save connect url to session
+            $_SESSION['currentMonUrl'] = $connectUrl;
             $connection = $connectUrl;
+        }else if(isset($_SESSION['currentMonUrl'])){
+            //get connect from session
+            $connection = $_SESSION['currentMonUrl'];
         }
+
         $Mongo = (class_exists('MongoClient') === true ? 'MongoClient' : 'Mongo');
         return (!REPLICA_SET ? new $Mongo($connection) : new $Mongo($connection, array('replicaSet' => true)));
     }
