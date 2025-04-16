@@ -14,6 +14,7 @@ import com.caucho.vfs.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
+import org.lotus.carp.webssh.quercus.mongodb.wrapper.MongoExtension;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.*;
 
@@ -26,9 +27,11 @@ public class QuercusView extends AbstractUrlBasedView {
     private static final L10N L = new L10N(QuercusView.class);
 
 
+
     protected QuercusContext _quercus;
     protected ServletContext _servletContext;
     protected QuercusServletContext quercusServletContext;
+
 
     public QuercusView() {
         super();
@@ -39,10 +42,20 @@ public class QuercusView extends AbstractUrlBasedView {
         _servletContext = servletContext;
         quercusServletContext = new QuercusServletContextImpl(_servletContext);
         checkServletAPIVersion();
-
+        if (this._quercus == null) {
+            this._quercus = new QuercusContext();
+            //this._quercus.setIni("extension","/usr/local/opt/mongodb@8.4/mongodb.so");
+        }
         getQuercus().setPwd(new FilePath(_servletContext.getRealPath("/")));
-
+        /*Path phpIniPath = this.getQuercus().getPwd().lookup("/Users/cwnuzj/codes/github/webssh/webssh-navicat-tunnel/src/main/resources/php.ini");
+        _quercus.setIniFile(phpIniPath);*/
+        //FIXME mongo extend?
+        MongoExtension mongoExtension = new MongoExtension(getQuercus());
+        getQuercus().addInitModule(mongoExtension);
+        //this.getQuercus().setIni("extension","/usr/local/opt/mongodb@8.4/mongodb.so");
         getQuercus().init();
+
+        getQuercus().start();
     }
 
     protected void checkServletAPIVersion() {
@@ -90,6 +103,9 @@ public class QuercusView extends AbstractUrlBasedView {
 
             env = quercus.createEnv(page, ws, _request, _response);
 
+            //load mongoExtension const
+            MongoExtension.loadConst(env);
+
             // retro... thanks, Spring
             for (Object entryObj : model.entrySet()) {
                 Map.Entry entry = (Map.Entry) entryObj;
@@ -102,6 +118,7 @@ public class QuercusView extends AbstractUrlBasedView {
                 env.setScriptGlobal("request", request);
                 env.setScriptGlobal("response", response);
                 env.setScriptGlobal("servletContext", _servletContext);
+
 
                 StringValue prepend
                         = quercus.getIniValue("auto_prepend_file").toStringValue(env);
@@ -190,12 +207,6 @@ public class QuercusView extends AbstractUrlBasedView {
      * Returns the Quercus instance.
      */
     protected QuercusContext getQuercus() {
-        synchronized (this) {
-            if (this._quercus == null) {
-                this._quercus = new QuercusContext();
-                this._quercus.start();
-            }
-        }
         return this._quercus;
     }
 

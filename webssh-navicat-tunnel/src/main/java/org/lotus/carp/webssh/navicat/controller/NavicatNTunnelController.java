@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.navicat.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.controller.restful.BaseController;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.navicat.config.WebSshNavicatTunnelConst;
@@ -20,7 +21,7 @@ import javax.annotation.Resource;
 @Controller
 @RequestMapping(value = WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_MAPPING)
 @Slf4j
-public class NavicatNTunnelController {
+public class NavicatNTunnelController extends BaseController {
     @Resource
     private WebSshLoginService webSshLoginService;
 
@@ -44,5 +45,10 @@ public class NavicatNTunnelController {
     public String sqliteNTunnel(@RequestParam(value = "token",required = false) String token){
         validateToken(token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_SQLITE_FILE;
+    }
+    @RequestMapping("/php_info")
+    public String phpInfo(@RequestParam(value = "token",required = false) String token){
+        validateToken(token);
+        return WebSshNavicatTunnelConst.WEB_SSH_PHP_INFO_FILE;
     }
 }

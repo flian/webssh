@@ -266,4 +266,47 @@ public class WebSshConfig {
      * proper java RDP jar full path.
      */
     private String properJavaRdpJarFilePath = "/tmp/properJavaRdp";
+
+    /**
+     * is enabled server as a socket proxy.
+     */
+    private boolean enableSocketProxy = false;
+    /**
+     * java socket proxy port
+     */
+    private int socketProxyPort = 9688;
+    /**
+     * java socket proxy username
+     */
+    private String socketProxyUserName="websshSocket5";
+    /**
+     * java socket proxy password
+     */
+    private String socketProxyPassword="changeit@!@#!";
+
+    /**
+     * is enabled server as http proxy .
+     */
+    private boolean enableHttpProxy = false;
+    /**
+     * http proxy server bind ip
+     */
+    private String httpProxyBindIp =  null;
+
+    /**
+     * is debug http proxy enabled.
+     */
+    private boolean debugHttpProxy = false;
+    /**
+     * http proxy server bind port
+     */
+    private int httpProxyBIndPort = 9966;
+    /**
+     * http proxy server username
+     */
+    private String httpProxyUserName="websshHttpProxyUser";
+    /**
+     * http proxy password
+     */
+    private String httpProxyPassword="changeit@!@#!";
 }

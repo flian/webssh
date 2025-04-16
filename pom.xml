@@ -21,6 +21,7 @@
         <jsh.version>0.2.16</jsh.version>
         <guavacache.version>31.0.1-jre</guavacache.version>
         <mysql.jdbc.version>8.0.33</mysql.jdbc.version>
+        <mongodb.jdbc.version>3.12.14</mongodb.jdbc.version>
         <pgsql.jdbc.verison>42.7.3</pgsql.jdbc.verison>
         <sqlite.jdbc.version>3.45.3.0</sqlite.jdbc.version>
     </properties>
@@ -48,6 +49,17 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.jdbc.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongo-java-driver</artifactId>
+                <version>${mongodb.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongodb.jdbc.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
             <dependency>
