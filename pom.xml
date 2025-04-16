@@ -10,7 +10,7 @@
 
     <groupId>org.lotus.carp.webssh</groupId>
     <artifactId>webssh</artifactId>
-    <version>1.27-SNAPSHOT</version>
+    <version>1.27.1-SNAPSHOT</version>
     <name>webssh</name>
     <description>carp java webssh</description>
     <packaging>pom</packaging>
