@@ -2,6 +2,7 @@ package org.lotus.carp.webssh.navicat.config;
 
 import com.github.monkeywie.proxyee.intercept.HttpProxyInterceptInitializer;
 import com.github.monkeywie.proxyee.intercept.HttpProxyInterceptPipeline;
+import com.github.monkeywie.proxyee.intercept.common.CertDownIntercept;
 import com.github.monkeywie.proxyee.intercept.common.FullResponseIntercept;
 import com.github.monkeywie.proxyee.server.HttpProxyServer;
 import com.github.monkeywie.proxyee.server.HttpProxyServerConfig;
@@ -38,6 +39,7 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
         //enable HTTPS support
         //If not enabled, HTTPS will not be intercepted, but forwarded directly to the raw packet.
         config.setHandleSsl(true);
+
         if(webSshConfig.isDebugHttpProxy()){
             log.info(String.format("config http proxy config with user:%s,password:%s"
                     ,webSshConfig.getHttpProxyUserName(),webSshConfig.getHttpProxyPassword()));
@@ -63,6 +65,8 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
                 .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
                     @Override
                     public void init(HttpProxyInterceptPipeline pipeline) {
+                        //cert FIXME process ca cert download
+                        //pipeline.addFirst(new CertDownIntercept());
                         //is debug
                         if (webSshConfig.isDebugHttpProxy()) {
                             pipeline.addLast(new FullResponseIntercept() {
@@ -70,7 +74,7 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
                                 @Override
                                 public boolean match(HttpRequest httpRequest, HttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) {
                                     //Insert js when matching to Baidu homepage
-                                    return HttpUtil.checkUrl(pipeline.getHttpRequest(), "^www.baidu.com$")
+                                    return (debugCheck(pipeline.getHttpRequest()) || HttpUtil.checkUrl(pipeline.getHttpRequest(), "^www.baidu.com$"))
                                             && HttpUtil.isHtml(httpRequest, httpResponse);
                                 }
 
@@ -92,7 +96,14 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
 
         log.info("start http proxy server done.");
     }
-
+    private boolean debugCheck(HttpRequest request){
+        //just for debug
+        if(HttpUtil.checkUrl(request,"^www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/moe_1485/202504/t20250415_1187419.html$")){
+            return true;
+        }
+        if(HttpUtil.checkUrl(request,"^webssh.http.proxy.test.*$"));
+        return false;
+    }
     @PreDestroy
     public void destroy() {
         log.info("stop http proxy server...");
