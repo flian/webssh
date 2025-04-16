@@ -5,4 +5,4 @@ webssh:
   enableSocketProxy: true
   enableHttpProxy: true
   debugHttpProxy: true
-  shouldVerifyToken: false
+  shouldVerifyToken: true

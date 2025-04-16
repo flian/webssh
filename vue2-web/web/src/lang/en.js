@@ -52,4 +52,5 @@ export default {
     pleaseSelect: 'please select',
     PleaseSelLang: 'please select language',
     clearUploaded: 'clean',
+    TunnelAndProxy: 'Navicat N tunnel and Proxy'
 }

@@ -122,6 +122,13 @@
                         <file-list></file-list>
                     </el-form-item>
                     <el-form-item size="small">
+                        <!--navicat http tunnel info -->
+                        <TunnelAndProxy></TunnelAndProxy>
+                    </el-form-item>
+                    <el-form-item size="small">
+                        <!--socket5 and http proxy info. already contain in prev component -->
+                    </el-form-item>
+                    <el-form-item size="small">
                         <el-dropdown @command="handleCommand">
                             <el-button type="primary">
                                 {{ $t('History') }}
@@ -187,9 +194,11 @@ import {getProjectHeaders, getSystemDefaultConfig,getShouldVerifyToken, login, l
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
+import TunnelAndProxy from "@/components/TunnelAndProxy.vue";
 
 export default {
     components: {
+        TunnelAndProxy,
         'file-list': FileList
     },
     data() {

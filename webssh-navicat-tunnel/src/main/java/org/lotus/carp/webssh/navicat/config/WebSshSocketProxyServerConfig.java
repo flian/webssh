@@ -17,21 +17,25 @@ import javax.annotation.Resource;
 
 @Component
 @Slf4j
-public class SocketProxyServerConfig implements InitializingBean {
+public class WebSshSocketProxyServerConfig implements InitializingBean {
     protected SocksServer socksProxyServer;
     @Resource
     protected WebSshConfig webSshConfig;
 
+    public String getPort() {
+        return "" + webSshConfig.getSocketProxyPort();
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
-        if(!webSshConfig.isEnableSocketProxy()){
+        if (!webSshConfig.isEnableSocketProxy()) {
             log.info("enableSocketProxy is false. server will not start socket proxy.");
             return;
         }
-        log.info(String.format("starting java socket5 proxy server on port:%s...",webSshConfig.getSocketProxyPort()));
-        if(webSshConfig.isDebugHttpProxy()){
+        log.info(String.format("starting java socket5 proxy server on port:%s...", webSshConfig.getSocketProxyPort()));
+        if (webSshConfig.isDebugHttpProxy()) {
             log.info(String.format("socket5 proxy username:%s,password:%s"
-                    ,webSshConfig.getSocketProxyUserName(),webSshConfig.getSocketProxyPassword()));
+                    , webSshConfig.getSocketProxyUserName(), webSshConfig.getSocketProxyPassword()));
         }
         socksProxyServer = new SocksServer(webSshConfig.getSocketProxyPort()).setAuthenticator(new UsernamePasswordAuthenticator(false) {
             @Override

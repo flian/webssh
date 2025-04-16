@@ -33,6 +33,10 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
     @Resource
     WebSshConfig webSshConfig;
 
+    public String proxyPort(){
+        return webSshConfig.getHttpProxyBIndPort()+"";
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
         if(!webSshConfig.isEnableHttpProxy()){
