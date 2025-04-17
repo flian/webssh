@@ -59,6 +59,9 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
                 if(webSshConfig.isDebugHttpProxy()){
                     log.info(String.format("try authenticate with username:%s,password:%s",usr,pwd));
                 }
+                if(webSshConfig.isHttpProxyNoAuth()){
+                    return new BasicHttpToken("","");
+                }
                 //set http proxy user info
                 if (webSshConfig.getHttpProxyUserName().equals(usr) && webSshConfig.getHttpProxyPassword().equals(pwd)) {
                     return new BasicHttpToken(usr, pwd);

@@ -291,6 +291,11 @@ public class WebSshConfig {
     private String socketProxyPassword="changeit@!@#!";
 
     /**
+     * webshh http proxy no auth.
+     */
+    private boolean httpProxyNoAuth = true;
+
+    /**
      * is enabled server as http proxy .
      */
     private boolean enableHttpProxy = false;
