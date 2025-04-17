@@ -32,18 +32,20 @@ public class WebSshSocketProxyServerConfig implements InitializingBean {
             log.info("enableSocketProxy is false. server will not start socket proxy.");
             return;
         }
-        log.info(String.format("starting java socket5 proxy server on port:%s...", webSshConfig.getSocketProxyPort()));
+        log.info(String.format("starting java socket5 proxy server on port:%s..., enabled NO_AUTH:%s", webSshConfig.getSocketProxyPort(),webSshConfig.isSocketNoAuthProxy()));
         if (webSshConfig.isDebugHttpProxy()) {
             log.info(String.format("socket5 proxy username:%s,password:%s"
                     , webSshConfig.getSocketProxyUserName(), webSshConfig.getSocketProxyPassword()));
         }
-        socksProxyServer = new SocksServer(webSshConfig.getSocketProxyPort()).setAuthenticator(new UsernamePasswordAuthenticator(false) {
+
+        socksProxyServer = new SocksServer(webSshConfig.getSocketProxyPort()).setAuthenticator(new UsernamePasswordAuthenticator(webSshConfig.isSocketNoAuthProxy()) {
             @Override
             public boolean validate(String username, String password) {
                 return webSshConfig.getSocketProxyUserName().equals(username)
                         && password.equals(webSshConfig.getSocketProxyPassword());
             }
         });
+
 
         socksProxyServer.start();
         log.info("starting java socket5 proxy server done..");

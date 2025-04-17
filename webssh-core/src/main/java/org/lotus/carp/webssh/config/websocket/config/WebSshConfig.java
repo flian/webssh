@@ -275,6 +275,12 @@ public class WebSshConfig {
      * java socket proxy port
      */
     private int socketProxyPort = 9688;
+
+    /**
+     * using webssh NO_AUTH proxy model.
+     */
+    private boolean socketNoAuthProxy = true;
+
     /**
      * java socket proxy username
      */
