@@ -277,6 +277,11 @@ public class WebSshConfig {
     private int socketProxyPort = 9688;
 
     /**
+     * set socket bind ip address
+     */
+    private String socketBindIp = null;
+
+    /**
      * using webssh NO_AUTH proxy model.
      */
     private boolean socketNoAuthProxy = true;

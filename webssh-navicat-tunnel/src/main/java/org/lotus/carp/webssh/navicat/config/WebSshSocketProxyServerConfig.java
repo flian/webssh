@@ -6,9 +6,16 @@ import org.bbottema.javasocksproxyserver.auth.UsernamePasswordAuthenticator;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+
+import javax.net.ServerSocketFactory;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 
 /**
  * @author : foy
@@ -46,7 +53,26 @@ public class WebSshSocketProxyServerConfig implements InitializingBean {
             }
         });
 
+        if(!ObjectUtils.isEmpty(webSshConfig.getSocketBindIp())){
+            log.info("bind socket listen ip:{}",webSshConfig.getSocketBindIp());
+            socksProxyServer.setFactory(new ServerSocketFactory(){
+                @Override
+                public ServerSocket createServerSocket(int port) throws IOException {
+                    //bind socket ip if config
+                    return new ServerSocket(port,50,InetAddress.getByName(webSshConfig.getSocketBindIp()));
+                }
 
+                @Override
+                public ServerSocket createServerSocket(int port, int backlog) throws IOException {
+                    return new ServerSocket(port,backlog);
+                }
+
+                @Override
+                public ServerSocket createServerSocket(int port, int backlog, InetAddress bindAddr) throws IOException {
+                    return new ServerSocket(port,backlog,bindAddr);
+                }
+            });
+        }
         socksProxyServer.start();
         log.info("starting java socket5 proxy server done..");
     }
