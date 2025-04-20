@@ -31,6 +31,12 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
 
     private transient boolean isStarted = false;
 
+    private String proxyUserName;
+    private String proxyPassword;
+
+    private String proxyBindIp;
+    private int proxyBindPort;
+
     public String getPort() {
         return "" + webSshConfig.getSocketProxyPort();
     }
@@ -44,6 +50,11 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        proxyUserName = webSshConfig.getSocketProxyUserName();
+        proxyPassword = webSshConfig.getSocketProxyPassword();
+        proxyBindIp = webSshConfig.getSocketBindIp();
+        proxyBindPort = webSshConfig.getSocketProxyPort();
+
         if(webSshConfig.isStartProxyOnStartup()){
             log.info("try start proxy server by startup.result:{}",this.startProxyServer());
         }
@@ -72,27 +83,27 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
     }
     protected void startServerInternal(){
 
-        log.info(String.format("starting java socket5 proxy server on port:%s..., enabled NO_AUTH:%s", webSshConfig.getSocketProxyPort(),webSshConfig.isSocketNoAuthProxy()));
+        log.info(String.format("starting java socket5 proxy server on port:%s..., enabled NO_AUTH:%s", proxyBindPort,webSshConfig.isSocketNoAuthProxy()));
         if (webSshConfig.isDebugHttpProxy()) {
             log.info(String.format("socket5 proxy username:%s,password:%s"
-                    , webSshConfig.getSocketProxyUserName(), webSshConfig.getSocketProxyPassword()));
+                    , proxyUserName, proxyPassword));
         }
 
-        socksProxyServer = new SocksServer(webSshConfig.getSocketProxyPort()).setAuthenticator(new UsernamePasswordAuthenticator(webSshConfig.isSocketNoAuthProxy()) {
+        socksProxyServer = new SocksServer(proxyBindPort).setAuthenticator(new UsernamePasswordAuthenticator(webSshConfig.isSocketNoAuthProxy()) {
             @Override
             public boolean validate(String username, String password) {
-                return webSshConfig.getSocketProxyUserName().equals(username)
-                        && password.equals(webSshConfig.getSocketProxyPassword());
+                return proxyUserName.equals(username)
+                        && password.equals(proxyPassword);
             }
         });
 
-        if(!ObjectUtils.isEmpty(webSshConfig.getSocketBindIp())){
-            log.info("bind socket listen ip:{}",webSshConfig.getSocketBindIp());
+        if(!ObjectUtils.isEmpty(proxyBindIp)){
+            log.info("bind socket listen ip:{}",proxyBindIp);
             socksProxyServer.setFactory(new ServerSocketFactory(){
                 @Override
                 public ServerSocket createServerSocket(int port) throws IOException {
                     //bind socket ip if config
-                    return new ServerSocket(port,50,InetAddress.getByName(webSshConfig.getSocketBindIp()));
+                    return new ServerSocket(port,50,InetAddress.getByName(proxyBindIp));
                 }
 
                 @Override

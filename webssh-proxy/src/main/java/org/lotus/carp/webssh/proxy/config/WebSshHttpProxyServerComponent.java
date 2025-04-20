@@ -36,8 +36,14 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
 
     private transient boolean isStarted = false;
 
+    private String proxyUserName;
+    private String proxyPassword;
+
+    private String proxyBindIp;
+    private int proxyBindPort;
+
     public String proxyPort(){
-        return webSshConfig.getHttpProxyBIndPort()+"";
+        return ""+proxyBindPort;
     }
 
     public boolean isServerStarted(){
@@ -72,7 +78,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
 
         if(webSshConfig.isDebugHttpProxy()){
             log.info(String.format("config http proxy config with user:%s,password:%s"
-                    ,webSshConfig.getHttpProxyUserName(),webSshConfig.getHttpProxyPassword()));
+                    ,proxyUserName,proxyPassword));
         }
         //set basic authenticate
         config.setAuthenticationProvider(new BasicHttpProxyAuthenticationProvider() {
@@ -85,14 +91,14 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
                     return new BasicHttpToken("","");
                 }
                 //set http proxy user info
-                if (webSshConfig.getHttpProxyUserName().equals(usr) && webSshConfig.getHttpProxyPassword().equals(pwd)) {
+                if (proxyUserName.equals(usr) && proxyPassword.equals(pwd)) {
                     return new BasicHttpToken(usr, pwd);
                 }
                 return null;
             }
         });
         log.info(String.format("starting http proxy server on ip:http://%s:%s"
-                , null == webSshConfig.getHttpProxyBindIp() ? "localhost" : webSshConfig.getHttpProxyBindIp(), webSshConfig.getHttpProxyBIndPort()));
+                , null == proxyBindIp ? "localhost" : proxyBindIp, proxyBindPort));
         new HttpProxyServer()
                 .serverConfig(config)
                 .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
@@ -125,7 +131,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
                     }
 
                 })
-                .startAsync(webSshConfig.getHttpProxyBindIp(), webSshConfig.getHttpProxyBIndPort());
+                .startAsync(proxyBindIp, proxyBindPort);
 
         log.info("start http proxy server done.");
 
@@ -144,6 +150,12 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         }
     }
 
+    private void initProperties(){
+        this.proxyUserName = webSshConfig.getHttpProxyUserName();
+        this.proxyPassword = webSshConfig.getHttpProxyPassword();
+        this.proxyBindIp = webSshConfig.getHttpProxyBindIp();
+        this.proxyBindPort = webSshConfig.getHttpProxyBindPort();
+    }
     private boolean debugCheck(HttpRequest request){
         //just for debug
         if(HttpUtil.checkUrl(request,"^www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/moe_1485/202504/t20250415_1187419.html$")){

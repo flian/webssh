@@ -275,7 +275,7 @@ public class WebSshConfig {
     /**
      * is enabled server as a socket proxy.
      */
-    private boolean enableSocketProxy = false;
+    private boolean enableSocketProxy = true;
     /**
      * java socket proxy port
      */
@@ -284,7 +284,7 @@ public class WebSshConfig {
     /**
      * set socket bind ip address
      */
-    private String socketBindIp = null;
+    private String socketBindIp = "0.0.0.0";
 
     /**
      * using webssh NO_AUTH proxy model.
@@ -308,11 +308,11 @@ public class WebSshConfig {
     /**
      * is enabled server as http proxy .
      */
-    private boolean enableHttpProxy = false;
+    private boolean enableHttpProxy = true;
     /**
      * http proxy server bind ip
      */
-    private String httpProxyBindIp =  null;
+    private String httpProxyBindIp =  "0.0.0.0";
 
     /**
      * is debug http proxy enabled.
@@ -321,7 +321,7 @@ public class WebSshConfig {
     /**
      * http proxy server bind port
      */
-    private int httpProxyBIndPort = 9966;
+    private int httpProxyBindPort = 9966;
     /**
      * http proxy server username
      */
