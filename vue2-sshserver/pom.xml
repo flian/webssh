@@ -25,6 +25,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.lotus.webwallet</groupId>
+            <artifactId>webssh-proxy</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.lotus.carp.webssh</groupId>
             <artifactId>webssh-core</artifactId>
             <version>${project.version}</version>

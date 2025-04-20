@@ -268,6 +268,11 @@ public class WebSshConfig {
     private String properJavaRdpJarFilePath = "/tmp/properJavaRdp";
 
     /**
+     * identity if start http and socket proxy on system startup.
+     */
+    private boolean startProxyOnStartup = false;
+
+    /**
      * is enabled server as a socket proxy.
      */
     private boolean enableSocketProxy = false;

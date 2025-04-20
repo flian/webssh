@@ -1,8 +1,7 @@
-package org.lotus.carp.webssh.navicat.config;
+package org.lotus.carp.webssh.proxy.config;
 
 import com.github.monkeywie.proxyee.intercept.HttpProxyInterceptInitializer;
 import com.github.monkeywie.proxyee.intercept.HttpProxyInterceptPipeline;
-import com.github.monkeywie.proxyee.intercept.common.CertDownIntercept;
 import com.github.monkeywie.proxyee.intercept.common.FullResponseIntercept;
 import com.github.monkeywie.proxyee.server.HttpProxyServer;
 import com.github.monkeywie.proxyee.server.HttpProxyServerConfig;
@@ -17,6 +16,8 @@ import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+
+
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
@@ -28,21 +29,42 @@ import java.nio.charset.Charset;
  **/
 @Component
 @Slf4j
-public class WebSshHttpProxyServerConfig implements InitializingBean {
+public class WebSshHttpProxyServerComponent implements InitializingBean {
     HttpProxyServer httpProxyServer;
     @Resource
     WebSshConfig webSshConfig;
+
+    private transient boolean isStarted = false;
 
     public String proxyPort(){
         return webSshConfig.getHttpProxyBIndPort()+"";
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public boolean isServerStarted(){
+        return this.isStarted;
+    }
+
+    public boolean startProxyServer(){
         if(!webSshConfig.isEnableHttpProxy()){
             log.info("EnableHttpProxy is false. server will not start http proxy.");
-            return;
+            return isServerStarted();
         }
+        if(isServerStarted()){
+            log.warn("proxy server is running...,no need start again.");
+            return isServerStarted();
+        }
+        synchronized (this){
+            if(isServerStarted()){
+                log.warn("proxy server is running...,no need start again.");
+                return isServerStarted();
+            }
+            startServerInternal();
+            isStarted = true;
+        }
+        return isServerStarted();
+    }
+
+    protected void startServerInternal(){
         HttpProxyServerConfig config = new HttpProxyServerConfig();
         //enable HTTPS support
         //If not enabled, HTTPS will not be intercepted, but forwarded directly to the raw packet.
@@ -106,7 +128,22 @@ public class WebSshHttpProxyServerConfig implements InitializingBean {
                 .startAsync(webSshConfig.getHttpProxyBindIp(), webSshConfig.getHttpProxyBIndPort());
 
         log.info("start http proxy server done.");
+
     }
+    public boolean stopProxyServer(){
+        log.info("try stop proxy sever.");
+        destroy();
+        log.info("stop proxy sever done.");
+        return isServerStarted();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if(webSshConfig.isStartProxyOnStartup()){
+            log.info("try start proxy server by startup.result:{}",this.startProxyServer());
+        }
+    }
+
     private boolean debugCheck(HttpRequest request){
         //just for debug
         if(HttpUtil.checkUrl(request,"^www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/moe_1485/202504/t20250415_1187419.html$")){

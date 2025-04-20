@@ -1,4 +1,4 @@
-package org.lotus.carp.webssh.navicat.controller;
+package org.lotus.carp.webssh.proxy.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
@@ -6,10 +6,10 @@ import org.lotus.carp.webssh.config.controller.restful.BaseController;
 
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
-import org.lotus.carp.webssh.navicat.config.WebSshSocketProxyServerConfig;
-import org.lotus.carp.webssh.navicat.config.WebSshHttpProxyServerConfig;
+import org.lotus.carp.webssh.proxy.config.WebSshHttpProxyServerComponent;
+import org.lotus.carp.webssh.proxy.config.WebSshSocketProxyServerComponent;
 import org.lotus.carp.webssh.navicat.config.WebSshNavicatTunnelConst;
-import org.lotus.carp.webssh.navicat.controller.vo.TunnelAndProxyInfoResultVo;
+import org.lotus.carp.webssh.proxy.controller.vo.TunnelAndProxyInfoResultVo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,10 +30,10 @@ public class TunnelAndProxyInfoController extends BaseController {
     @Resource
     private WebSshLoginService webSshLoginService;
     @Resource
-    private WebSshHttpProxyServerConfig webSshHttpProxyServerConfig;
+    private WebSshHttpProxyServerComponent webSshHttpProxyServerConfig;
 
     @Resource
-    private WebSshSocketProxyServerConfig webSshSocketProxyServerConfig;
+    private WebSshSocketProxyServerComponent webSshSocketProxyServerConfig;
     void validateToken(String token) {
         if (!webSshLoginService.isTokenValid(token)) {
             log.error("token is not valid..");

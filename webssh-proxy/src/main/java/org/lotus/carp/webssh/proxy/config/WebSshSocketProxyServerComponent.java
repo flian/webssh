@@ -1,4 +1,4 @@
-package org.lotus.carp.webssh.navicat.config;
+package org.lotus.carp.webssh.proxy.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bbottema.javasocksproxyserver.SocksServer;
@@ -24,21 +24,54 @@ import java.net.ServerSocket;
 
 @Component
 @Slf4j
-public class WebSshSocketProxyServerConfig implements InitializingBean {
+public class WebSshSocketProxyServerComponent implements InitializingBean {
     protected SocksServer socksProxyServer;
     @Resource
     protected WebSshConfig webSshConfig;
+
+    private transient boolean isStarted = false;
 
     public String getPort() {
         return "" + webSshConfig.getSocketProxyPort();
     }
 
+    public boolean stopProxyServer(){
+        log.info("try stop proxy sever.");
+        destroy();
+        log.info("stop proxy sever done.");
+        return isServerStarted();
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
+        if(webSshConfig.isStartProxyOnStartup()){
+            log.info("try start proxy server by startup.result:{}",this.startProxyServer());
+        }
+    }
+    public boolean isServerStarted(){
+        return this.isStarted;
+    }
+    public boolean startProxyServer(){
         if (!webSshConfig.isEnableSocketProxy()) {
             log.info("enableSocketProxy is false. server will not start socket proxy.");
-            return;
+            return isServerStarted();
         }
+        if(isServerStarted()){
+            log.warn("proxy server is running...,no need start again.");
+            return isServerStarted();
+        }
+        synchronized (this){
+            if(isServerStarted()){
+                log.warn("proxy server is running...,no need start again.");
+                return isServerStarted();
+            }
+            startServerInternal();
+            isStarted = true;
+        }
+        return isServerStarted();
+    }
+    protected void startServerInternal(){
+
         log.info(String.format("starting java socket5 proxy server on port:%s..., enabled NO_AUTH:%s", webSshConfig.getSocketProxyPort(),webSshConfig.isSocketNoAuthProxy()));
         if (webSshConfig.isDebugHttpProxy()) {
             log.info(String.format("socket5 proxy username:%s,password:%s"
@@ -76,7 +109,6 @@ public class WebSshSocketProxyServerConfig implements InitializingBean {
         socksProxyServer.start();
         log.info("starting java socket5 proxy server done..");
     }
-
     @PreDestroy
     public void destroy() {
         log.info("stop java socket5 proxy server...");

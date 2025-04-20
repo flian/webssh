@@ -1,4 +1,4 @@
-package org.lotus.carp.webssh.navicat.controller.vo;
+package org.lotus.carp.webssh.proxy.controller.vo;
 
 import lombok.Data;
 
