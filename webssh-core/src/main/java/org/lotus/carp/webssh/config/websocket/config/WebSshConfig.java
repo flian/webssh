@@ -284,7 +284,7 @@ public class WebSshConfig {
     /**
      * using webssh NO_AUTH proxy model.
      */
-    private boolean socketNoAuthProxy = true;
+    private boolean socketNoAuthProxy = false;
 
     /**
      * java socket proxy username
@@ -298,7 +298,7 @@ public class WebSshConfig {
     /**
      * webshh http proxy no auth.
      */
-    private boolean httpProxyNoAuth = true;
+    private boolean httpProxyNoAuth = false;
 
     /**
      * is enabled server as http proxy .
