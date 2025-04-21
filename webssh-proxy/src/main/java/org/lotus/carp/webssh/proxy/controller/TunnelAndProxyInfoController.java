@@ -9,10 +9,9 @@ import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.proxy.config.WebSshHttpProxyServerComponent;
 import org.lotus.carp.webssh.proxy.config.WebSshSocketProxyServerComponent;
 import org.lotus.carp.webssh.navicat.config.WebSshNavicatTunnelConst;
+import org.lotus.carp.webssh.proxy.controller.vo.ProxyOpRequestVo;
 import org.lotus.carp.webssh.proxy.controller.vo.TunnelAndProxyInfoResultVo;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +39,16 @@ public class TunnelAndProxyInfoController extends BaseController {
             throw new WebSshBusinessException("invalid access. reason: invalid token.");
         }
     }
+
+    @PostMapping("/updateProxy")
+    public WebSshResponse<Boolean> updateProxyInfo(@RequestParam(value = "token", required = false) String token,
+                                                   @RequestBody ProxyOpRequestVo requestVo){
+        validateToken(token);
+        webSshHttpProxyServerConfig.updateProxy(requestVo);
+        webSshSocketProxyServerConfig.updateProxy(requestVo);
+        return WebSshResponse.ok(Boolean.TRUE);
+    }
+
     @RequestMapping("/info")
     public WebSshResponse<List<TunnelAndProxyInfoResultVo>> tunnelAndProxyInfo(
             HttpServletRequest request,

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bbottema.javasocksproxyserver.SocksServer;
 import org.bbottema.javasocksproxyserver.auth.UsernamePasswordAuthenticator;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
+import org.lotus.carp.webssh.proxy.controller.vo.ProxyOpRequestVo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -43,9 +44,46 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
 
     public boolean stopProxyServer(){
         log.info("try stop proxy sever.");
-        destroy();
+        if(isServerStarted()){
+            destroy();
+        }
         log.info("stop proxy sever done.");
         return isServerStarted();
+    }
+
+    public boolean updateProxy(ProxyOpRequestVo requestVo){
+        if(1 != requestVo.getProxyType()){
+            log.info("not this type.ignore.");
+            return Boolean.FALSE;
+        }
+        tryReConfigProperties(requestVo);
+        if(-1 == requestVo.getOp()){
+            stopProxyServer();
+            startProxyServer();
+        }else if(0 == requestVo.getOp()){
+            startProxyServer();
+        }else if(1 == requestVo.getOp()){
+            stopProxyServer();
+        }
+        return Boolean.TRUE;
+
+    }
+
+    private void tryReConfigProperties(ProxyOpRequestVo requestVo){
+        if(!ObjectUtils.isEmpty(requestVo.getBindIp())){
+            this.proxyBindIp = requestVo.getBindIp();
+        }
+        if(!ObjectUtils.isEmpty(requestVo.getBindPort())){
+            this.proxyBindPort = Integer.parseInt(requestVo.getBindPort());
+        }
+
+        if(!ObjectUtils.isEmpty(requestVo.getUsername())){
+            this.proxyUserName = requestVo.getUsername();
+        }
+
+        if(!ObjectUtils.isEmpty(requestVo.getPassword())){
+            this.proxyPassword = requestVo.getPassword();
+        }
     }
 
     @Override
