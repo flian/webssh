@@ -17,4 +17,5 @@ public class TunnelAndProxyInfoResultVo {
     private String meme;
     private String host = "";
     private String port = "";
+    private boolean isRunning = false;
 }

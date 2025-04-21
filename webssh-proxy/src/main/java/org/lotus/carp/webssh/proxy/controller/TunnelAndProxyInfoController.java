@@ -81,11 +81,12 @@ public class TunnelAndProxyInfoController extends BaseController {
 
     private TunnelAndProxyInfoResultVo socketProxy(String host){
         TunnelAndProxyInfoResultVo result = new TunnelAndProxyInfoResultVo();
-        result.setMeme("httpProxy");
+        result.setMeme("socketProxy");
         result.setType(TunnelAndProxyInfoResultVo.DEFAULT_TYPE);
         result.setHost(host);
         result.setPort(webSshSocketProxyServerConfig.getPort());
         result.setTunnel(false);
+        result.setRunning(webSshSocketProxyServerConfig.isServerStarted());
         return result;
     }
     private TunnelAndProxyInfoResultVo httpProxy(String protocol,String host){
@@ -94,6 +95,7 @@ public class TunnelAndProxyInfoController extends BaseController {
         result.setType(TunnelAndProxyInfoResultVo.DEFAULT_TYPE);
         result.setUrl(String.format("%s://%s:%s",protocol, host,webSshHttpProxyServerConfig.proxyPort()));
         result.setTunnel(false);
+        result.setRunning(webSshHttpProxyServerConfig.isServerStarted());
         return result;
     }
 
@@ -103,6 +105,7 @@ public class TunnelAndProxyInfoController extends BaseController {
         result.setType(TunnelAndProxyInfoResultVo.DEFAULT_TYPE);
         result.setUrl(String.format("%s%s/%s?token=%s",urlPrefix, WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_MAPPING,meme,token));
         result.setTunnel(true);
+        result.setRunning(Boolean.TRUE);
         return result;
     }
 }
