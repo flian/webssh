@@ -150,7 +150,7 @@ export default {
                             self.socket.password = proxyItem.password;
                             self.socket.running = proxyItem.running;
                         }
-                        if(item.proxyType === 1){
+                        if(proxyItem.proxyType === 1){
                             //http
                             self.http.bindIp = proxyItem.host;
                             self.http.bindPort = proxyItem.port;
