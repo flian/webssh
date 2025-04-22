@@ -68,10 +68,8 @@
 
 <script>
 import {getTunnelAndProxyInfo, updateProxy} from '@/api/db_tunnel_proxy'
-import { mapState } from 'vuex'
-import store from '@/store';
-import {getCurrentInstance} from "vue";
-import {Message} from "element-ui";
+
+import {Message} from 'element-ui'
 
 export default {
     name:"TunnelAndProxy",
