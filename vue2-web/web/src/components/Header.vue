@@ -123,7 +123,7 @@
                     </el-form-item>
                     <el-form-item size="small">
                         <!--navicat http tunnel info -->
-                        <TunnelAndProxy></TunnelAndProxy>
+                        <tunnel-and-proxy></tunnel-and-proxy>
                     </el-form-item>
                     <el-form-item size="small">
                         <!--socket5 and http proxy info. already contain in prev component -->
@@ -198,7 +198,7 @@ import TunnelAndProxy from "@/components/TunnelAndProxy.vue";
 
 export default {
     components: {
-        TunnelAndProxy,
+        'tunnel-and-proxy':TunnelAndProxy,
         'file-list': FileList
     },
     data() {

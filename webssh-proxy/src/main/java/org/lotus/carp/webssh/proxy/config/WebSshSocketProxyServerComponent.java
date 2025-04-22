@@ -1,5 +1,7 @@
 package org.lotus.carp.webssh.proxy.config;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bbottema.javasocksproxyserver.SocksServer;
@@ -18,6 +20,7 @@ import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : foy
@@ -28,6 +31,9 @@ import java.net.ServerSocket;
 @Slf4j
 public class WebSshSocketProxyServerComponent implements InitializingBean {
     protected SocksServer socksProxyServer;
+
+    Cache<String,String> socketProxyCache;
+
     @Resource
     protected WebSshConfig webSshConfig;
 
@@ -41,6 +47,7 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
     private String proxyBindIp;
     private int proxyBindPort;
 
+    private int autoStopIn;
     public String getPort() {
         return "" + webSshConfig.getSocketProxyPort();
     }
@@ -48,6 +55,7 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
     public boolean stopProxyServer(){
         log.info("try stop proxy sever.");
         if(isServerStarted()){
+            socketProxyCache.invalidate(proxyCacheName());
             destroy();
         }
         log.info("stop proxy sever done.");
@@ -55,17 +63,17 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
     }
 
     public boolean updateProxy(ProxyOpRequestVo requestVo){
-        if(1 != requestVo.getProxyType()){
+        if(WebSshProxyConstants.SOCKET_PROXY_TYPE != requestVo.getProxyType()){
             log.info("not this type.ignore.");
             return Boolean.FALSE;
         }
         tryReConfigProperties(requestVo);
-        if(-1 == requestVo.getOp()){
+        if(WebSshProxyConstants.OP_RESTART == requestVo.getOp()){
             stopProxyServer();
             startProxyServer();
-        }else if(0 == requestVo.getOp()){
+        }else if(WebSshProxyConstants.OP_START == requestVo.getOp()){
             startProxyServer();
-        }else if(1 == requestVo.getOp()){
+        }else if(WebSshProxyConstants.OP_STOP == requestVo.getOp()){
             stopProxyServer();
         }
         return Boolean.TRUE;
@@ -89,13 +97,33 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
         }
     }
 
+    String proxyCacheName(){
+       return WebSshHttpProxyServerComponent.class.getName();
+    }
+    void setUpCacheEvent(){
+        String name = proxyCacheName();
+        if(!ObjectUtils.isEmpty(socketProxyCache)){
+            socketProxyCache.invalidateAll();
+            socketProxyCache.cleanUp();
+        }
+        socketProxyCache = CacheBuilder.newBuilder().maximumSize(2).expireAfterAccess(autoStopIn, TimeUnit.HOURS)
+                .removalListener(notification->{
+                    if(notification.wasEvicted()){
+                        log.info("process Evicted proxy cache event.{}",notification);
+                        this.stopProxyServer();
+                        log.info("process Evicted proxy cache event done.{}",notification);
+                    }
+                }).build();
+        socketProxyCache.put(name,""+System.currentTimeMillis());
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
         proxyUserName = webSshConfig.getSocketProxyUserName();
         proxyPassword = webSshConfig.getSocketProxyPassword();
         proxyBindIp = webSshConfig.getSocketBindIp();
         proxyBindPort = webSshConfig.getSocketProxyPort();
-
+        autoStopIn = webSshConfig.getTokenExpiration();
         if(webSshConfig.isStartProxyOnStartup()){
             log.info("try start proxy server by startup.result:{}",this.startProxyServer());
         }
@@ -159,6 +187,7 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
             });
         }
         socksProxyServer.start();
+        setUpCacheEvent();
         log.info("starting java socket5 proxy server done..");
     }
     @PreDestroy

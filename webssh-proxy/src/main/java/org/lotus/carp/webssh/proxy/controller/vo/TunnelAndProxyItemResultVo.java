@@ -11,10 +11,7 @@ import java.util.List;
 @Data
 public class TunnelAndProxyItemResultVo {
 
-    /**
-     * proxy type 0 socket proxy,1 http proxy
-     */
-    String proxyType;
+
     //http or https
     String schema;
     //host info here

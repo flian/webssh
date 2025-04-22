@@ -24,9 +24,13 @@ import {
     Tooltip, Select, Option, Checkbox
 } from 'element-ui'
 import VueClipboard from 'vue-clipboard2'
+import {InputNumber} from "element-ui/types/element-ui";
+import {ElTag} from "element-ui/types/tag";
 const element = {
     install: function (Vue) {
         Vue.use(Input)
+        Vue.use(InputNumber)
+        Vue.use(ElTag),
         Vue.use(Dialog)
         Vue.use(Row)
         Vue.use(Col)

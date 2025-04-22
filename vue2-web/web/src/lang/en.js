@@ -54,5 +54,10 @@ export default {
     clearUploaded: 'clean',
     TunnelAndProxy: 'Navicat N tunnel and Proxy',
     tunnelGroup: 'navicat db tunnel info',
-    proxyGroup: 'socket and http/https proxy setting'
+    proxyGroup: 'socket and http/https proxy setting',
+    running: 'running',
+    stopped: 'stopped',
+    saveAndRestartProxy: 'save and restart proxy',
+    startProxy: 'Start proxy',
+    stopProxy: 'Stop proxy'
 }

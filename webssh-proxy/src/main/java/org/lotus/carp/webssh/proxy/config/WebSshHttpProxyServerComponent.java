@@ -8,6 +8,8 @@ import com.github.monkeywie.proxyee.server.HttpProxyServerConfig;
 import com.github.monkeywie.proxyee.server.auth.BasicHttpProxyAuthenticationProvider;
 import com.github.monkeywie.proxyee.server.auth.model.BasicHttpToken;
 import com.github.monkeywie.proxyee.util.HttpUtil;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -23,6 +25,7 @@ import org.springframework.util.ObjectUtils;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : foy
@@ -32,6 +35,8 @@ import java.nio.charset.Charset;
 @Component
 @Slf4j
 public class WebSshHttpProxyServerComponent implements InitializingBean {
+
+    Cache<String,String> httpProxyCache;
     HttpProxyServer httpProxyServer;
     @Resource
     WebSshConfig webSshConfig;
@@ -46,6 +51,8 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
     private String proxyBindIp;
     private int proxyBindPort;
 
+    private int autoStopIn;
+
     public String proxyPort(){
         return ""+proxyBindPort;
     }
@@ -56,12 +63,12 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
             return Boolean.FALSE;
         }
         tryReConfigProperties(requestVo);
-        if(-1 == requestVo.getOp()){
+        if(WebSshProxyConstants.OP_RESTART == requestVo.getOp()){
             stopProxyServer();
             startProxyServer();
-        }else if(0 == requestVo.getOp()){
+        }else if(WebSshProxyConstants.OP_START == requestVo.getOp()){
             startProxyServer();
-        }else if(1 == requestVo.getOp()){
+        }else if(WebSshProxyConstants.OP_STOP == requestVo.getOp()){
             stopProxyServer();
         }
         return Boolean.TRUE;
@@ -137,8 +144,8 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         });
         log.info(String.format("starting http proxy server on ip:http://%s:%s"
                 , null == proxyBindIp ? "localhost" : proxyBindIp, proxyBindPort));
-        new HttpProxyServer()
-                .serverConfig(config)
+        httpProxyServer = new HttpProxyServer();
+        httpProxyServer.serverConfig(config)
                 .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
                     @Override
                     public void init(HttpProxyInterceptPipeline pipeline) {
@@ -170,6 +177,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
 
                 })
                 .startAsync(proxyBindIp, proxyBindPort);
+        setUpCacheEvent();
 
         log.info("start http proxy server done.");
 
@@ -178,6 +186,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         log.info("try stop proxy sever.");
         if(isServerStarted()){
             destroy();
+            httpProxyCache.invalidate(proxyCacheName());
         }
         log.info("stop proxy sever done.");
         return isServerStarted();
@@ -185,9 +194,30 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        initProperties();
+
         if(webSshConfig.isStartProxyOnStartup()){
             log.info("try start proxy server by startup.result:{}",this.startProxyServer());
         }
+    }
+    String proxyCacheName(){
+        return WebSshHttpProxyServerComponent.class.getName();
+    }
+    void setUpCacheEvent(){
+        String name = proxyCacheName();
+        if(!ObjectUtils.isEmpty(httpProxyCache)){
+            httpProxyCache.invalidateAll();
+            httpProxyCache.cleanUp();
+        }
+        httpProxyCache = CacheBuilder.newBuilder().maximumSize(2).expireAfterAccess(autoStopIn, TimeUnit.HOURS)
+                .removalListener(notification->{
+                    if(notification.wasEvicted()){
+                        log.info("process Evicted proxy cache event.{}",notification);
+                        this.stopProxyServer();
+                        log.info("process Evicted proxy cache event done.{}",notification);
+                    }
+                }).build();
+        httpProxyCache.put(name,""+System.currentTimeMillis());
     }
 
     private void initProperties(){
@@ -195,6 +225,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         this.proxyPassword = webSshConfig.getHttpProxyPassword();
         this.proxyBindIp = webSshConfig.getHttpProxyBindIp();
         this.proxyBindPort = webSshConfig.getHttpProxyBindPort();
+        this.autoStopIn = this.webSshConfig.getTokenExpiration();
     }
     private boolean debugCheck(HttpRequest request){
         //just for debug

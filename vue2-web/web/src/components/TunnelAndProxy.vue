@@ -21,13 +21,16 @@
                         <el-input v-model="http.bindIp" />
                     </el-form-item>
                     <el-form-item label="BindPort" size="small" prop="BindPort" >
-                        <el-input v-model="http.bindPort" />
+                        <el-input-number v-model="http.bindPort" />
                     </el-form-item>
                     <el-form-item label="Username" size="small" prop="Username" >
                         <el-input v-model="http.username" />
                     </el-form-item>
                     <el-form-item label="Password" size="small" prop="Password" >
                         <el-input v-model="http.password" />
+                    </el-form-item>
+                    <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
+                        <el-input-number v-model="http.autoStopIn" />
                     </el-form-item>
                     <el-button>save config and restart</el-button><el-button>Start</el-button><el-button>Stop</el-button>
                 </el-col>
@@ -38,7 +41,7 @@
                         <el-input v-model="socket.bindIp" />
                     </el-form-item>
                     <el-form-item label="BindPort" size="small" prop="BindPort" >
-                        <el-input v-model="socket.bindPort" />
+                        <el-input-number v-model="socket.bindPort" />
                     </el-form-item>
                     <el-form-item label="Username" size="small" prop="Username" >
                         <el-input v-model="socket.username" />
@@ -46,7 +49,14 @@
                     <el-form-item label="Password" size="small" prop="Password" >
                         <el-input v-model="socket.password" />
                     </el-form-item>
-                    <el-button>save config and restart</el-button><el-button>Start</el-button><el-button>Stop</el-button>
+                    <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
+                        <el-input-number v-model="http.autoStopIn" :disabled="true"/>
+                    </el-form-item>
+                    <el-tag type="success" v-if="socket.running">{{$t('running')}}</el-tag>
+                    <el-tag type="warning" v-if="!socket.running">{{$t('stopped')}}</el-tag>
+                    <el-button type="primary">{{$t('saveAndRestartProxy')}}</el-button>
+                    <el-button type="primary">{{$t('startProxy')}}</el-button>
+                    <el-button type="danger">{{$t('stopProxy')}}</el-button>
                 </el-col>
 
             </el-row>
@@ -62,25 +72,35 @@ import {getCurrentInstance} from "vue";
 
 export default {
     name:"TunnelAndProxy",
+    created() {
+        this.fetchInfos();
+    },
     data(){
         return {
             dialogVisible: false,
             dialogWidth: '70%',
+            serverProxyInfos:{},
             http: {
                 proxyType: '1',
+                op: '-1',
                 bindIp: '0.0.0.0',
                 bindPort: '9966',
+                proxyUrl: '',
                 username: '',
                 password: '',
-                running: false
+                running: false,
+                httpProxyUrl: '',
+                autoStopIn: '6'
             },
             socket: {
                 proxyType: '0',
+                op: '-1',
                 bindIp: '0.0.0.0',
                 bindPort: '9688',
                 username: '',
                 password: '',
-                running: false
+                running: false,
+                autoStopIn: '6'
             }
         }
     },
@@ -99,15 +119,48 @@ export default {
         }
     },
     methods:{
+        fetchInfos(){
+            const self = this;
+            getTunnelAndProxyInfo(self.getCurrentToken()).then(function (result){
+                if(result.code === '200'){
+                    self.serverProxyInfos = result.data;
+                    for(let proxyItem in self.serverProxyInfos.items){
+                        if(proxyItem.proxyType === 0){
+                            //socket
+                            self.socket.bindIp = proxyItem.host;
+                            self.socket.bindPort = proxyItem.port;
+                            self.socket.username = proxyItem.username;
+                            self.socket.password = proxyItem.password;
+                            self.socket.running = proxyItem.running;
+                        }
+                        if(item.proxyType === 1){
+                            //http
+                            self.http.bindIp = proxyItem.host;
+                            self.http.bindPort = proxyItem.port;
+                            self.http.proxyUrl = proxyItem.httpProxyUrl;
+                            self.http.username = proxyItem.username;
+                            self.http.password = proxyItem.password;
+                            self.http.running = proxyItem.running;
+                        }
+                    }
+                }
+            });
+        },
         getCurrentToken(){
             return this.$store.getters.token;
         },
-        updateProxyInfo(){
-            let token = this.$store.getters.token;
-            const infoResult =  getTunnelAndProxyInfo(token);
-            let info = {};
-            const updateProxyResult = updateProxy(info,token);
-        }
+        updateHttpProxy(op){
+            const self = this;
+            self.http.op = op;
+            updateProxy(self.http,self.getCurrentToken());
+            self.fetchInfos();
+        },
+        updateSocketProxy(op){
+            const self = this;
+            self.socket.op = op;
+            updateProxy(self.socket,self.getCurrentToken());
+            self.fetchInfos();
+        },
     }
 }
 </script>

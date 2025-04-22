@@ -8,6 +8,9 @@ import lombok.Data;
  **/
 @Data
 public class TunnelAndProxyInfoItemResultVo {
+    /**
+     * proxy type 0 socket proxy,1 http proxy
+     */
     private int proxyType;
     private String meme;
     private String host = "";
@@ -16,4 +19,5 @@ public class TunnelAndProxyInfoItemResultVo {
     private String password = "";
     private String httpProxyUrl = "";
     private boolean isRunning = false;
+    private int autoStopIn;
 }

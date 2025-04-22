@@ -54,5 +54,10 @@ export default {
     clearUploaded: '清空',
     TunnelAndProxy: 'Navicat隧道/socket5和http代理信息',
     tunnelGroup: 'navicat数据库http隧道信息',
-    proxyGroup: 'socket和http代理信息'
+    proxyGroup: 'socket和http代理信息',
+    running: '代理运行中',
+    stopped: '代理已停止',
+    saveAndRestartProxy: '保存并重启代理',
+    startProxy: '启动代理',
+    stopProxy: '关闭代理'
 }
