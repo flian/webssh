@@ -23,6 +23,7 @@ import {
     Divider,
     Tooltip, Select, Option, Checkbox
 } from 'element-ui'
+import VueClipboard from 'vue-clipboard2'
 const element = {
     install: function (Vue) {
         Vue.use(Input)
@@ -49,6 +50,7 @@ const element = {
         Vue.use(Select)
         Vue.use(Option)
         Vue.use(Checkbox)
+        Vue.use(VueClipboard)
         Vue.prototype.$message = Message
     }
 }

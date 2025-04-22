@@ -11,6 +11,7 @@ import com.github.monkeywie.proxyee.util.HttpUtil;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.proxy.controller.vo.ProxyOpRequestVo;
@@ -37,7 +38,9 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
 
     private transient boolean isStarted = false;
 
+    @Getter
     private String proxyUserName;
+    @Getter
     private String proxyPassword;
 
     private String proxyBindIp;
@@ -48,7 +51,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
     }
 
     public boolean updateProxy(ProxyOpRequestVo requestVo){
-        if(1 != requestVo.getProxyType()){
+        if(WebSshProxyConstants.HTTP_PROXY_TYPE != requestVo.getProxyType()){
             log.info("not this type.ignore.");
             return Boolean.FALSE;
         }

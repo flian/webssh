@@ -1,5 +1,6 @@
 package org.lotus.carp.webssh.proxy.config;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.bbottema.javasocksproxyserver.SocksServer;
 import org.bbottema.javasocksproxyserver.auth.UsernamePasswordAuthenticator;
@@ -32,7 +33,9 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
 
     private transient boolean isStarted = false;
 
+    @Getter
     private String proxyUserName;
+    @Getter
     private String proxyPassword;
 
     private String proxyBindIp;

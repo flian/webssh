@@ -52,5 +52,7 @@ export default {
     pleaseSelect : '请选择',
     PleaseSelLang: '请选择语言',
     clearUploaded: '清空',
-    TunnelAndProxy: 'Navicat隧道/socket5和http代理信息'
+    TunnelAndProxy: 'Navicat隧道/socket5和http代理信息',
+    tunnelGroup: 'navicat数据库http隧道信息',
+    proxyGroup: 'socket和http代理信息'
 }
