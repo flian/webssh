@@ -5,13 +5,13 @@
 
             <el-row><el-col>{{$t('tunnelGroup')}}</el-col><el-col><el-link type="info" :link="phpInfoUrl">php info(quercus)</el-link> </el-col></el-row>
             <el-row>
-                <el-col>mysql:<el-input v-model="mysqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="mysqlTunnelUrl">{{$t('Copy')}}</el-button></el-col>
+                <el-col>mysql:<el-input v-model="mysqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('mysql')">{{$t('Copy')}}</el-button></el-col>
             </el-row>
             <el-row>
-                <el-col>pgsql:<el-input v-model="pgsqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="pgsqlTunnelUrl">{{$t('Copy')}}</el-button></el-col>
+                <el-col>pgsql:<el-input v-model="pgsqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('pgsql')">{{$t('Copy')}}</el-button></el-col>
             </el-row>
             <el-row>
-                <el-col>sqlite:<el-input v-model="sqliteTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="sqliteTunnelUrl">{{$t('Copy')}}</el-button></el-col>
+                <el-col>sqlite:<el-input v-model="sqliteTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('sqlite')">{{$t('Copy')}}</el-button></el-col>
             </el-row>
 
             <el-row><el-col>{{$t('proxyGroup')}}</el-col></el-row>
@@ -32,7 +32,9 @@
                     <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
                         <el-input-number v-model="http.autoStopIn" />
                     </el-form-item>
-                    <el-button>save config and restart</el-button><el-button>Start</el-button><el-button>Stop</el-button>
+                    <el-button @click="updateHttpProxy(-1)">save config and restart</el-button>
+                    <el-button @click="updateHttpProxy(0)">Start</el-button>
+                    <el-button @click="updateHttpProxy(1)">Stop</el-button>
                 </el-col>
             </el-row>
             <el-row>
@@ -54,9 +56,9 @@
                     </el-form-item>
                     <el-tag type="success" v-if="socket.running">{{$t('running')}}</el-tag>
                     <el-tag type="warning" v-if="!socket.running">{{$t('stopped')}}</el-tag>
-                    <el-button type="primary">{{$t('saveAndRestartProxy')}}</el-button>
-                    <el-button type="primary">{{$t('startProxy')}}</el-button>
-                    <el-button type="danger">{{$t('stopProxy')}}</el-button>
+                    <el-button type="primary" @click="updateSocketProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
+                    <el-button type="primary" @click="updateSocketProxy(0)">{{$t('startProxy')}}</el-button>
+                    <el-button type="danger" @click="updateSocketProxy(1)">{{$t('stopProxy')}}</el-button>
                 </el-col>
 
             </el-row>
@@ -69,6 +71,7 @@ import {getTunnelAndProxyInfo, updateProxy} from '@/api/db_tunnel_proxy'
 import { mapState } from 'vuex'
 import store from '@/store';
 import {getCurrentInstance} from "vue";
+import {Message} from "element-ui";
 
 export default {
     name:"TunnelAndProxy",
@@ -116,9 +119,23 @@ export default {
         },
         sqliteTunnelUrl(){
             return '/php/navicat/ntunnel/sqlite?token='+this.getCurrentToken();
-        }
+        },
+
     },
     methods:{
+        copyFullUrl(dbName){
+            const self = this;
+            //default is mysql
+            let suffix =self.mysqlTunnelUrl();
+            if(dbName === 'pgsql'){
+                suffix =self.pgsqlTunnelUrl();
+            }
+            if(dbName === 'sqlite'){
+                suffix =self.sqliteTunnelUrl();
+            }
+            const prefix = `${self.serverProxyInfos.schema}://${self.serverProxyInfos.host}:${self.serverProxyInfos.port}`;
+            return prefix+suffix;
+        },
         fetchInfos(){
             const self = this;
             getTunnelAndProxyInfo(self.getCurrentToken()).then(function (result){
@@ -152,13 +169,19 @@ export default {
         updateHttpProxy(op){
             const self = this;
             self.http.op = op;
-            updateProxy(self.http,self.getCurrentToken());
+            const result = updateProxy(self.http,self.getCurrentToken());
+            if(result.data.code === '200'){
+                Message.success("process success.");
+            }
             self.fetchInfos();
         },
         updateSocketProxy(op){
             const self = this;
             self.socket.op = op;
-            updateProxy(self.socket,self.getCurrentToken());
+            const result = updateProxy(self.socket,self.getCurrentToken());
+            if(result.data.code === '200'){
+                Message.success("process success.");
+            }
             self.fetchInfos();
         },
     }
