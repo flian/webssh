@@ -57,7 +57,8 @@ export default {
     clearUploaded: 'clean',
     TunnelAndProxy: 'Navicat N tunnel and Proxy',
     tunnelGroup: 'navicat db tunnel info',
-    proxyGroup: 'socket and http/https proxy setting',
+    httpProxyGroup: 'http proxy info',
+    socketProxyGroup: 'socket proxy info',
     running: 'running',
     stopped: 'stopped',
     saveAndRestartProxy: 'save and restart proxy',
@@ -65,5 +66,6 @@ export default {
     stopProxy: 'Stop proxy',
     phpInfo: 'php info(quercus)',
     tunnelPanTitle: 'navicat N tunnel info',
-    proxyPanTitle: 'http and socket proxy info'
+    socketProxyPanTitle: 'socket proxy info',
+    httpProxyPanTitle: 'http and socket proxy info'
 }
