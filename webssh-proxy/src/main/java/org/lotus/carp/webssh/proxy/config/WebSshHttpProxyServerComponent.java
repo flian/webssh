@@ -115,7 +115,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         return isServerStarted();
     }
 
-    protected void startServerInternal(){
+    protected synchronized void startServerInternal(){
         HttpProxyServerConfig config = new HttpProxyServerConfig();
         //enable HTTPS support
         //If not enabled, HTTPS will not be intercepted, but forwarded directly to the raw packet.
@@ -236,11 +236,13 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         return false;
     }
     @PreDestroy
-    public void destroy() {
+    public synchronized void destroy() {
         log.info("stop http proxy server...");
         if (null != httpProxyServer) {
             httpProxyServer.close();
         }
+        httpProxyServer = null;
+        this.isStarted = false;
         log.info("stop http proxy server done...");
     }
 }

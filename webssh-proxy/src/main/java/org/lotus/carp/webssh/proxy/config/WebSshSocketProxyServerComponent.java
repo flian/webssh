@@ -150,7 +150,7 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
         }
         return isServerStarted();
     }
-    protected void startServerInternal(){
+    protected synchronized void startServerInternal(){
 
         log.info(String.format("starting java socket5 proxy server on port:%s..., enabled NO_AUTH:%s", proxyBindPort,webSshConfig.isSocketNoAuthProxy()));
         if (webSshConfig.isDebugHttpProxy()) {
@@ -191,11 +191,12 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
         log.info("starting java socket5 proxy server done..");
     }
     @PreDestroy
-    public void destroy() {
+    public synchronized void destroy() {
         log.info("stop java socket5 proxy server...");
         if (null != socksProxyServer) {
             socksProxyServer.stop();
         }
+        this.isStarted = false;
         log.info("stop java socket5 proxy server done...");
     }
 }
