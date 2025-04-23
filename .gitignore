@@ -27,3 +27,5 @@ replay_pid*
 node_modules
 target
 yarn.lock
+/vue2-web/src/resources/webssh-dist/properJavaRDP-0.1.18-jar-with-dependencies.jar
+/vue2-web/package-lock.json
