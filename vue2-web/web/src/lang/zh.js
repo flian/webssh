@@ -59,5 +59,6 @@ export default {
     stopped: '代理已停止',
     saveAndRestartProxy: '保存并重启代理',
     startProxy: '启动代理',
-    stopProxy: '关闭代理'
+    stopProxy: '关闭代理',
+    phpInfo: 'php(quercus)版本信息'
 }

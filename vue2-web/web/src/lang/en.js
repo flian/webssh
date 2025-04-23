@@ -59,5 +59,6 @@ export default {
     stopped: 'stopped',
     saveAndRestartProxy: 'save and restart proxy',
     startProxy: 'Start proxy',
-    stopProxy: 'Stop proxy'
+    stopProxy: 'Stop proxy',
+    phpInfo: 'php info(quercus)'
 }
