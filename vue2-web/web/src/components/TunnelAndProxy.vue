@@ -1,6 +1,6 @@
 <template>
     <div class="TunnelAndProxyContainer">
-        <el-button type="primary" size="small" @click="dialogVisible=true">{{$t('TunnelAndProxy')}}</el-button>
+        <el-button type="primary" size="small" @click="fetchInfos();dialogVisible=true">{{$t('TunnelAndProxy')}}</el-button>
         <el-dialog :title="$t('TunnelAndProxy')" :visible.sync="dialogVisible" top="5vh" :width="dialogWidth">
 
             <el-row>
@@ -111,7 +111,7 @@ import {Message} from 'element-ui'
 export default {
     name:'TunnelAndProxy',
     created() {
-        this.fetchInfos();
+        //this.fetchInfos();
     },
     data(){
         return {
