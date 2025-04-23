@@ -183,7 +183,7 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         log.info("start http proxy server done.");
 
     }
-    public boolean stopProxyServer(){
+    public synchronized boolean stopProxyServer(){
         log.info("try stop proxy sever.");
         if(isServerStarted()){
             destroy();
@@ -205,6 +205,10 @@ public class WebSshHttpProxyServerComponent implements InitializingBean {
         return WebSshHttpProxyServerComponent.class.getName();
     }
     void setUpCacheEvent(){
+        if(!webSshConfig.isEnableProxyAutoStopIn()){
+            log.warn("disabled proxy auto stop feature. this will may cause a security issue, please attention！！！");
+            return;
+        }
         String name = proxyCacheName();
         if(!ObjectUtils.isEmpty(httpProxyCache)){
             httpProxyCache.invalidateAll();

@@ -273,6 +273,11 @@ public class WebSshConfig {
     private boolean startProxyOnStartup = false;
 
     /**
+     * webssh will auto close http/socket proxy after proxy start @see tokenExpiration hours.
+     */
+    private boolean enableProxyAutoStopIn = true;
+
+    /**
      * is enabled server as a socket proxy.
      */
     private boolean enableSocketProxy = true;

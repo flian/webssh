@@ -67,5 +67,6 @@ export default {
     phpInfo: 'php info(quercus)',
     tunnelPanTitle: 'navicat N tunnel info',
     socketProxyPanTitle: 'socket proxy info',
-    httpProxyPanTitle: 'http and socket proxy info'
+    httpProxyPanTitle: 'http and socket proxy info',
+    AutoStopInDesc: 'select proxy will auto close in config hours for security reason. you can simple using --webssh.enableProxyAutoStopIn==false in start argument disable auto stop proxy feature.'
 }

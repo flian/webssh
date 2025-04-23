@@ -102,6 +102,10 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
        return WebSshHttpProxyServerComponent.class.getName();
     }
     void setUpCacheEvent(){
+        if(!webSshConfig.isEnableProxyAutoStopIn()){
+            log.warn("disabled proxy auto stop feature. this will may cause a security issue, please attention！！！");
+            return;
+        }
         String name = proxyCacheName();
         if(!ObjectUtils.isEmpty(socketProxyCache)){
             socketProxyCache.invalidateAll();

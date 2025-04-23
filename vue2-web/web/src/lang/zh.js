@@ -67,5 +67,6 @@ export default {
     phpInfo: 'php(quercus)版本信息',
     tunnelPanTitle: 'navicat隧道链接信息',
     socketProxyPanTitle: 'socket代理信息',
-    httpProxyPanTitle: 'http代理信息'
+    httpProxyPanTitle: 'http代理信息',
+    AutoStopInDesc: '安全原因，代理会在此处配置的小时后自动关闭.可以使用启动参数 --webssh.enableProxyAutoStopIn==false 参数关闭到时自动关闭代理。'
 }

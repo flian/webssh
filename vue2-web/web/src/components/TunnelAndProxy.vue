@@ -39,6 +39,10 @@
                             <br/>
                             <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
                                 <el-input-number v-model="socket.autoStopIn" :disabled="true"/>
+                                <el-tooltip placement="right">
+                                    <div slot="content">{{$t('AutoStopInDesc')}}</div>
+                                    <i class="el-icon-question icon-color"></i>
+                                </el-tooltip>
                             </el-form-item>
 
                             <el-tag type="success" v-if="socket.running">{{$t('running')}}</el-tag>
@@ -68,7 +72,12 @@
                             </el-form-item>
                             <br/>
                             <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
-                                <el-input-number v-model="http.autoStopIn" :disabled="true"/>
+                                <el-input-number v-model="http.autoStopIn" :disabled="true">
+                                </el-input-number>
+                                <el-tooltip placement="right">
+                                    <div slot="content">{{$t('AutoStopInDesc')}}</div>
+                                    <i class="el-icon-question icon-color"></i>
+                                </el-tooltip>
                             </el-form-item>
                             <el-tag type="success" v-if="http.running">{{$t('running')}}</el-tag>
                             <el-tag type="warning" v-if="!http.running">{{$t('stopped')}}</el-tag>
