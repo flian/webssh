@@ -6,7 +6,7 @@ export function getTunnelAndProxyInfo(token){
 
 export function  updateProxy(proxyInfo,token){
     return request({
-        url:`/webssh/tunnelAndProxy?token=${token}`,
+        url:`/webssh/tunnelAndProxy/updateProxy?token=${token}`,
         method: 'post',
         data: proxyInfo,
         config:{timeout:30000}

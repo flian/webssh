@@ -192,8 +192,8 @@ export default {
             const result = updateProxy(self.http,self.getCurrentToken());
             if(result.data.code == '200'){
                 Message.success('process success.');
+                self.fetchInfos();
             }
-            self.fetchInfos();
         },
         openPhpInfoPage(){
             const self = this;
@@ -205,8 +205,8 @@ export default {
             const result = updateProxy(self.socket,self.getCurrentToken());
             if(result.data.code == '200'){
                 Message.success('process success.');
+                self.fetchInfos();
             }
-            self.fetchInfos();
         },
     }
 }

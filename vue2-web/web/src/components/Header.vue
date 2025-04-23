@@ -133,8 +133,8 @@
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item
-                                    v-for="item in sshList"
-                                    :key="item.host" :command="item" style="padding:0 5px 0 10px">
+                                    v-for="(item,idx) in sshList"
+                                    :key="idx" :command="item" style="padding:0 5px 0 10px">
                                     {{ item.host }}
                                     <i @click="cleanHistory(item)" class="el-icon-close"></i>
                                 </el-dropdown-item>
