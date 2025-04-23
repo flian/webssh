@@ -79,19 +79,19 @@ public class TunnelAndProxyInfoController extends BaseController {
         TunnelAndProxyInfoItemResultVo result = new TunnelAndProxyInfoItemResultVo();
         result.setMeme("socketProxy");
         result.setProxyType(WebSshProxyConstants.SOCKET_PROXY_TYPE);
-        result.setHost(host);
+        result.setHost(webSshSocketProxyServerConfig.getProxyBindIp());
         result.setPort(webSshSocketProxyServerConfig.getPort());
         result.setUsername(webSshSocketProxyServerConfig.getProxyUserName());
         result.setPassword(webSshSocketProxyServerConfig.getProxyPassword());
         result.setRunning(webSshSocketProxyServerConfig.isServerStarted());
         return result;
     }
-    private TunnelAndProxyInfoItemResultVo httpProxy(String protocol, String host){
+    private TunnelAndProxyInfoItemResultVo httpProxy(String protocol,String host){
         TunnelAndProxyInfoItemResultVo result = new TunnelAndProxyInfoItemResultVo();
         result.setMeme("httpProxy");
         result.setProxyType(WebSshProxyConstants.HTTP_PROXY_TYPE);
         result.setHttpProxyUrl(String.format("%s://%s:%s",protocol, host,webSshHttpProxyServerConfig.proxyPort()));
-        result.setHost(host);
+        result.setHost(webSshHttpProxyServerConfig.getProxyBindIp());
         result.setPort(webSshHttpProxyServerConfig.proxyPort());
         result.setUsername(webSshHttpProxyServerConfig.getProxyUserName());
         result.setPassword(webSshHttpProxyServerConfig.getProxyPassword());

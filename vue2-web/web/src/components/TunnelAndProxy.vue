@@ -73,6 +73,13 @@
                             <el-tag type="success" v-if="http.running">{{$t('running')}}</el-tag>
                             <el-tag type="warning" v-if="!http.running">{{$t('stopped')}}</el-tag>
                             <br/>
+                            <el-row>
+                            <el-form-item label="HttpProxyUrl" size="small" prop="HttpProxyUrl">
+                                <el-input v-model="http.httpProxyUrl" :disabled="true"/>
+                            </el-form-item>
+                                <el-button type="primary" v-clipboard:copy="copyHttpProxyUrl()">{{$t('Copy')}}</el-button>
+                            </el-row>
+                            <br/>
                             <el-button type="primary" @click="updateHttpProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
                             <el-button type="primary" @click="updateHttpProxy(0)">{{$t('startProxy')}}</el-button>
                             <el-button type="danger" @click="updateHttpProxy(1)">{{$t('stopProxy')}}</el-button>
@@ -108,7 +115,6 @@ export default {
                 op: '-1',
                 bindIp: '0.0.0.0',
                 bindPort: '9966',
-                proxyUrl: '',
                 username: '',
                 password: '',
                 running: false,
@@ -156,6 +162,10 @@ export default {
             const prefix = `${self.serverProxyInfos.schema}://${self.serverProxyInfos.host}:${self.serverProxyInfos.port}`;
             return prefix+suffix;
         },
+        copyHttpProxyUrl(){
+            const self = this;
+            return self.http.httpProxyUrl;
+        },
         fetchInfos(){
             const self = this;
             getTunnelAndProxyInfo(self.getCurrentToken()).then(function (result){
@@ -174,7 +184,7 @@ export default {
                             //http
                             self.http.bindIp = proxyItem.host;
                             self.http.bindPort = proxyItem.port;
-                            self.http.proxyUrl = proxyItem.httpProxyUrl;
+                            self.http.httpProxyUrl = proxyItem.httpProxyUrl;
                             self.http.username = proxyItem.username;
                             self.http.password = proxyItem.password;
                             self.http.running = proxyItem.running;

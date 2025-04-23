@@ -44,6 +44,7 @@ public class WebSshSocketProxyServerComponent implements InitializingBean {
     @Getter
     private String proxyPassword;
 
+    @Getter
     private String proxyBindIp;
     private int proxyBindPort;
 
