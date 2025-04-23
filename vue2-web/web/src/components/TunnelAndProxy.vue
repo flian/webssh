@@ -189,24 +189,28 @@ export default {
         updateHttpProxy(op){
             const self = this;
             self.http.op = op;
-            const result = updateProxy(self.http,self.getCurrentToken());
-            if(result.data.code == '200'){
-                Message.success('process success.');
-                self.fetchInfos();
-            }
+            updateProxy(self.http,self.getCurrentToken()).then(result=>{
+                if(result.code == '200'){
+                    Message.success('process success.');
+                    self.fetchInfos();
+                }
+            });
+
         },
         openPhpInfoPage(){
             const self = this;
-            window.parent.open(self.phpInfoUrl,'_target=_blank')
+            const prefix = process.env.NODE_ENV === 'production' ? `${location.origin}` : 'api'
+            window.parent.open(`${prefix}${self.phpInfoUrl}`,'_target=_blank')
         },
         updateSocketProxy(op){
             const self = this;
             self.socket.op = op;
-            const result = updateProxy(self.socket,self.getCurrentToken());
-            if(result.data.code == '200'){
-                Message.success('process success.');
-                self.fetchInfos();
-            }
+            updateProxy(self.socket,self.getCurrentToken()).then(result=>{
+                if(result.code == '200'){
+                    Message.success('process success.');
+                    self.fetchInfos();
+                }
+            });
         },
     }
 }
