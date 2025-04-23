@@ -22,7 +22,7 @@
 
                 <el-tab-pane :label="$t('socketProxyPanTitle')" name="socketProxy">
                     <div style="margin: 20px;margin-top: 30px"></div>
-                        <el-form label-width="90px" label-position="right" size="small">
+                        <el-form label-position="right" size="small">
                             <el-form-item label="BindIp" size="small" prop="BindIp" >
                                 <el-input v-model="socket.bindIp" />
                             </el-form-item>
@@ -36,12 +36,14 @@
                             <el-form-item label="Password" size="small" prop="Password" >
                                 <el-input v-model="socket.password" show-password/>
                             </el-form-item>
+                            <br/>
                             <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
                                 <el-input-number v-model="socket.autoStopIn" :disabled="true"/>
                             </el-form-item>
-                            <br/>
+
                             <el-tag type="success" v-if="socket.running">{{$t('running')}}</el-tag>
                             <el-tag type="warning" v-if="!socket.running">{{$t('stopped')}}</el-tag>
+                            <br/>
                             <el-button type="primary" @click="updateSocketProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
                             <el-button type="primary" @click="updateSocketProxy(0)">{{$t('startProxy')}}</el-button>
                             <el-button type="danger" @click="updateSocketProxy(1)">{{$t('stopProxy')}}</el-button>
@@ -50,7 +52,7 @@
                 </el-tab-pane>
                 <el-tab-pane :label="$t('httpProxyPanTitle')" name="httpProxy">
                     <div style="margin: 20px;margin-top: 30px"></div>
-                    <el-form label-width="90px" label-position="right" size="small">
+                    <el-form label-position="right" size="small">
                             <el-form-item label="BindIp" size="small" prop="BindIp" >
                                 <el-input v-model="http.bindIp" />
                             </el-form-item>
@@ -70,6 +72,7 @@
                             </el-form-item>
                             <el-tag type="success" v-if="http.running">{{$t('running')}}</el-tag>
                             <el-tag type="warning" v-if="!http.running">{{$t('stopped')}}</el-tag>
+                            <br/>
                             <el-button type="primary" @click="updateHttpProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
                             <el-button type="primary" @click="updateHttpProxy(0)">{{$t('startProxy')}}</el-button>
                             <el-button type="danger" @click="updateHttpProxy(1)">{{$t('stopProxy')}}</el-button>
@@ -230,9 +233,6 @@ export default {
     }
     .el-dropdown {
         display: flex;
-    }
-    .el-form-item__content {
-        margin-left: 0;
     }
 }
 
