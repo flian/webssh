@@ -43,21 +43,21 @@
                         <el-checkbox v-model="sshInfo.rdpConfig.rdp">
                             Rdp
                             <el-tooltip placement="right">
-                                <div slot="content">勾选启用rdp</div>
+                                <div slot="content">{{$t('rdpBtnDesc')}}</div>
                                 <i class="el-icon-question icon-color"></i>
                             </el-tooltip>
                         </el-checkbox>
-                        <el-checkbox v-model="sshInfo.rdpConfig.rdpServer">
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdpServer" :disabled="!sshInfo.rdpConfig.rdp">
                             RdpServer
                             <el-tooltip placement="right">
-                                <div slot="content">勾选配置rdp服务器信息</div>
+                                <div slot="content">{{$t('rdpServerBtnDesc')}}</div>
                                 <i class="el-icon-question icon-color"></i>
                             </el-tooltip>
                         </el-checkbox>
                         <el-checkbox v-model="sshInfo.rdpConfig.autoConnect" :disabled="!showRdpConfig">
                             autoConnect
                             <el-tooltip placement="right">
-                                <div slot="content">勾选自动连接rdp服务器。你也可以关闭此次，手动下载rdp客户端，然后执行rdp命令连接远程服务器</div>
+                                <div slot="content">{{$t('rdpAutoConnectBtnDesc')}}</div>
                                 <i class="el-icon-question icon-color"></i>
                             </el-tooltip>
                         </el-checkbox>
@@ -379,7 +379,7 @@ export default {
             return this.sshInfo.logintype === 1
         },
         showRdpConfig(){
-            return this.sshInfo.rdpConfig.rdp && this.sshInfo.rdpConfig.directConnectRdpServer;
+            return this.sshInfo.rdpConfig.rdp && this.sshInfo.rdpConfig.rdpServer;
         },
         showLogin() {
             const shouldValidToken = this.$store.state.shouldValidToken;

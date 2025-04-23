@@ -162,7 +162,7 @@ export default {
             getTunnelAndProxyInfo(self.getCurrentToken()).then(function (result){
                 if(result.code == '200'){
                     self.serverProxyInfos = result.data;
-                    self.serverProxyInfos.items.forEach((proxyItem,idx)=>{
+                    self.serverProxyInfos.items.forEach((proxyItem)=>{
                         if(proxyItem.proxyType == 0){
                             //socket
                             self.socket.bindIp = proxyItem.host;
