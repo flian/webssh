@@ -3,69 +3,87 @@
         <el-button type="primary" size="small" @click="dialogVisible=true">{{$t('TunnelAndProxy')}}</el-button>
         <el-dialog :title="$t('TunnelAndProxy')" :visible.sync="dialogVisible" top="5vh" :width="dialogWidth">
 
-            <el-row><el-col>{{$t('tunnelGroup')}}</el-col><el-col><el-link type="success" @click="openPhpInfoPage" target="_blank">{{$t('phpInfo')}}</el-link> </el-col></el-row>
             <el-row>
-                <el-col>mysql:<el-input v-model="mysqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('mysql')">{{$t('Copy')}}</el-button></el-col>
+                <el-col><el-link type="success" @click="openPhpInfoPage" target="_blank">{{$t('phpInfo')}}</el-link> </el-col>
             </el-row>
-            <el-row>
-                <el-col>pgsql:<el-input v-model="pgsqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('pgsql')">{{$t('Copy')}}</el-button></el-col>
-            </el-row>
-            <el-row>
-                <el-col>sqlite:<el-input v-model="sqliteTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('sqlite')">{{$t('Copy')}}</el-button></el-col>
-            </el-row>
+            <el-tabs v-model="tabActiveName">
+                <el-tab-pane label="navicat N tunnel info" name="tunnel">
+                    <el-row>
+                        <el-col>{{$t('tunnelGroup')}}</el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>mysql:<el-input v-model="mysqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('mysql')">{{$t('Copy')}}</el-button></el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>pgsql:<el-input v-model="pgsqlTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('pgsql')">{{$t('Copy')}}</el-button></el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>sqlite:<el-input v-model="sqliteTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('sqlite')">{{$t('Copy')}}</el-button></el-col>
+                    </el-row>
+                </el-tab-pane>
+                <el-tab-pane label="http and socket info" name="proxy">
+                    <el-row>
+                        <el-col>
+                            {{$t('proxyGroup')}}
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col>
+                            <span>http proxy:</span>
+                            <el-form-item label="BindIp" size="small" prop="BindIp" >
+                                <el-input v-model="http.bindIp" />
+                            </el-form-item>
+                            <el-form-item label="BindPort" size="small" prop="BindPort" >
+                                <el-input-number v-model="http.bindPort" />
+                            </el-form-item>
+                            <el-form-item label="Username" size="small" prop="Username" >
+                                <el-input v-model="http.username" />
+                            </el-form-item>
+                            <el-form-item label="Password" size="small" prop="Password" >
+                                <el-input v-model="http.password" />
+                            </el-form-item>
+                            <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
+                                <el-input-number v-model="http.autoStopIn" :disabled="true"/>
+                            </el-form-item>
+                            <el-tag type="success" v-if="http.running">{{$t('running')}}</el-tag>
+                            <el-tag type="warning" v-if="!http.running">{{$t('stopped')}}</el-tag>
+                            <el-button type="primary" @click="updateHttpProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
+                            <el-button type="primary" @click="updateHttpProxy(0)">{{$t('startProxy')}}</el-button>
+                            <el-button type="danger" @click="updateHttpProxy(1)">{{$t('stopProxy')}}</el-button>
+                        </el-col>
+                    </el-row>
 
-            <el-row><el-col>{{$t('proxyGroup')}}</el-col></el-row>
-            <el-row>
-                <el-col>
-                    http proxy:
-                    <el-form-item label="BindIp" size="small" prop="BindIp" >
-                        <el-input v-model="http.bindIp" />
-                    </el-form-item>
-                    <el-form-item label="BindPort" size="small" prop="BindPort" >
-                        <el-input-number v-model="http.bindPort" />
-                    </el-form-item>
-                    <el-form-item label="Username" size="small" prop="Username" >
-                        <el-input v-model="http.username" />
-                    </el-form-item>
-                    <el-form-item label="Password" size="small" prop="Password" >
-                        <el-input v-model="http.password" />
-                    </el-form-item>
-                    <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
-                        <el-input-number v-model="http.autoStopIn" :disabled="true"/>
-                    </el-form-item>
-                    <el-tag type="success" v-if="http.running">{{$t('running')}}</el-tag>
-                    <el-tag type="warning" v-if="!http.running">{{$t('stopped')}}</el-tag>
-                    <el-button type="primary" @click="updateHttpProxy(-1)">save config and restart</el-button>
-                    <el-button type="primary" @click="updateHttpProxy(0)">Start</el-button>
-                    <el-button type="danger" @click="updateHttpProxy(1)">Stop</el-button>
-                </el-col>
-            </el-row>
+                    <el-row>
+                        <el-col>
+                            <span>socket proxy:</span>
+                            <el-form-item label="BindIp" size="small" prop="BindIp" >
+                                <el-input v-model="socket.bindIp" />
+                            </el-form-item>
+                            <el-form-item label="BindPort" size="small" prop="BindPort" >
+                                <el-input-number v-model="socket.bindPort" />
+                            </el-form-item>
+                            <el-form-item label="Username" size="small" prop="Username" >
+                                <el-input v-model="socket.username" />
+                            </el-form-item>
+                            <el-form-item label="Password" size="small" prop="Password" >
+                                <el-input v-model="socket.password" />
+                            </el-form-item>
+                            <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
+                                <el-input-number v-model="socket.autoStopIn" :disabled="true"/>
+                            </el-form-item>
+                            <el-tag type="success" v-if="socket.running">{{$t('running')}}</el-tag>
+                            <el-tag type="warning" v-if="!socket.running">{{$t('stopped')}}</el-tag>
+                            <el-button type="primary" @click="updateSocketProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
+                            <el-button type="primary" @click="updateSocketProxy(0)">{{$t('startProxy')}}</el-button>
+                            <el-button type="danger" @click="updateSocketProxy(1)">{{$t('stopProxy')}}</el-button>
+                        </el-col>
 
-            <el-row>
-                <el-col>socket proxy:
-                    <el-form-item label="BindIp" size="small" prop="BindIp" >
-                        <el-input v-model="socket.bindIp" />
-                    </el-form-item>
-                    <el-form-item label="BindPort" size="small" prop="BindPort" >
-                        <el-input-number v-model="socket.bindPort" />
-                    </el-form-item>
-                    <el-form-item label="Username" size="small" prop="Username" >
-                        <el-input v-model="socket.username" />
-                    </el-form-item>
-                    <el-form-item label="Password" size="small" prop="Password" >
-                        <el-input v-model="socket.password" />
-                    </el-form-item>
-                    <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
-                        <el-input-number v-model="socket.autoStopIn" :disabled="true"/>
-                    </el-form-item>
-                    <el-tag type="success" v-if="socket.running">{{$t('running')}}</el-tag>
-                    <el-tag type="warning" v-if="!socket.running">{{$t('stopped')}}</el-tag>
-                    <el-button type="primary" @click="updateSocketProxy(-1)">{{$t('saveAndRestartProxy')}}</el-button>
-                    <el-button type="primary" @click="updateSocketProxy(0)">{{$t('startProxy')}}</el-button>
-                    <el-button type="danger" @click="updateSocketProxy(1)">{{$t('stopProxy')}}</el-button>
-                </el-col>
+                    </el-row>
+                </el-tab-pane>
+            </el-tabs>
 
-            </el-row>
+
+
         </el-dialog>
     </div>
 </template>
@@ -82,6 +100,7 @@ export default {
     },
     data(){
         return {
+            tabActiveName: 'tunnel',
             dialogVisible: false,
             dialogWidth: '70%',
             serverProxyInfos:{},
