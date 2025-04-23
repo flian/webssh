@@ -60,5 +60,7 @@ export default {
     saveAndRestartProxy: 'save and restart proxy',
     startProxy: 'Start proxy',
     stopProxy: 'Stop proxy',
-    phpInfo: 'php info(quercus)'
+    phpInfo: 'php info(quercus)',
+    tunnelPanTitle: 'navicat N tunnel info',
+    proxyPanTitle: 'http and socket proxy info'
 }

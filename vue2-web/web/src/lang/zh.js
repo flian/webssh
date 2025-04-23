@@ -53,12 +53,14 @@ export default {
     PleaseSelLang: '请选择语言',
     clearUploaded: '清空',
     TunnelAndProxy: 'Navicat隧道/socket5和http代理信息',
-    tunnelGroup: 'navicat数据库http隧道信息',
+    tunnelGroup: 'navicat-数据库http隧道信息',
     proxyGroup: 'socket和http代理信息',
     running: '代理运行中',
     stopped: '代理已停止',
     saveAndRestartProxy: '保存并重启代理',
     startProxy: '启动代理',
     stopProxy: '关闭代理',
-    phpInfo: 'php(quercus)版本信息'
+    phpInfo: 'php(quercus)版本信息',
+    tunnelPanTitle: 'navicat隧道链接信息',
+    proxyPanTitle: 'http/socket代理信息'
 }

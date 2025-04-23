@@ -7,7 +7,7 @@
                 <el-col><el-link type="success" @click="openPhpInfoPage" target="_blank">{{$t('phpInfo')}}</el-link> </el-col>
             </el-row>
             <el-tabs v-model="tabActiveName">
-                <el-tab-pane label="navicat N tunnel info" name="tunnel">
+                <el-tab-pane :label="$t('tunnelPanTitle')" name="tunnel">
                     <el-row>
                         <el-col>{{$t('tunnelGroup')}}</el-col>
                     </el-row>
@@ -21,7 +21,7 @@
                         <el-col>sqlite:<el-input v-model="sqliteTunnelUrl" :disabled="true"></el-input><el-button type="primary" v-clipboard:copy="copyFullUrl('sqlite')">{{$t('Copy')}}</el-button></el-col>
                     </el-row>
                 </el-tab-pane>
-                <el-tab-pane label="http and socket info" name="proxy">
+                <el-tab-pane :label="$t('proxyPanTitle')" name="proxy">
                     <el-row>
                         <el-col>
                             {{$t('proxyGroup')}}
@@ -40,7 +40,7 @@
                                 <el-input v-model="http.username" />
                             </el-form-item>
                             <el-form-item label="Password" size="small" prop="Password" >
-                                <el-input v-model="http.password" />
+                                <el-input v-model="http.password" show-password/>
                             </el-form-item>
                             <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
                                 <el-input-number v-model="http.autoStopIn" :disabled="true"/>
@@ -66,7 +66,7 @@
                                 <el-input v-model="socket.username" />
                             </el-form-item>
                             <el-form-item label="Password" size="small" prop="Password" >
-                                <el-input v-model="socket.password" />
+                                <el-input v-model="socket.password" show-password/>
                             </el-form-item>
                             <el-form-item label="AutoStopIn" size="small" prop="AutoStopIn" >
                                 <el-input-number v-model="socket.autoStopIn" :disabled="true"/>
@@ -148,10 +148,10 @@ export default {
             const self = this;
             //default is mysql
             let suffix =self.mysqlTunnelUrl;
-            if(dbName === 'pgsql'){
+            if(dbName == 'pgsql'){
                 suffix =self.pgsqlTunnelUrl;
             }
-            if(dbName === 'sqlite'){
+            if(dbName == 'sqlite'){
                 suffix =self.sqliteTunnelUrl;
             }
             const prefix = `${self.serverProxyInfos.schema}://${self.serverProxyInfos.host}:${self.serverProxyInfos.port}`;
@@ -160,10 +160,10 @@ export default {
         fetchInfos(){
             const self = this;
             getTunnelAndProxyInfo(self.getCurrentToken()).then(function (result){
-                if(result.code === '200'){
+                if(result.code == '200'){
                     self.serverProxyInfos = result.data;
-                    for(let proxyItem in self.serverProxyInfos.items){
-                        if(proxyItem.proxyType === 0){
+                    self.serverProxyInfos.items.forEach((proxyItem,idx)=>{
+                        if(proxyItem.proxyType == 0){
                             //socket
                             self.socket.bindIp = proxyItem.host;
                             self.socket.bindPort = proxyItem.port;
@@ -171,7 +171,7 @@ export default {
                             self.socket.password = proxyItem.password;
                             self.socket.running = proxyItem.running;
                         }
-                        if(proxyItem.proxyType === 1){
+                        if(proxyItem.proxyType == 1){
                             //http
                             self.http.bindIp = proxyItem.host;
                             self.http.bindPort = proxyItem.port;
@@ -180,7 +180,7 @@ export default {
                             self.http.password = proxyItem.password;
                             self.http.running = proxyItem.running;
                         }
-                    }
+                    });
                 }
             });
         },
@@ -191,7 +191,7 @@ export default {
             const self = this;
             self.http.op = op;
             const result = updateProxy(self.http,self.getCurrentToken());
-            if(result.data.code === '200'){
+            if(result.data.code == '200'){
                 Message.success('process success.');
             }
             self.fetchInfos();
@@ -204,7 +204,7 @@ export default {
             const self = this;
             self.socket.op = op;
             const result = updateProxy(self.socket,self.getCurrentToken());
-            if(result.data.code === '200'){
+            if(result.data.code == '200'){
                 Message.success('process success.');
             }
             self.fetchInfos();
