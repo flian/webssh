@@ -125,9 +125,7 @@
                         <!--navicat http tunnel info -->
                         <tunnel-and-proxy></tunnel-and-proxy>
                     </el-form-item>
-                    <el-form-item size="small">
-                        <!--socket5 and http proxy info. already contain in prev component -->
-                    </el-form-item>
+
                     <el-form-item size="small">
                         <el-dropdown @command="handleCommand">
                             <el-button type="primary">
@@ -194,7 +192,7 @@ import {getProjectHeaders, getSystemDefaultConfig,getShouldVerifyToken, login, l
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
-import TunnelAndProxy from "@/components/TunnelAndProxy.vue";
+import TunnelAndProxy from '@/components/TunnelAndProxy.vue';
 
 export default {
     components: {

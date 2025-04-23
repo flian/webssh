@@ -1,6 +1,6 @@
 <template>
-    <div class="MainContainer">
-        <el-button type="primary" size="small" @click="dialogVisible = true">{{$t('TunnelAndProxy')}}</el-button>
+    <div class="TunnelAndProxyContainer">
+        <el-button type="primary" size="small" @click="dialogVisible=true">{{$t('TunnelAndProxy')}}</el-button>
         <el-dialog :title="$t('TunnelAndProxy')" :visible.sync="dialogVisible" top="5vh" :width="dialogWidth">
 
             <el-row><el-col>{{$t('tunnelGroup')}}</el-col><el-col><el-link type="info" :link="phpInfoUrl">php info(quercus)</el-link> </el-col></el-row>
@@ -72,7 +72,7 @@ import {getTunnelAndProxyInfo, updateProxy} from '@/api/db_tunnel_proxy'
 import {Message} from 'element-ui'
 
 export default {
-    name:"TunnelAndProxy",
+    name:'TunnelAndProxy',
     created() {
         this.fetchInfos();
     },
@@ -124,12 +124,12 @@ export default {
         copyFullUrl(dbName){
             const self = this;
             //default is mysql
-            let suffix =self.mysqlTunnelUrl();
+            let suffix =self.mysqlTunnelUrl;
             if(dbName === 'pgsql'){
-                suffix =self.pgsqlTunnelUrl();
+                suffix =self.pgsqlTunnelUrl;
             }
             if(dbName === 'sqlite'){
-                suffix =self.sqliteTunnelUrl();
+                suffix =self.sqliteTunnelUrl;
             }
             const prefix = `${self.serverProxyInfos.schema}://${self.serverProxyInfos.host}:${self.serverProxyInfos.port}`;
             return prefix+suffix;
@@ -169,7 +169,7 @@ export default {
             self.http.op = op;
             const result = updateProxy(self.http,self.getCurrentToken());
             if(result.data.code === '200'){
-                Message.success("process success.");
+                Message.success('process success.');
             }
             self.fetchInfos();
         },
@@ -178,7 +178,7 @@ export default {
             self.socket.op = op;
             const result = updateProxy(self.socket,self.getCurrentToken());
             if(result.data.code === '200'){
-                Message.success("process success.");
+                Message.success('process success.');
             }
             self.fetchInfos();
         },
@@ -186,5 +186,28 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+.TunnelAndProxyContainer {
+    .el-dialog__wrapper {
+        overflow: hidden;
+    }
+    .el-input__inner {
+        border: 0 none;
+        border-bottom: 1px solid #ccc;
+        border-radius: 0px;
+        width: 100%;
+    }
+    .el-table--border tr,td{
+        border: none!important;
+    }
+    .el-table::before{
+        height:0;
+    }
+    .el-table td, .el-table th {
+        padding: 2px 0;
+    }
+    .el-dropdown {
+        display: flex;
+    }
+}
 
 </style>
