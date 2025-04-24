@@ -32,6 +32,7 @@
         <module>vue2-web</module>
         <module>vue2-sshserver</module>
         <module>webssh-proxy</module>
+        <module>webssh-novnc</module>
     </modules>
     <dependencyManagement>
         <dependencies>
