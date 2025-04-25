@@ -50,7 +50,7 @@ public class WebSshNoVncController extends BaseController {
         if(!ObjectUtils.isEmpty(port)){
             port = trtPort;
         }
-
+        //current using noVNC version 1.6.0
         return String.format("%s/%s?host=%s&port=%s&password=Admin123",WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,VNC_INDEX_FILE_STR
         ,host,port);
     }

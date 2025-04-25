@@ -1071,6 +1071,9 @@ const UI = {
             url = new URL(path, location.href);
             url.protocol = (window.location.protocol === "https:") ? 'wss:' : 'ws:';
         }
+        //add token
+        //FIXME need service side add token validate
+        url.searchParams.set('token','I am test token');
 
         try {
             UI.rfb = new RFB(document.getElementById('noVNC_container'),

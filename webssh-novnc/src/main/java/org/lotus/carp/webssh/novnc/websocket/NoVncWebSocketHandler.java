@@ -37,6 +37,7 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         log.info("New noVNC connection: " + session.getId());
+
         websockifyServer.addSession(session);
     }
 
