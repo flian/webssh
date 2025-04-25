@@ -1,17 +1,17 @@
 package org.lotus.carp.webssh.novnc.websocket;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.BinaryWebSocketHandler;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
  * @author : foy
  * @date : 2025/4/25:14:13
  **/
 @Slf4j
-public class NoVncWebSocketHandler extends BinaryWebSocketHandler {
+public class NoVncWebSocketHandler extends TextWebSocketHandler {
 
 
     private final WebsockifyServer websockifyServer;
@@ -25,10 +25,10 @@ public class NoVncWebSocketHandler extends BinaryWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) {
+    public void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
         try {
             // Forward binary data to VNC server
-            websockifyServer.forwardData(session.getId(), message.getPayload().getBytes());
+            websockifyServer.forwardData(session.getId(), message.getPayload());
         } catch (Exception e) {
             log.error("Error forwarding WebSocket message", e);
         }

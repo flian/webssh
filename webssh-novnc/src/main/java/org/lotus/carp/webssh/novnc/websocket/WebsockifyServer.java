@@ -52,11 +52,11 @@ public class WebsockifyServer {
         }
     }
 
-    public void forwardData(String sessionId, byte[] data) {
+    public void forwardData(String sessionId, ByteBuffer data) {
         try {
             Socket vncSocket = vncConnections.get(sessionId);
             if (vncSocket != null && vncSocket.isConnected()) {
-                vncSocket.getOutputStream().write(data);
+                vncSocket.getOutputStream().write(data.array());
             }
         } catch (IOException e) {
             log.error("Error forwarding data to VNC", e);
