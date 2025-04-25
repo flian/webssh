@@ -66,18 +66,19 @@ public class WebsockifyServer {
     private void forwardVncToWebSocket(WebSocketSession session, Socket vncSocket) {
         try {
             InputStream input = vncSocket.getInputStream();
-            byte[] buffer = new byte[8192];
+            int byteBufferSize = 8192;
+            byte[] buffer = new byte[byteBufferSize];
             int bytesRead;
 
             while ((bytesRead = input.read(buffer)) != -1) {
                 if (session.isOpen()) {
-                    session.sendMessage(new BinaryMessage(buffer, 0, bytesRead,false));
+                    session.sendMessage(new BinaryMessage(buffer, 0, bytesRead, bytesRead < byteBufferSize));
                 } else {
                     break;
                 }
             }
             //send end.
-            session.sendMessage(new BinaryMessage(new byte[0]));
+            //session.sendMessage(new BinaryMessage(new byte[0]));
         } catch (IOException e) {
             log.error("Error in VNC to WebSocket forwarding", e);
         } finally {
