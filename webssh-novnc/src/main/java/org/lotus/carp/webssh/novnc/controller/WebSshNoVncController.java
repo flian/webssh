@@ -47,11 +47,11 @@ public class WebSshNoVncController extends BaseController {
         }
 
         String port ="5901";
-        if(ObjectUtils.isEmpty(port)){
+        if(!ObjectUtils.isEmpty(port)){
             port = trtPort;
         }
 
-        return String.format("%s/%s?host=%s&port=%s",WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,VNC_INDEX_FILE_STR
+        return String.format("%s/%s?host=%s&port=%s&password=Admin123",WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,VNC_INDEX_FILE_STR
         ,host,port);
     }
 }

@@ -33,16 +33,30 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--should include by children modules -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- may no need? as tight vnc support noVNC OOTB,
         see: https://www.tightvnc.com/licensing-server-x11.php for more detail
 
        also if not support may use follow lib forward websocket to tcp,see:
         https://github.com/jribble/Java-Websockify for more detail
          -->
+        <!--
         <dependency>
             <groupId>com.netiq</groupId>
             <artifactId>websockify</artifactId>
             <version>1.5</version>
-        </dependency>
+        </dependency>-->
+
+        <!-- better one: Java-Websockify (you may need to find/build this) -->
+        <!-- <dependency>
+            <groupId>com.github.kaikramer</groupId>
+            <artifactId>java-websockify</artifactId>
+            <version>1.0.0</version>
+        </dependency>-->
     </dependencies>
 </project>
