@@ -27,7 +27,7 @@ public class WebSshNoVncController extends BaseController {
      * index with prefix parameter
      */
     private static final String VNC_INDEX_FILE_STR = "vnc.html";
-    private static final String VNC_LITE_FILE_STR = "nvc_lite.html";
+    private static final String VNC_LITE_FILE_STR = "vnc_lite.html";
 
     @Resource
     private WebSshLoginService webSshLoginService;
@@ -50,8 +50,12 @@ public class WebSshNoVncController extends BaseController {
         if(!ObjectUtils.isEmpty(port)){
             port = trtPort;
         }
+        String page = VNC_INDEX_FILE_STR;
+        if(vncLite){
+            page = VNC_LITE_FILE_STR;
+        }
         //current using noVNC version 1.6.0
-        return String.format("%s/%s?host=%s&port=%s&password=Admin123",WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,VNC_INDEX_FILE_STR
-        ,host,port);
+        return String.format("%s/%s?host=%s&port=%s&password=Admin123"
+                ,WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,page,host,port);
     }
 }
