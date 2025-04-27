@@ -1,12 +1,14 @@
 package org.lotus.carp.webssh.novnc.config;
 
+import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
+import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.novnc.websocket.NoVncWebSocketHandler;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+import javax.annotation.Resource;
 
 /**
  * @author : foy
@@ -16,14 +18,18 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSshNoVncWebSocketConfig implements WebSocketConfigurer {
 
+    @Resource
+    private WebSshConfig webSshConfig;
+    @Resource
+    private WebSshWebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
+
+    @Resource
+    private NoVncWebSocketHandler noVncWebSocketHandler;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(noVncWebSocketHandler(), "/novnc/websockify")
-                .setAllowedOrigins("*");
-    }
-
-    @Bean
-    public WebSocketHandler noVncWebSocketHandler() {
-        return new NoVncWebSocketHandler();
+        registry.addHandler(noVncWebSocketHandler, webSshConfig.getWebSshNoVncWebsocketPrefix())
+                .setAllowedOrigins("*")
+                .addInterceptors(webSocketHandshakeInterceptor);
     }
 }

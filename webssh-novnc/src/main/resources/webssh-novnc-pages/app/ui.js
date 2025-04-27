@@ -1072,9 +1072,11 @@ const UI = {
             url.protocol = (window.location.protocol === "https:") ? 'wss:' : 'ws:';
         }
         //add token
-        //FIXME need service side add token validate
-        url.searchParams.set('token','I am test token');
-
+        const queryParams = new URLSearchParams(location.search);
+        url.searchParams.set('token',queryParams.get('token'));
+        url.searchParams.set('noVncTargetHost',queryParams.get('host'));
+        url.searchParams.set('noVncTargetPort',queryParams.get('port'));
+        url.searchParams.set('isLinuxOs',queryParams.get('linux'))
         try {
             UI.rfb = new RFB(document.getElementById('noVNC_container'),
                              url.href,

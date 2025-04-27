@@ -42,6 +42,10 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
     public static final String COLS = "cols";
     public static final String CLOSE_TIP = "closeTip";
 
+    public static final String NO_VNC_TARGET_HOST = "noVncTargetHost";
+    public static final String NO_VNC_TARGET_PORT = "noVncTargetPort";
+
+    public static final String NO_VNC_TARGET_IS_LINUX_OS = "isLinuxOs";
 
     @Resource
     private WebSshLoginService webSshLoginService;
@@ -67,6 +71,9 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
         setIfNotNull(ROWS, paramMap.get(ROWS), attributes);
         setIfNotNull(COLS, paramMap.get(COLS), attributes);
         setIfNotNull(CLOSE_TIP, paramMap.get(CLOSE_TIP), attributes);
+        setIfNotNull(NO_VNC_TARGET_HOST, paramMap.get(NO_VNC_TARGET_HOST), attributes);
+        setIfNotNull(NO_VNC_TARGET_PORT, paramMap.get(NO_VNC_TARGET_PORT), attributes);
+        setIfNotNull(NO_VNC_TARGET_IS_LINUX_OS, paramMap.get(NO_VNC_TARGET_IS_LINUX_OS), attributes);
     }
 
     /**
@@ -101,8 +108,9 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        if (!request.getURI().getPath().contains(webSshConfig.getWebSshWebsocketPrefix())) {
-            log.info("not webssh websocket.. contine..");
+        if (!request.getURI().getPath().contains(webSshConfig.getWebSshWebsocketPrefix())
+                && !request.getURI().getPath().contains(webSshConfig.getWebSshNoVncWebsocketPrefix())) {
+            log.info("not webssh websocket.. continue..,current URI is:{}",request.getURI().getPath());
             return true;
         }
 
