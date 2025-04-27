@@ -4,7 +4,7 @@
         <el-dialog :title="$t('NoVncRemote')" :visible.sync="dialogVisible" top="5vh" :width="dialogWidth">
 
             <el-row>
-                <el-col><el-link type="success" @click="openNoVncPage()" target="_blank" :visible="vncLinkOk">{{$t('goVncPage')}}</el-link> </el-col>
+                <el-col><el-link type="success" @click="openNoVncPage()" target="_blank" v-if="!serverInfoNeedUpdate">{{$t('goVncPage')}}</el-link> </el-col>
             </el-row>
             <el-tabs v-model="tabActiveName">
                 <el-tab-pane :label="$t('NoVncRemoteConfig')" name="noVncSettings">
@@ -30,15 +30,9 @@
                             <br/>
                             <el-button type="primary" @click="updateVncServerInfos()">{{$t('updateVncInfo')}}</el-button>
                             <el-button type="primary" @click="openNoVncPage()" :disabled="serverInfoNeedUpdate">{{$t('goVncPage')}}</el-button>
-
                         </el-form>
-
                 </el-tab-pane>
-
             </el-tabs>
-
-
-
         </el-dialog>
     </div>
 </template>
@@ -49,6 +43,10 @@ export default {
     name:'NoVncRemote',
     created() {
         //this.fetchInfos();
+        const self = this;
+        const initHost = location.hostname;
+        self.noVncConfig.host = initHost;
+        self.currentNoVncInfo.host = initHost;
     },
     data(){
         return {
@@ -57,7 +55,6 @@ export default {
             dialogVisible: false,
             dialogWidth: '70%',
             serverProxyInfos:{},
-            vncLinkOk: false,
             currentNoVncInfo:{
                 host: '',
                 linux: false,
@@ -96,7 +93,6 @@ export default {
                 ,self.noVncConfig.host,self.noVncConfig.linux,true).then(function (result){
                 if(result.code == '200'){
                     const info = result.data;
-                    self.vncLinkOk = true;
                     self.serverInfoNeedUpdate = false;
                     self.currentNoVncInfo.host = info.host;
                     self.currentNoVncInfo.linux = info.linux;
@@ -107,7 +103,6 @@ export default {
                     self.noVncConfig.port = self.currentNoVncInfo.nextPort;
                     self.noVncConfig.linux = self.currentNoVncInfo.linux;
                 }else {
-                    self.vncLinkOk = false;
                     self.serverInfoNeedUpdate = true;
                 }
 
