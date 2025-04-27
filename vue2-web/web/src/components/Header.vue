@@ -125,7 +125,10 @@
                         <!--navicat http tunnel info -->
                         <tunnel-and-proxy></tunnel-and-proxy>
                     </el-form-item>
-
+                    <el-form-item size="small">
+                        <!--noVNC remote config info -->
+                        <no-vnc-remote></no-vnc-remote>
+                    </el-form-item>
                     <el-form-item size="small">
                         <el-dropdown @command="handleCommand">
                             <el-button type="primary">
@@ -193,11 +196,12 @@ import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
 import TunnelAndProxy from '@/components/TunnelAndProxy.vue';
-
+import NoVncRemote from '@/components/NoVncRemote.vue'
 export default {
     components: {
         'tunnel-and-proxy':TunnelAndProxy,
-        'file-list': FileList
+        'file-list': FileList,
+        'no-vnc-remote': NoVncRemote
     },
     data() {
         return {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 
@@ -56,9 +57,10 @@ public class WebSshNoVncController extends BaseController {
 
 
     @GetMapping("/host/info")
+    @ResponseBody
     public WebSshResponse<TargetHostCurrentVncInfoResultVo> info(@RequestParam(value = "token",required = false) String token,
                                                                  @RequestParam(value = "host") String tryHost,
-                                                                 @RequestParam(value = "linux",required = false,defaultValue = "false") boolean isLinux,
+                                                                 @RequestParam(value = "linux",defaultValue = "false") boolean isLinux,
                                                                  @RequestParam(value = "genVncIndexUrl",defaultValue = "false") boolean genVncIndexUrl){
         ensureToken(webSshLoginService,token);
         TargetHostCurrentVncInfoResultVo result = new TargetHostCurrentVncInfoResultVo();
