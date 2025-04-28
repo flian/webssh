@@ -41,12 +41,12 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
 
     private WebsockifyServer ensureWebsockifyServer(WebSocketSession session, boolean createConnectIfNotPresent) {
         String token = (String) session.getAttributes().get(webSshConfig.getTokenName());
-        String host = (String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_HOST);
+        String host = (String) session.getAttributes().get(WebSshNoVncWebsocketHandshakeInterceptorHook.NO_VNC_TARGET_HOST);
         if (ObjectUtils.isEmpty(host)) {
             log.error("can't find target noVNC host.");
             return null;
         }
-        Integer port = Integer.parseInt((String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
+        Integer port = Integer.parseInt((String) session.getAttributes().get(WebSshNoVncWebsocketHandshakeInterceptorHook.NO_VNC_TARGET_PORT));
 
         String serverKey = vncConnectServerKey(token, host, port, session);
         if (createConnectIfNotPresent && !workingWebsockifyServerMaps.containsKey(serverKey)) {
@@ -64,12 +64,12 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
 
     protected void clearSession(WebSocketSession session) {
         String token = (String) session.getAttributes().get(webSshConfig.getTokenName());
-        String host = (String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_HOST);
+        String host = (String) session.getAttributes().get(WebSshNoVncWebsocketHandshakeInterceptorHook.NO_VNC_TARGET_HOST);
         if (ObjectUtils.isEmpty(host)) {
             log.error("can't find target noVNC host.");
             return;
         }
-        Integer port = Integer.parseInt((String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
+        Integer port = Integer.parseInt((String) session.getAttributes().get(WebSshNoVncWebsocketHandshakeInterceptorHook.NO_VNC_TARGET_PORT));
 
         String serverKey = vncConnectServerKey(token, host, port, session);
         workingWebsockifyServerMaps.remove(serverKey);

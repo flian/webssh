@@ -4,11 +4,12 @@ package org.lotus.carp.webssh.config.websocket;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
+import org.lotus.carp.webssh.config.websocket.expoint.WebSshWebsocketHandshakeInterceptorHook;
 import org.lotus.carp.webssh.config.websocket.websshenum.WebSshUrlCommandEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -42,10 +44,7 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
     public static final String COLS = "cols";
     public static final String CLOSE_TIP = "closeTip";
 
-    public static final String NO_VNC_TARGET_HOST = "noVncTargetHost";
-    public static final String NO_VNC_TARGET_PORT = "noVncTargetPort";
 
-    public static final String NO_VNC_TARGET_IS_LINUX_OS = "isLinuxOs";
 
     @Resource
     private WebSshLoginService webSshLoginService;
@@ -53,6 +52,8 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
     @Resource
     private WebSshConfig webSshConfig;
 
+    @Autowired(required = false)
+    List<WebSshWebsocketHandshakeInterceptorHook> hooks;
 
     private void setIfNotNull(String key, String val, Map<String, Object> attributes) {
         if (null != key && null != val) {
@@ -71,9 +72,11 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
         setIfNotNull(ROWS, paramMap.get(ROWS), attributes);
         setIfNotNull(COLS, paramMap.get(COLS), attributes);
         setIfNotNull(CLOSE_TIP, paramMap.get(CLOSE_TIP), attributes);
-        setIfNotNull(NO_VNC_TARGET_HOST, paramMap.get(NO_VNC_TARGET_HOST), attributes);
-        setIfNotNull(NO_VNC_TARGET_PORT, paramMap.get(NO_VNC_TARGET_PORT), attributes);
-        setIfNotNull(NO_VNC_TARGET_IS_LINUX_OS, paramMap.get(NO_VNC_TARGET_IS_LINUX_OS), attributes);
+
+        if(!ObjectUtils.isEmpty(hooks)){
+            //invoke hooks.
+            hooks.forEach(hook->hook.setSessionParamIfPresent(requestUri,paramMap,attributes));
+        }
     }
 
     /**
@@ -96,6 +99,14 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
         return result;
     }
 
+    public boolean isAnySubHookNeedProcess(String currentWsUrl){
+        if(!ObjectUtils.isEmpty(hooks)){
+            //invoke hooks.
+            return hooks.stream().anyMatch(p->p.shouldApplyBeforeHandshake(currentWsUrl));
+        }
+        return false;
+    }
+
     /**
      * 握手前
      *
@@ -109,7 +120,8 @@ public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         if (!request.getURI().getPath().contains(webSshConfig.getWebSshWebsocketPrefix())
-                && !request.getURI().getPath().contains(webSshConfig.getWebSshNoVncWebsocketPrefix())) {
+                //.contains(webSshConfig.getWebSshNoVncWebsocketPrefix()
+                && !isAnySubHookNeedProcess(request.getURI().getPath())) {
             log.info("not webssh websocket.. continue..,current URI is:{}",request.getURI().getPath());
             return true;
         }

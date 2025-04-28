@@ -3,6 +3,7 @@ package org.lotus.carp.webssh.novnc.config;
 
 import org.lotus.carp.webssh.novnc.controller.WebSshNoVncController;
 import org.lotus.carp.webssh.novnc.websocket.NoVncWebSocketHandler;
+import org.lotus.carp.webssh.novnc.websocket.WebSshNoVncWebsocketHandshakeInterceptorHook;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,11 @@ public class WebSshNoVncConfig implements WebMvcConfigurer {
         return new WebSshNoVncController();
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public WebSshNoVncWebsocketHandshakeInterceptorHook webSshNoVncWebsocketHandshakeInterceptorHook(){
+        return new WebSshNoVncWebsocketHandshakeInterceptorHook();
+    }
 
     @Bean
     @ConditionalOnMissingBean
