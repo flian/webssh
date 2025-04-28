@@ -133,7 +133,7 @@ export default {
         openNoVncPage(){
             const self = this;
             const prefix = process.env.NODE_ENV === 'production' ? `${location.origin}` : 'api'
-            window.parent.open(`${prefix}${self.goVncHtmlUrl}`,'_target=_blank')
+            window.parent.open(`${prefix}${self.goVncHtmlUrl}`,'_blank')
         },
 
     }
