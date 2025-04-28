@@ -72,8 +72,10 @@ export default {
     NoVncRemote: 'noVNC远程服务器信息配置',
     NoVncRemoteConfig: 'noVNC远程服务器信息配置',
     goVncPage: '打开noVNC远程连接',
+    useLocalPortGoVncPage: '使用我的配置端口连接VNC服务器',
     updateVncInfo: '更新连接信息',
     NoVncServerHost: 'VNC服务地址',
     NoVncServerPort: 'VNC服务端口',
+    UsingLocalPortBtnDesc: '强制使用我配置的端口',
     LinuxBtnDesc: 'VNC服务器是否是linux服务器.'
 }

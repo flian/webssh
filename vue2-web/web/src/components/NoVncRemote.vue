@@ -18,6 +18,16 @@
                                 <el-input-number v-model="noVncConfig.port" />
                             </el-form-item>
                             <br/>
+                            <el-form-item label="UseLocalPort" size="small" prop="UseLocalPort">
+                                <el-checkbox v-model="noVncConfig.userLocalConfigPort">
+                                    use local config port
+                                    <el-tooltip placement="right">
+                                        <div slot="content">{{$t('UsingLocalPortBtnDesc')}}</div>
+                                        <i class="el-icon-question icon-color"></i>
+                                    </el-tooltip>
+                                </el-checkbox>
+                            </el-form-item>
+                            <br/>
                             <el-form-item label="NoVncServerLinux" size="small" prop="NoVncServerPort">
                                 <el-checkbox v-model="noVncConfig.linux" @change="checked=>isLinuxChange(checked,noVncConfig.linux)">
                                     Remote Server is Linux
@@ -28,8 +38,11 @@
                                 </el-checkbox>
                             </el-form-item>
                             <br/>
-                            <el-button type="primary" @click="updateVncServerInfos()">{{$t('updateVncInfo')}}</el-button>
+                            <el-button type="primary" @click="updateVncServerInfos(true)">{{$t('updateVncInfo')}}</el-button>
                             <el-button type="primary" @click="openNoVncPage()" :disabled="serverInfoNeedUpdate">{{$t('goVncPage')}}</el-button>
+                            <el-button type="primary" @click="updateVncServerInfos(false);" :disabled="!noVncConfig.userLocalConfigPort">
+                                {{$t('useLocalPortGoVncPage')}}
+                            </el-button>
                         </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -65,7 +78,8 @@ export default {
             noVncConfig: {
                 host: '',
                 linux: false,
-                port: 5900
+                port: 5900,
+                userLocalConfigPort: false
             }
         }
     },
@@ -87,7 +101,7 @@ export default {
             }
             self.serverInfoNeedUpdate = true;
         },
-        updateVncServerInfos(){
+        updateVncServerInfos(updatePort){
             const self = this;
             getNoVncInfo(self.getCurrentToken()
                 ,self.noVncConfig.host,self.noVncConfig.linux,true).then(function (result){
@@ -100,7 +114,12 @@ export default {
                     self.currentNoVncInfo.currentVncClientCnt = info.currentVncClientCnt;
                     self.currentNoVncInfo.vncHtmlUrl = info.vncHtmlUrl;
                     //update config based on server result.
-                    self.noVncConfig.port = self.currentNoVncInfo.nextPort;
+                    if(updatePort){
+                        self.noVncConfig.port = self.currentNoVncInfo.nextPort;
+                    }else {
+                        //if update port == false,then open vnc in new page.
+                        self.openNoVncPage();
+                    }
                     self.noVncConfig.linux = self.currentNoVncInfo.linux;
                 }else {
                     self.serverInfoNeedUpdate = true;

@@ -72,8 +72,10 @@ export default {
     NoVncRemote: 'noVNC remote server config',
     NoVncRemoteConfig: 'noVNC remote server config',
     goVncPage: 'go VNC connect page',
+    useLocalPortGoVncPage: 'use local config port go VNC page',
     updateVncInfo: 'update vnc info',
     NoVncServerHost: 'VNC server host',
     NoVncServerPort: 'VNC port',
+    UsingLocalPortBtnDesc: 'force use port in local',
     LinuxBtnDesc: 'VNC will connect to remote Linux server.'
 }
