@@ -5,6 +5,7 @@ import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeIntercepto
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
@@ -49,7 +50,7 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
         }
         Integer port = Integer.parseInt((String)session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
 
-        String serverKey = vncConnectServerKey(token, host, port);
+        String serverKey = vncConnectServerKey(token, host, port,session);
         if (createConnectIfNotPresent && !workingWebsockifyServerMaps.containsKey(serverKey)) {
             WebsockifyServer websockifyServer = new WebsockifyServer(host, port);
             websockifyServer.addSession(session);
@@ -59,8 +60,12 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
         return workingWebsockifyServerMaps.get(serverKey);
     }
 
-    protected String vncConnectServerKey(String token, String host, Integer port) {
-        return String.format("%s_%s_%s", token, host, port);
+    protected String vncConnectServerKey(String token, String host, Integer port,WebSocketSession session) {
+        String preFix = token;
+        if(ObjectUtils.isEmpty(token)){
+            preFix = session.getId();
+        }
+        return String.format("%s_%s_%s", preFix, host, port);
     }
 
 

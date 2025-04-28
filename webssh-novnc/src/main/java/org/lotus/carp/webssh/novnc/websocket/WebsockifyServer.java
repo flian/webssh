@@ -27,6 +27,30 @@ public class WebsockifyServer {
         this.targetPort = targetPort;
     }
 
+    protected void safeCloseConnAndSessionOnException(WebSocketSession session){
+        if(null == session){
+            log.error("session is null");
+            return;
+        }
+        String sessionId = session.getId();
+        Socket conn = vncConnections.get(sessionId);
+        if(null != conn && conn.isConnected()){
+            try {
+                conn.close();
+            } catch (IOException e) {
+                log.error("close socket fail.",e);
+            }
+        }
+        vncConnections.remove(sessionId);
+        wsSessions.remove(sessionId);
+        try {
+            session.close();
+        } catch (IOException e) {
+            log.error("close websocket session error.",e);
+        }
+
+    }
+
     public void addSession(WebSocketSession session) {
         wsSessions.put(session.getId(), session);
         try {
@@ -37,6 +61,8 @@ public class WebsockifyServer {
             new Thread(() -> forwardVncToWebSocket(session, vncSocket)).start();
         } catch (IOException e) {
             log.error("Error connecting to VNC server", e);
+            safeCloseConnAndSessionOnException(session);
+
         }
     }
 
@@ -49,6 +75,7 @@ public class WebsockifyServer {
             wsSessions.remove(sessionId);
         } catch (IOException e) {
             log.error("Error closing VNC connection", e);
+            safeCloseConnAndSessionOnException(wsSessions.get(sessionId));
         }
     }
 
@@ -60,6 +87,7 @@ public class WebsockifyServer {
             }
         } catch (IOException e) {
             log.error("Error forwarding data to VNC", e);
+            safeCloseConnAndSessionOnException(wsSessions.get(sessionId));
         }
     }
 
@@ -81,6 +109,7 @@ public class WebsockifyServer {
             //session.sendMessage(new BinaryMessage(new byte[0]));
         } catch (IOException e) {
             log.error("Error in VNC to WebSocket forwarding", e);
+            safeCloseConnAndSessionOnException(session);
         } finally {
             removeSession(session.getId());
         }
