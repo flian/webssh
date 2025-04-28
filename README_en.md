@@ -17,19 +17,7 @@ Simple online SSH and SFTP tools, capable of typing commands and uploading and d
 ## Background
 
 
-Due to the special nature of the industry, the SSH protocol (cross regional access) of firewalls in various data centers is generally banned.
-
-At the same time, many data centers do not provide maintenance tools and methods such as bastion machines,
-
-It makes it difficult to carry out cross regional operation and maintenance work. Intentionally attempting to use webssh methods.
-
-The go version of the webssh standalone mode was originally sufficient, but some data centers even enabled the HTTP/HTTPS whitelist mode, only enabling it
-
-Place the specified HTTP/https port, for simplicity, webssh needs to be packaged and started with the business/project.
-
-Due to the unique nature of business and deployment environments and there is no suitable Java version of webssh available on the market
-
-Therefore, refer to [go webssh](https://github.com/Jrohy/webssh) implemented a Java version of webssh.
+Best Java Online Web Ssh tools. Best portability bastion host system.
 
 ## Function
 
