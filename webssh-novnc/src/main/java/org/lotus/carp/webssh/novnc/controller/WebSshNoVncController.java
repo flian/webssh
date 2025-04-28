@@ -69,7 +69,7 @@ public class WebSshNoVncController extends BaseController {
         Integer currentHostPort = noVncWebSocketHandler.getCurrentHost(tryHost);
         int tryPort = isLinux?5901:5900;
         if(null != currentHostPort){
-            tryPort = currentHostPort+1;
+            tryPort = currentHostPort;
         }
         result.setNextPort(tryPort);
         if(genVncIndexUrl){
