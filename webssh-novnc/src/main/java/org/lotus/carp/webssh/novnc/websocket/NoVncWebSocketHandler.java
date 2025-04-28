@@ -5,7 +5,6 @@ import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeIntercepto
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
@@ -48,21 +47,40 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
             log.error("can't find target noVNC host.");
             return null;
         }
-        Integer port = Integer.parseInt((String)session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
+        Integer port = Integer.parseInt((String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
 
-        String serverKey = vncConnectServerKey(token, host, port,session);
+        String serverKey = vncConnectServerKey(token, host, port, session);
         if (createConnectIfNotPresent && !workingWebsockifyServerMaps.containsKey(serverKey)) {
-            WebsockifyServer websockifyServer = new WebsockifyServer(host, port);
-            websockifyServer.addSession(session);
+            WebsockifyServer websockifyServer = new WebsockifyServer(host, port, session);
             targetVncCurrentPort.put(host, port);
             workingWebsockifyServerMaps.put(serverKey, websockifyServer);
         }
-        return workingWebsockifyServerMaps.get(serverKey);
+        //wait WebsockifyServer ready.
+        WebsockifyServer server = workingWebsockifyServerMaps.get(serverKey);
+        if(!server.isServerOk()){
+            log.info("take care,websockify server may be not ok..");
+        }
+        return server;
     }
 
-    protected String vncConnectServerKey(String token, String host, Integer port,WebSocketSession session) {
+    protected void clearSession(WebSocketSession session) {
+        String token = (String) session.getAttributes().get(webSshConfig.getTokenName());
+        String host = (String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_HOST);
+        if (ObjectUtils.isEmpty(host)) {
+            log.error("can't find target noVNC host.");
+            return;
+        }
+        Integer port = Integer.parseInt((String) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
+
+        String serverKey = vncConnectServerKey(token, host, port, session);
+        workingWebsockifyServerMaps.remove(serverKey);
+        targetVncCurrentPort.remove(host);
+
+    }
+
+    protected String vncConnectServerKey(String token, String host, Integer port, WebSocketSession session) {
         String preFix = token;
-        if(ObjectUtils.isEmpty(token)){
+        if (ObjectUtils.isEmpty(token)) {
             preFix = session.getId();
         }
         return String.format("%s_%s_%s", preFix, host, port);
@@ -75,7 +93,7 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
             WebsockifyServer server = ensureWebsockifyServer(session, false);
             // Forward binary data to VNC server
             if (null != server) {
-                server.forwardData(session.getId(), message.getPayload());
+                server.forwardData(message.getPayload());
             }
         } catch (Exception e) {
             log.error("Error forwarding WebSocket message", e);
@@ -93,7 +111,8 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
         log.info("noVNC connection closed: " + session.getId());
         WebsockifyServer server = ensureWebsockifyServer(session, false);
         if (null != server) {
-            server.removeSession(session.getId());
+            server.safeCloseConnAndSessionOnException(session);
         }
+        clearSession(session);
     }
 }
