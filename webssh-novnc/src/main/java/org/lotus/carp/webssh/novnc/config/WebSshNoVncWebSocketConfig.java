@@ -23,7 +23,7 @@ public class WebSshNoVncWebSocketConfig implements WebSocketConfigurer {
     @Resource
     private WebSshWebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
 
-    @Resource
+    @Resource(name = "noVncWebSocketHandler")
     private NoVncWebSocketHandler noVncWebSocketHandler;
 
     @Override

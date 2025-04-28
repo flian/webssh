@@ -47,7 +47,7 @@ public class NoVncWebSocketHandler extends TextWebSocketHandler {
             log.error("can't find target noVNC host.");
             return null;
         }
-        Integer port = (Integer) session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT);
+        Integer port = Integer.parseInt((String)session.getAttributes().get(WebSshWebSocketHandshakeInterceptor.NO_VNC_TARGET_PORT));
 
         String serverKey = vncConnectServerKey(token, host, port);
         if (createConnectIfNotPresent && !workingWebsockifyServerMaps.containsKey(serverKey)) {

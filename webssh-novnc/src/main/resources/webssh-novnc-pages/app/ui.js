@@ -1074,8 +1074,8 @@ const UI = {
         //add token
         const queryParams = new URLSearchParams(location.search);
         url.searchParams.set('token',queryParams.get('token'));
-        url.searchParams.set('noVncTargetHost',queryParams.get('host'));
-        url.searchParams.set('noVncTargetPort',queryParams.get('port'));
+        url.searchParams.set('noVncTargetHost',queryParams.get('targetHost'));
+        url.searchParams.set('noVncTargetPort',queryParams.get('targetPort'));
         url.searchParams.set('isLinuxOs',queryParams.get('linux'))
         try {
             UI.rfb = new RFB(document.getElementById('noVNC_container'),

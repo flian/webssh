@@ -38,8 +38,8 @@ public class WebSshNoVncController extends BaseController {
 
     @GetMapping("/index")
     public String indexPage(@RequestParam(value = "token",required = false) String token,
-                            @RequestParam(value = "host") String tryHost,
-                            @RequestParam(value = "port") String trtPort,
+                            @RequestParam(value = "targetHost") String tryHost,
+                            @RequestParam(value = "targetPort") String trtPort,
                             @RequestParam(value = "linux",required = false,defaultValue = "false") boolean isLinux,
                             @RequestParam(value = "vncLite",required = false,defaultValue = "false") boolean vncLite){
         //suggest install tightVNC in linux/windows
@@ -51,7 +51,7 @@ public class WebSshNoVncController extends BaseController {
             page = VNC_LITE_FILE_STR;
         }
         //current using noVNC version 1.6.0
-        return String.format("%s/%s?token=%s&host=%s&port=%s&linux=%s"
+        return String.format("%s/%s?token=%s&targetHost=%s&targetPort=%s&linux=%s"
                 ,WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,page,token,tryHost,trtPort,isLinux);
     }
 
@@ -73,7 +73,7 @@ public class WebSshNoVncController extends BaseController {
         }
         result.setNextPort(tryPort);
         if(genVncIndexUrl){
-            result.setVncHtmlUrl(String.format("%s/%s?token=%s&host=%s&port=%s&linux=%s"
+            result.setVncHtmlUrl(String.format("%s/%s?token=%s&targetHost=%s&targetPort=%s&linux=%s"
                     ,WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,"index",token,result.getHost(),result.getNextPort(),isLinux));
         }
         return WebSshResponse.ok(result);
