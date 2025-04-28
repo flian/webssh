@@ -68,5 +68,14 @@ export default {
     tunnelPanTitle: 'navicat隧道链接信息',
     socketProxyPanTitle: 'socket代理信息',
     httpProxyPanTitle: 'http代理信息',
-    AutoStopInDesc: '安全原因，代理会在此处配置的小时后自动关闭.可以使用启动参数 --webssh.enableProxyAutoStopIn==false 参数关闭到时自动关闭代理。'
+    AutoStopInDesc: '安全原因，代理会在此处配置的小时后自动关闭.可以使用启动参数 --webssh.enableProxyAutoStopIn==false 参数关闭到时自动关闭代理。',
+    NoVncRemote: 'noVNC远程服务器信息配置',
+    NoVncRemoteConfig: 'noVNC远程服务器信息配置',
+    goVncPage: '打开noVNC远程连接',
+    useLocalPortGoVncPage: '使用我的配置端口连接VNC服务器',
+    updateVncInfo: '更新连接信息',
+    NoVncServerHost: 'VNC服务地址',
+    NoVncServerPort: 'VNC服务端口',
+    UsingLocalPortBtnDesc: '强制使用我配置的端口',
+    LinuxBtnDesc: 'VNC服务器是否是linux服务器.'
 }

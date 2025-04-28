@@ -1,6 +1,7 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
 import lombok.Data;
+import org.lotus.carp.webssh.config.websocket.websshenum.WebSshUrlCommandEnum;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -77,6 +78,11 @@ public class WebSshConfig {
      * webssh websocket prefix
      */
     private String webSshWebsocketPrefix = "/webssh";
+
+    /**
+     * novnc socket prefix
+     */
+    private String webSshNoVncWebsocketPrefix = WebSshUrlCommandEnum.NO_VNC_SOCKET_URL.getUrl();
 
     /**
      * token name from front

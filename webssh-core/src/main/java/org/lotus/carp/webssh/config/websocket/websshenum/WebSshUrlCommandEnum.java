@@ -15,7 +15,8 @@ import java.util.Arrays;
 public enum WebSshUrlCommandEnum {
 
     TERM("TERM", "/term", "终端命令行输入"),
-    FILE_UPLOAD_PROGRESS("FILE_UPLOAD_PROGRESS", "/file/progress", "文件上传进度");
+    FILE_UPLOAD_PROGRESS("FILE_UPLOAD_PROGRESS", "/file/progress", "文件上传进度"),
+    NO_VNC_SOCKET_URL ("NO_VNC_SOCKET_URL","/novnc/websockify","noVNC websocket URL");
     private String code;
     private String url;
     private String desc;

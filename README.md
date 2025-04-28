@@ -5,22 +5,32 @@
 java版本 webssh
 
 [![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-简易在线ssh和sftp工具, 可在线敲命令和上传下载文件. 端口隧道、http代理tcp（待完成）
+做最好用的java在线ssh和sftp工具, 可在线敲命令和上传下载文件. 端口隧道、http代理tcp。
+RDP远程、管理windows服务器
+VNC协议远程、管理远程服务器
 
 ## 运行截图
 
 ![avatar](asset/1.png)
 ![avatar](asset/2.png)
+![avatar](asset/3.jpg)
+![avatar](asset/4.jpg)
 
 ## 背景
 
-由于所处特殊行业特殊原因，各地机房防火墙一般ssh协议（跨地域访问）都是封禁状态。
-同时很多地方机房都不提供诸如堡垒机等形式的运维工具、方法，
-造成跨地域的运维工作很难开展。故意尝试使用webssh方式。
-go版本webssh standalone模式本来基本够用，但是有的机房甚至开启了http/https白名单模式，只开
-放指定的http/https端口，为了简单起见，就需要webssh随业务一起打包启动。
-由于业务、部署环境的特殊性，java目前市面上没有很合适的java版本的webssh可供使用.
-故参照 [go webssh](https://github.com/Jrohy/webssh) 实现了一版java版本的webssh。
+项目上的需要，需要非常轻的"堡垒机",但市面上的java webssh都有各种问题:
+主要问题如下:
+1. 安全级别不够，都是http/ws. 
+2. jsch使用各种小问题，安全隐患等。
+3. 部署不够灵活，只要独立部署。项目上有时候需要”内嵌"到已有项目。
+4. 其他一些定制化需要，不够灵活，比如项目上大量使用navicat运维，需要轻便的数据库运维等等。
+5. 其他一些定制化需求。
+
+如果你也有如上问题，那么本项目可能非常适合你。
+
+1.26: 完成基础的web ssh功能，包括ssh，sftp文件上传下载。权限加强等。
+1.27: 优化权限认证等，完善navicat（mysql,sqlite,pgsql） http tunnel(mongodb TBD后续会尝试完善). RDP协议远程、管理windows服务器。
+1.27.1: http代理、socket代理. VNC协议管理远程服务器。
 
 ## 功能
 
@@ -37,16 +47,23 @@ go版本webssh standalone模式本来基本够用，但是有的机房甚至开�
 
 ### 更新日志
 
+#### v.127. 更新中
+1. http/socket 代理。 GA(基本可用)
+   服务端配置、打开代理端口及服务，客户端使用proxifier代理本地流量
+
+2. vnc服务器管理。 GA(基本可用)
+   服务端安装VNC server（建议tightVNC）,设置好防火墙规则和账号，在webssh中直接远程服务器。
+
+
 #### v1.27 更新中
 
-1. rdp协议支持（可以通过linux webssh rdp协议远程连接windows服务器）
+1. rdp协议支持（可以通过linux webssh rdp协议远程连接windows服务器）GA（基本可用)
    使用场景，客户端（windows）透过webssh服务器（webssh主机或者其他linux服务器）访问远端windows服务器
    前置条件及测试步骤：
    a.客户端需要安装xming并启动
    b.中转服务器需要有X11支持。（centos需要安装xorg-x11-xauth xorg-x11-fonts-* xorg-x11-utils并且/etc/ssh/sshd_config中`X11Forwarding yes`
    c. 可以常规通过webssh登录中转linux服务器中，输入xclock，如果windows客户端弹出时钟界面表示配置成功
-   手动触发连接服务器模式：
-   TBD
+   手动触发连接服务器模式
 
 连接中转服务器时直接触发模式：
 TBD

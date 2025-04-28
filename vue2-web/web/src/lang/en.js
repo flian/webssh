@@ -68,5 +68,14 @@ export default {
     tunnelPanTitle: 'navicat N tunnel info',
     socketProxyPanTitle: 'socket proxy info',
     httpProxyPanTitle: 'http and socket proxy info',
-    AutoStopInDesc: 'select proxy will auto close in config hours for security reason. you can simple using --webssh.enableProxyAutoStopIn==false in start argument disable auto stop proxy feature.'
+    AutoStopInDesc: 'select proxy will auto close in config hours for security reason. you can simple using --webssh.enableProxyAutoStopIn==false in start argument disable auto stop proxy feature.',
+    NoVncRemote: 'noVNC remote server config',
+    NoVncRemoteConfig: 'noVNC remote server config',
+    goVncPage: 'go VNC connect page',
+    useLocalPortGoVncPage: 'use local config port go VNC page',
+    updateVncInfo: 'update vnc info',
+    NoVncServerHost: 'VNC server host',
+    NoVncServerPort: 'VNC port',
+    UsingLocalPortBtnDesc: 'force use port in local',
+    LinuxBtnDesc: 'VNC will connect to remote Linux server.'
 }
