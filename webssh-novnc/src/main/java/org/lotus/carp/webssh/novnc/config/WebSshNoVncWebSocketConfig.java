@@ -23,7 +23,7 @@ public class WebSshNoVncWebSocketConfig implements WebSocketConfigurer {
     @Resource
     private WebSshWebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
 
-    @Resource(name = "noVncWebSocketHandler")
+    @Resource
     private NoVncWebSocketHandler noVncWebSocketHandler;
 
     @Override
@@ -32,4 +32,5 @@ public class WebSshNoVncWebSocketConfig implements WebSocketConfigurer {
                 .setAllowedOrigins("*")
                 .addInterceptors(webSocketHandshakeInterceptor);
     }
+
 }

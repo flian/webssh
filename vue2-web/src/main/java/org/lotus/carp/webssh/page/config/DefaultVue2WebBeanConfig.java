@@ -21,7 +21,6 @@ import javax.annotation.Resource;
 @Configuration
 public class DefaultVue2WebBeanConfig {
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshProjectTokensApi defaultWebSshProjectTokens() {
         return new DefaultWebSshProjectTokensController();
@@ -29,7 +28,6 @@ public class DefaultVue2WebBeanConfig {
 
     @ConditionalOnProperty(value = "webssh.vue2.pageController.enable", matchIfMissing = true)
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshPageController defaultWebSshPageController() {
         return new WebSshPageController();

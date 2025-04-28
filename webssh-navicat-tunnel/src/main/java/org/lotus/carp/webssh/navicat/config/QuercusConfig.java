@@ -3,6 +3,8 @@ package org.lotus.carp.webssh.navicat.config;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.navicat.controller.MongoAdminController;
+import org.lotus.carp.webssh.navicat.controller.NavicatNTunnelController;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -36,6 +38,18 @@ public class QuercusConfig {
         quercusViewResolver.setViewNames("*.php");
         quercusViewResolver.setOrder(0);
         return quercusViewResolver;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MongoAdminController mongoAdminController(){
+        return new MongoAdminController();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public NavicatNTunnelController navicatNTunnelController(){
+        return new NavicatNTunnelController();
     }
 
     @Bean

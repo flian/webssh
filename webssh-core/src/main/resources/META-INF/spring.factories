@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.lotus.carp.webssh.config.websocket.config.DefaultBeanConfig

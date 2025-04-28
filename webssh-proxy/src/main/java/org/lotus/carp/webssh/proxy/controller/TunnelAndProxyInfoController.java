@@ -22,7 +22,7 @@ import java.util.List;
  * @author : foy
  * @date : 2025/4/16:15:35
  **/
-@RestController
+@ResponseBody
 @RequestMapping(value = "/webssh/tunnelAndProxy")
 @Slf4j
 public class TunnelAndProxyInfoController extends BaseController {

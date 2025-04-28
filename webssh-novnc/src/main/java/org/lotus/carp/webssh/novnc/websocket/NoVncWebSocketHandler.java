@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 
 @Slf4j
-@Component(value = "noVncWebSocketHandler")
 public class NoVncWebSocketHandler extends TextWebSocketHandler {
 
     @Resource

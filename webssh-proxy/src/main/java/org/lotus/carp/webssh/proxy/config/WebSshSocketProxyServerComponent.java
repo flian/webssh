@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @date : 2025/4/15:16:30
  **/
 
-@Component
+
 @Slf4j
 public class WebSshSocketProxyServerComponent implements InitializingBean {
     protected SocksServer socksProxyServer;

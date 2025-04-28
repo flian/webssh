@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.lotus.carp.webssh.page.config.WebSshWebMvcConfig,\
+  org.lotus.carp.webssh.page.config.DefaultVue2WebBeanConfig

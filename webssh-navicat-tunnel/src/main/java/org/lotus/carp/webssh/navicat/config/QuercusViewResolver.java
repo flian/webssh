@@ -1,5 +1,6 @@
 package org.lotus.carp.webssh.navicat.config;
 
+import com.mongodb.lang.NonNullApi;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
@@ -16,7 +17,7 @@ public class QuercusViewResolver extends UrlBasedViewResolver {
 
 
     @Override
-    protected Class requiredViewClass() {
+    protected Class<?>  requiredViewClass() {
         return QuercusView.class;
     }
 }

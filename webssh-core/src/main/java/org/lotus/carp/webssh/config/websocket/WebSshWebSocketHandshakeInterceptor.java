@@ -27,7 +27,7 @@ import java.util.Map;
  * @author : foy
  * @date : 2024-02-01 14:49
  **/
-@Component
+
 @Slf4j
 public class WebSshWebSocketHandshakeInterceptor implements HandshakeInterceptor {
 

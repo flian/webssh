@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  * @author : foy
  * @date : 2024-05-13 09:50
  **/
-@Controller
+
 @Slf4j
 public class MongoAdminController extends BaseController {
     @Resource

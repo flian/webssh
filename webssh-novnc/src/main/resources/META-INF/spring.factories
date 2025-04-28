@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.lotus.carp.webssh.novnc.config.WebSshNoVncConfig,\
+  org.lotus.carp.webssh.novnc.config.WebSshNoVncWebSocketConfig

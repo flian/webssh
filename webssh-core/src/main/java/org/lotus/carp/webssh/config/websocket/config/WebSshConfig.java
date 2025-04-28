@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
  * @date : 2024-02-01 14:49
  **/
 @Data
-@Component
 @ConfigurationProperties(prefix = "webssh")
 public class WebSshConfig {
 

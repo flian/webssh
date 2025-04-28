@@ -11,7 +11,11 @@ import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.DefaultJschWebSshFileServiceImpl;
 import org.lotus.carp.webssh.config.service.impl.DefaultJschWebSshTermServiceImpl;
 import org.lotus.carp.webssh.config.service.impl.DefaultWebSshLoginServiceImpl;
+import org.lotus.carp.webssh.config.websocket.WebSocketConfig;
+import org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInterceptor;
+import org.lotus.carp.webssh.config.websocket.WebSshWebsocketHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,10 +29,10 @@ import javax.annotation.Resource;
  * @date : 2024-02-01 15:42
  **/
 @Configuration
+@EnableConfigurationProperties(WebSshConfig.class)
 public class DefaultBeanConfig {
 
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshJavaRdpService defaultWebSshJavaRdpService() {
         return new WebSshJavaRdpService(){};
@@ -36,39 +40,51 @@ public class DefaultBeanConfig {
 
 
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshLoginService defaultLoginService() {
         return new DefaultWebSshLoginServiceImpl();
     }
 
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshTermService defaultWebSshTermService(){
         return new DefaultJschWebSshTermServiceImpl();
     }
 
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshFileService defaultWebSshFileService(){
         return new DefaultJschWebSshFileServiceImpl();
     }
 
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshApi defaultApiController() {
         return new DefaultWebSshController();
     }
 
     @ConditionalOnMissingBean
-    @Resource
     @Bean
     public WebSshFileApi defaultFileApiController() {
         return new DefaultWebSshFileController();
     }
 
 
+    @ConditionalOnMissingBean
+    @Bean
+    public WebSocketConfig defaultWebSocketConfig(){
+        return new WebSocketConfig();
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public WebSshWebsocketHandler defaultWebSshWebsocketHandler(){
+        return new WebSshWebsocketHandler();
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    public WebSshWebSocketHandshakeInterceptor defaultWebSshWebSocketHandshakeInterceptor(){
+        return new WebSshWebSocketHandshakeInterceptor();
+    }
 }

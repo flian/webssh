@@ -20,7 +20,6 @@ import javax.annotation.Resource;
  * @date : 2025/4/25:10:04
  **/
 @Slf4j
-@Controller
 @RequestMapping(WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX)
 public class WebSshNoVncController extends BaseController {
 

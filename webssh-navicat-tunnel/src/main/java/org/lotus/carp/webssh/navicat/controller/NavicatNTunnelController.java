@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  * @author : foy
  * @date : 2024-05-08 10:26
  **/
-@Controller
+
 @RequestMapping(value = WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_MAPPING)
 @Slf4j
 public class NavicatNTunnelController extends BaseController {

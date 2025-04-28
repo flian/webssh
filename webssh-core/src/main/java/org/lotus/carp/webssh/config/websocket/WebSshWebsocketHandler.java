@@ -30,7 +30,7 @@ import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInt
  * @author : foy
  * @date : 2024-02-01 14:49
  **/
-@Component
+
 @Slf4j
 public class WebSshWebsocketHandler extends TextWebSocketHandler {
 

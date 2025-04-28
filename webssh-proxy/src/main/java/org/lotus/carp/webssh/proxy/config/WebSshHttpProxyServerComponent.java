@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * @date : 2025/4/16:09:46
  * http proxy setting for webssh
  **/
-@Component
+
 @Slf4j
 public class WebSshHttpProxyServerComponent implements InitializingBean {
 
