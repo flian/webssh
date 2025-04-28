@@ -28,7 +28,7 @@ public class WebSshNoVncWebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(noVncWebSocketHandler, webSshConfig.getWebSshNoVncWebsocketPrefix())
+        registry.addHandler(noVncWebSocketHandler, "/websockify",webSshConfig.getWebSshNoVncWebsocketPrefix())
                 .setAllowedOrigins("*")
                 .addInterceptors(webSocketHandshakeInterceptor);
     }

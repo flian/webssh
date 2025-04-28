@@ -74,7 +74,7 @@ public class WebSshNoVncController extends BaseController {
         result.setNextPort(tryPort);
         if(genVncIndexUrl){
             result.setVncHtmlUrl(String.format("%s/%s?token=%s&host=%s&port=%s&linux=%s"
-                    ,WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,"/index",token,result.getHost(),result.getNextPort(),isLinux));
+                    ,WebSshNoVncConst.WEB_SSH_NO_VNC_PREFIX,"index",token,result.getHost(),result.getNextPort(),isLinux));
         }
         return WebSshResponse.ok(result);
     }
