@@ -26,7 +26,12 @@ public class WebSshVue2PageConst {
     /**
      * webssh vue2 page dist folder
      */
-    public static final String WEB_SSH_VUE2_STATIC_FILE_ROOT = "webssh-javardp";
+    public static final String WEB_SSH_VUE2_STATIC_FILE_ROOT = "webssh-dist";
+
+    /**
+     * java rdp standalone jar file path
+     */
+    public static final String WEB_SSH_JAVA_RDP_STATIC_FILE_ROOT = "webssh-javardp";
 
     /**
      * webssh vue2 page project exchange token name

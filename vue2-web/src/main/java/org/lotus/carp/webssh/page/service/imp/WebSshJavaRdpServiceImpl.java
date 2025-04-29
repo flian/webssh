@@ -26,7 +26,7 @@ public class WebSshJavaRdpServiceImpl implements WebSshJavaRdpService {
     @Override
     public InputStream getProperJavaRdpJarStream() {
         String fileName = webSshConfig.getProperJavaRdpJar();
-        String filePath = WebSshVue2PageConst.WEB_SSH_VUE2_STATIC_FILE_ROOT + File.separator + fileName;
+        String filePath = WebSshVue2PageConst.WEB_SSH_JAVA_RDP_STATIC_FILE_ROOT + File.separator + fileName;
         InputStream in = WebSshJavaRdpServiceImpl.class.getClassLoader().getResourceAsStream(filePath);
         return in;
     }
