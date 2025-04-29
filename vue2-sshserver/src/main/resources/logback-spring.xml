@@ -8,7 +8,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- 日志格式 -->
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%level] - %m%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%level] [%thread] [%class:%line] %logger{50} - %m%n</pattern>
         </encoder>
     </appender>
     <appender name="DEBUG-OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -28,7 +28,7 @@
         <!-- 不过滤日志 -->
         <encoder>
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger{50} - %msg%n
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] [%class:%line] %logger{50} - %msg%n
             </pattern>
             <charset>UTF-8</charset>
         </encoder>
@@ -78,6 +78,8 @@
         </rollingPolicy>
     </appender>
     <logger name="org.lotus.carp.webssh" level="${PROJECT_LOG_LEVEL}" />
+    <logger name="org.bbottema.javasocksproxyserver" level="DEBUG"/>
+    <logger name="com.github.monkeywie.proxyee" level="DEBUG"/>
     <root level="INFO">
         <appender-ref ref="DEBUG-OUT"/>
         <appender-ref ref="STDOUT"/>

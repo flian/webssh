@@ -1,0 +1,1 @@
+please use [proxifier](https://www.proxifier.com/) for socket and http/https proxy client. its realy nice.

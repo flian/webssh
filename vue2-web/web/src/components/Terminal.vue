@@ -186,16 +186,18 @@ export default {
             }
             document.title = sshInfo.host
             let sshList = this.$store.state.sshList
+            let tempRdpConfig = sshInfo.rdpConfig
             if (sshList === null) {
                 if (this.savePass) {
-                    sshList = `[{"host": "${sshInfo.host}", "username": "${sshInfo.username}", "port":${sshInfo.port}, "logintype":${sshInfo.logintype}, "password":"${sshInfo.password}"}]`
+                    sshList = `[{"host": "${sshInfo.host}", "username": "${sshInfo.username}", "port":${sshInfo.port}, "logintype":${sshInfo.logintype}, "password":"${sshInfo.password}","rdpConfig":"${tempRdpConfig}"}]`
                 } else {
-                    sshList = `[{"host": "${sshInfo.host}", "username": "${sshInfo.username}", "port":${sshInfo.port},  "logintype":${sshInfo.logintype}}]`
+                    sshList = `[{"host": "${sshInfo.host}", "username": "${sshInfo.username}", "port":${sshInfo.port},  "logintype":${sshInfo.logintype},"rdpConfig":"${tempRdpConfig}"}]`
                 }
             } else {
                 const sshListObj = JSON.parse(window.atob(sshList))
                 sshListObj.forEach((v, i) => {
-                    if (v.host === sshInfo.host && v.logintype === sshInfo.logintype) {
+                    if (v.host === sshInfo.host && v.logintype === sshInfo.logintype
+                        && v.rdpConfig.rdp == sshInfo.rdpConfig.rdp &&  v.rdpConfig.directConnectRdpServer == sshInfo.rdpConfig.directConnectRdpServer) {
                         sshListObj.splice(i, 1)
                     }
                 })
@@ -203,7 +205,8 @@ export default {
                     host: sshInfo.host,
                     username: sshInfo.username,
                     port: sshInfo.port,
-                    logintype: sshInfo.logintype
+                    logintype: sshInfo.logintype,
+                    rdpConfig: tempRdpConfig
                 })
                 if (this.savePass) {
                     sshListObj[sshListObj.length - 1].password = sshInfo.password

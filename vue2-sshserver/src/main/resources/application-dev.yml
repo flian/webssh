@@ -1,2 +1,8 @@
 server:
   port: 5132
+
+webssh:
+  enableSocketProxy: true
+  enableHttpProxy: true
+  debugHttpProxy: true
+  shouldVerifyToken: true

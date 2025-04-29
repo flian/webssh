@@ -1,7 +1,7 @@
 package org.lotus.carp.webssh.config.websocket.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
+import org.lotus.carp.webssh.config.websocket.websshenum.WebSshUrlCommandEnum;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
  * @date : 2024-02-01 14:49
  **/
 @Data
-@Component
 @ConfigurationProperties(prefix = "webssh")
 public class WebSshConfig {
 
@@ -23,7 +22,7 @@ public class WebSshConfig {
     public static final String DEFAULT_USER_CONFIG = "root:changeit@123![RANDOM]:%,test:test@123!:127.0.0.1";
 
     /**
-     *  config to enable random password
+     * config to enable random password
      */
     public boolean enableRandomPwd = true;
 
@@ -80,6 +79,11 @@ public class WebSshConfig {
     private String webSshWebsocketPrefix = "/webssh";
 
     /**
+     * novnc socket prefix
+     */
+    private String webSshNoVncWebsocketPrefix = WebSshUrlCommandEnum.NO_VNC_SOCKET_URL.getUrl();
+
+    /**
      * token name from front
      */
     private String tokenName = "token";
@@ -107,7 +111,7 @@ public class WebSshConfig {
     /**
      * ssh term ptyType
      */
-    private String webSshTermPtyType ="xterm";
+    private String webSshTermPtyType = "xterm";
 
     /**
      * col – terminal width
@@ -158,9 +162,8 @@ public class WebSshConfig {
      * you may need config your own HttpsConfig for other contain.
      * spring boot supported contain: tomcat,jetty,undertow,netty,webflux,
      * you need config your own httpsConfig except tomcat.
-     *
      */
-    private String underContainer ="";
+    private String underContainer = "";
 
     /**
      * will try to auto generate https key while there is not present in classpath.
@@ -196,4 +199,145 @@ public class WebSshConfig {
      * default max shell thread
      */
     private int maxSshShellTermCorePoolSize = 1000;
+
+    /**
+     * is shell for windows rdp connection
+     * if this is true, it means use ssh to linux server then x11 forwarding to windows server
+     */
+    private boolean rdp = true;
+
+    /**
+     * enable this to config rdp server info
+     */
+    private boolean rdpServer = false;
+
+    /**
+     * if rdp = true and rdpServer=true, if this is true, it will direct connect rdp server by config.
+     */
+    private boolean autoConnect = false;
+
+    /**
+     * x11 display format
+     */
+    private String x11DisplayFormat="%s:0";
+
+    /**
+     * x11 forwarding
+     */
+    private String x11Display = "localhost:0";
+
+    /**
+     * rdp server ip
+     */
+    private String windowsIp = "192.168.2.16";
+
+    /**
+     * windows rdp port. -t NUM
+     */
+    private int rdpPort = 3389;
+
+    /**
+     * full-screen mode [with Linux KDE optimization]
+     */
+    private boolean rdpWindowsFullScreen = false;
+
+    /**
+     * rdp windows size. -g 1024x768
+     */
+    private String rpdWindowsSize = "1024x768";
+
+    /**
+     * rdp log level . default is : -l INFO
+     */
+    private String logLevel = "INFO";
+
+    /**
+     * if system will copy properJavaRdpJar to properJavaRdpJarFilePath if not present.
+     * default is true: it will check if not present, system will copy to path first.
+     */
+    private boolean copyProperJavaRdpJarIfNotPresent = true;
+
+    /**
+     * java full command, example /usr/bin/java
+     */
+    private String javaFullPath = "java";
+
+    /**
+     * default java rdp full jar name
+     */
+    private String properJavaRdpJar = "properJavaRDP-0.1.18-jar-with-dependencies.jar";
+
+    /**
+     * proper java RDP jar full path.
+     */
+    private String properJavaRdpJarFilePath = "/tmp/properJavaRdp";
+
+    /**
+     * identity if start http and socket proxy on system startup.
+     */
+    private boolean startProxyOnStartup = false;
+
+    /**
+     * webssh will auto close http/socket proxy after proxy start @see tokenExpiration hours.
+     */
+    private boolean enableProxyAutoStopIn = true;
+
+    /**
+     * is enabled server as a socket proxy.
+     */
+    private boolean enableSocketProxy = true;
+    /**
+     * java socket proxy port
+     */
+    private int socketProxyPort = 9688;
+
+    /**
+     * set socket bind ip address
+     */
+    private String socketBindIp = "0.0.0.0";
+
+    /**
+     * using webssh NO_AUTH proxy model.
+     */
+    private boolean socketNoAuthProxy = false;
+
+    /**
+     * java socket proxy username
+     */
+    private String socketProxyUserName="websshSocket5";
+    /**
+     * java socket proxy password
+     */
+    private String socketProxyPassword="changeit@!@#!";
+
+    /**
+     * webshh http proxy no auth.
+     */
+    private boolean httpProxyNoAuth = false;
+
+    /**
+     * is enabled server as http proxy .
+     */
+    private boolean enableHttpProxy = true;
+    /**
+     * http proxy server bind ip
+     */
+    private String httpProxyBindIp =  "0.0.0.0";
+
+    /**
+     * is debug http proxy enabled.
+     */
+    private boolean debugHttpProxy = false;
+    /**
+     * http proxy server bind port
+     */
+    private int httpProxyBindPort = 9966;
+    /**
+     * http proxy server username
+     */
+    private String httpProxyUserName="websshHttpProxyUser";
+    /**
+     * http proxy password
+     */
+    private String httpProxyPassword="changeit@!@#!";
 }

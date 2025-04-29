@@ -1,21 +1,28 @@
 package org.lotus.carp.webssh.config.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.jcraft.jsch.*;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
+import org.lotus.carp.webssh.config.service.impl.vo.CachedWebSocketSessionObject;
+import org.lotus.carp.webssh.config.service.vo.RdpValidResult;
 import org.lotus.carp.webssh.config.service.vo.SshInfo;
+import org.lotus.carp.webssh.config.service.vo.XDisplayInfo;
 import org.lotus.carp.webssh.config.utils.WebSshUtils;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.config.websocket.websshenum.WebSshLoginTypeEnum;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +49,7 @@ public class JschBase implements InitializingBean {
 
     private static boolean jschLoggerInitialized = false;
 
-    private ObjectMapper baseObjectMapper = new ObjectMapper();
+    private ObjectMapper baseObjectMapper = (new ObjectMapper()).disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     Cache<String, Session> sessionCache;
 
@@ -63,18 +70,33 @@ public class JschBase implements InitializingBean {
     }
 
     private Session ensureGetOrCreateSession(String sshInfo, String token) throws IOException, JSchException {
-
-        String preFix = token;
-        if (ObjectUtils.isEmpty(preFix)) {
-            preFix = clientRemoteHost();
-        }
-
-        String cacheSessionKey = md5String(String.format("%s:%s", preFix, sshInfo));
+        String cacheSessionKey = getCacheSessionKey(sshInfo, token);
         Session result = sessionCache.getIfPresent(cacheSessionKey);
         if (null != result) {
             return result;
         }
         return createAndCacheOne(sshInfo, cacheSessionKey);
+    }
+
+    private String getCacheSessionKey(String sshInfo, String token) {
+        return getCacheSessionKey(sshInfo, token, null);
+    }
+
+    private String getCacheSessionKey(String sshInfo, String token, String clientIp) {
+        String preFix = token;
+        if (ObjectUtils.isEmpty(preFix)) {
+            preFix = clientIp;
+        }
+
+        if (ObjectUtils.isEmpty(preFix)) {
+            try {
+                preFix = clientRemoteHost();
+            } catch (Exception e) {
+                log.error("can't get client ip.", e);
+            }
+        }
+        String cacheSessionKey = md5String(String.format("%s:%s", preFix, sshInfo));
+        return cacheSessionKey;
     }
 
     private String md5String(String source) {
@@ -188,13 +210,40 @@ public class JschBase implements InitializingBean {
         if (PASSWORD_LOGIN_TYPE == loginType) {
             session.setPassword(sshInfoObject.getPassword());
         }
-
+        //x11 setting
+        initX11Setting(sshInfoObject, session);
         session.connect(connectTimeout);
 
         return session;
     }
 
-    private SshInfo composeSshInfo(String sshInfo) throws JsonProcessingException {
+    /**
+     * process x11 forwarding
+     *
+     * @param sshInfo
+     * @param session
+     */
+    void initX11Setting(SshInfo sshInfo, Session session) {
+        //X11 server should be MobaXterm.
+        if (!ObjectUtils.isEmpty(sshInfo.getRdpConfig()) && sshInfo.getRdpConfig().isRdp()) {
+            XDisplayInfo xDisplayInfo = XDisplayInfo.composeFromString(sshInfo.getRdpConfig().getX11Display());
+            //page should auto detect your ip.
+            session.setX11Host(xDisplayInfo.getX11Host());
+            log.info("session.setX11Host:{}",xDisplayInfo.getX11Host());
+
+            int port = xDisplayInfo.getX11Port();
+            session.setX11Port(port);
+            log.info("session.setX11Port:{}",port);
+            if(sshInfo.getRdpConfig().isRdpServer() && sshInfo.getRdpConfig().isAutoConnect()){
+                RdpValidResult validResult = sshInfo.getRdpConfig().isRdpArgumentsValid();
+                if (!validResult.isOk()) {
+                    throw new WebSshBusinessException("invalid rdp arguments. please check log for detail." + validResult.getErrorMsg());
+                }
+            }
+        }
+    }
+
+    protected SshInfo composeSshInfo(String sshInfo) throws JsonProcessingException {
         return baseObjectMapper.readValue(deCodeBase64Str(sshInfo), SshInfo.class);
     }
 
@@ -211,8 +260,9 @@ public class JschBase implements InitializingBean {
      * @throws JSchException
      * @@param channelCall get channel input and output stream after channel create.
      */
+    @Deprecated
     Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int[] ptySize) throws JSchException {
-        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize);
+        return createXtermShellChannel(session, channelCall, webSshConfig.getDefaultConnectTimeOut(), ptySize, null);
     }
 
     /**
@@ -228,8 +278,12 @@ public class JschBase implements InitializingBean {
      * @return
      * @throws JSchException
      */
-    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize) throws JSchException {
+    Channel createXtermShellChannel(Session session, CreateXtermShellChannelCall channelCall, int connectTimeout, int[] ptySize, SshInfo sshInfo) throws JSchException {
         Channel channel = session.openChannel("shell");
+        //FIXME XForwarding should be next topic.
+        if (null != sshInfo && null != sshInfo.getRdpConfig() && sshInfo.getRdpConfig().shouldEnableXForwarding()) {
+           // channel.setXForwarding(true);
+        }
         ((ChannelShell) channel).setPtyType(getTermPtyType());
         ((ChannelShell) channel).setPtySize(ptySize[0], ptySize[1], ptySize[2], ptySize[3]);
         ((ChannelShell) channel).setPty(true);
@@ -243,8 +297,9 @@ public class JschBase implements InitializingBean {
             if (null != channelCall) {
                 channelCall.applySetInputAndOutStream(inputStream, outputStream);
             }
+
         } catch (IOException e) {
-            log.error("error create xterm shell/", e);
+            log.error("error create xterm shell.", e);
             return null;
         }
 
@@ -331,6 +386,35 @@ public class JschBase implements InitializingBean {
                 .build();
         //init sub class.
         subInit();
+    }
+
+    /**
+     * delete session if present for file upload
+     *
+     * @param sshInfo
+     * @param token
+     * @param clientIp
+     */
+    public void ensureSessionClose(String sshInfo, String token, String clientIp) {
+        String sessionKey = getCacheSessionKey(sshInfo, token, clientIp);
+        if (sessionKey.contains(sessionKey)) {
+            sessionCache.invalidate(sessionKey);
+        }
+    }
+
+    public CachedWebSocketSessionObject getCachedWebSocketSessionObject(WebSocketSession webSocketSession) {
+        return null;
+    }
+
+    public void sendMessage2Websocket(WebSocketSession webSocketSession, String message) {
+        if (null != webSocketSession && webSocketSession.isOpen() && !StringUtils.isEmpty(message)) {
+            try {
+                webSocketSession.sendMessage(new TextMessage(message));
+            } catch (IOException e) {
+                log.error("send message error.", e);
+            }
+        }
+
     }
 
     /**

@@ -39,6 +39,63 @@
                                   :placeholder="$t('inputTip') + `${this.privateKey ? $t('privateKey') : $t('password')}`"
                                   show-password></el-input>
                     </el-form-item>
+                    <div style="margin-bottom: 20px;margin-top: 10px">
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdp">
+                            Rdp
+                            <el-tooltip placement="right">
+                                <div slot="content">{{$t('rdpBtnDesc')}}</div>
+                                <i class="el-icon-question icon-color"></i>
+                            </el-tooltip>
+                        </el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.rdpServer" :disabled="!sshInfo.rdpConfig.rdp">
+                            RdpServer
+                            <el-tooltip placement="right">
+                                <div slot="content">{{$t('rdpServerBtnDesc')}}</div>
+                                <i class="el-icon-question icon-color"></i>
+                            </el-tooltip>
+                        </el-checkbox>
+                        <el-checkbox v-model="sshInfo.rdpConfig.autoConnect" :disabled="!showRdpConfig">
+                            autoConnect
+                            <el-tooltip placement="right">
+                                <div slot="content">{{$t('rdpAutoConnectBtnDesc')}}</div>
+                                <i class="el-icon-question icon-color"></i>
+                            </el-tooltip>
+                        </el-checkbox>
+                    </div>
+                    <div v-show="showRdpConfig" style="margin-bottom: 20px;margin-top: 10px">
+                        <el-form-item label="RdpIp" size="small" prop="RdpIp" >
+                            <el-input v-model="sshInfo.rdpConfig.windowsIp" />
+                        </el-form-item>
+                        <el-form-item label="RdpPort" size="small" prop="RdpPort" >
+                            <el-input v-model="sshInfo.rdpConfig.rdpPort" />
+                        </el-form-item>
+                        <el-form-item label="xDisplay" size="small" prop="xDisplay" >
+                            <el-input v-model="sshInfo.rdpConfig.x11Display" />
+                        </el-form-item>
+                        <el-form-item label="ShareFolder" size="small" prop="ShareFolder" >
+                            <el-input v-model="sshInfo.rdpConfig.rdpDiskDeviceMap" />
+                        </el-form-item>
+                        <el-form-item size="small">
+                            <el-select v-model="sshInfo.rdpConfig.rpdWindowsSize" filterable allow-create>
+                                <el-option
+                                    v-for="s in rdpScreenSizeOptions"
+                                    :key="s.label"
+                                    :label="s.label"
+                                    :value="s.label">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item size="small">
+                            <el-select v-model="sshInfo.rdpConfig.logLevel">
+                                <el-option
+                                    v-for="s in rdpLogLevels"
+                                    :key="s.label"
+                                    :label="s.label"
+                                    :value="s.label">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </div>
                     <el-dialog :title="$t('privateKey')" :visible.sync="textareaVisible" :close-on-click-modal="false">
                         <el-input :rows="8" v-model="sshInfo.password" type="textarea"
                                   :placeholder="$t('keyTip')"></el-input>
@@ -65,14 +122,22 @@
                         <file-list></file-list>
                     </el-form-item>
                     <el-form-item size="small">
+                        <!--navicat http tunnel info -->
+                        <tunnel-and-proxy></tunnel-and-proxy>
+                    </el-form-item>
+                    <el-form-item size="small">
+                        <!--noVNC remote config info -->
+                        <no-vnc-remote></no-vnc-remote>
+                    </el-form-item>
+                    <el-form-item size="small">
                         <el-dropdown @command="handleCommand">
                             <el-button type="primary">
                                 {{ $t('History') }}
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item
-                                    v-for="item in sshList"
-                                    :key="item.host" :command="item" style="padding:0 5px 0 10px">
+                                    v-for="(item,idx) in sshList"
+                                    :key="idx" :command="item" style="padding:0 5px 0 10px">
                                     {{ item.host }}
                                     <i @click="cleanHistory(item)" class="el-icon-close"></i>
                                 </el-dropdown-item>
@@ -126,19 +191,24 @@
 </template>
 
 <script>
-import {getProjectHeaders, getShouldVerifyToken, login, logout} from '@/api/common'
+import {getProjectHeaders, getSystemDefaultConfig,getShouldVerifyToken, login, logout} from '@/api/common'
 import {getLanguage} from '@/lang/index'
 import FileList from '@/components/FileList'
 import {mapState} from 'vuex'
-
+import TunnelAndProxy from '@/components/TunnelAndProxy.vue';
+import NoVncRemote from '@/components/NoVncRemote.vue'
 export default {
     components: {
-        'file-list': FileList
+        'tunnel-and-proxy':TunnelAndProxy,
+        'file-list': FileList,
+        'no-vnc-remote': NoVncRemote
     },
     data() {
         return {
             selLang: '',
             langOptions: [{label:'中文',value:'zh'},{label:'English',value:'en'}],
+            rdpScreenSizeOptions: [{label:'Full Screen'},{label:'1024x768'},{label:'800x600'}],
+            rdpLogLevels: [{label:'INFO'},{label:'DEBUG'},{label:'WARN'},{label:'ERROR'}, {label:'FATAL'}],
             foreShowLogin: false,
             loginLoading: false,
             textareaVisible: false,
@@ -293,6 +363,7 @@ export default {
             self.$store.state.projectExchangeToken = projectExchangeToken;
         }
 
+        //get should valid token info
         getShouldVerifyToken().then(function (shouldVerifyToken) {
             self.$store.state.shouldValidToken = shouldVerifyToken.data;
             if (!self.$store.state.shouldValidToken) {
@@ -300,11 +371,19 @@ export default {
                 self.handleProjectTokens(self, '');
             }
         });
+
+        getSystemDefaultConfig().then(function (defaultConfigResponse){
+            self.$store.state.defaultRdpConfig = defaultConfigResponse.data;
+            self.$store.state.sshInfo.rdpConfig =  Object.assign(self.$store.state.sshInfo.rdpConfig, defaultConfigResponse.data);
+        });
     },
     computed: {
         ...mapState(['sshInfo']),
         privateKey() {
             return this.sshInfo.logintype === 1
+        },
+        showRdpConfig(){
+            return this.sshInfo.rdpConfig.rdp && this.sshInfo.rdpConfig.rdpServer;
         },
         showLogin() {
             const shouldValidToken = this.$store.state.shouldValidToken;

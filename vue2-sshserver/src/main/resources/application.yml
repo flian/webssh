@@ -3,7 +3,9 @@ server:
 
 webssh:
   httpPort: 5132
-
+  enableSocketProxy: true
+  enableHttpProxy: true
+  debugHttpProxy: true
 spring:
   servlet:
     multipart:

@@ -3,6 +3,10 @@ export function checkSSH(sshInfo,token) {
     return request.get(`/webssh/check?sshInfo=${sshInfo}&token=${token}`)
 }
 
+export function getSystemDefaultConfig(sshInfo,token) {
+    return request.get(`/webssh/systemDefaultConfig?sshInfo=${sshInfo}&token=${token}`)
+}
+
 export function getShouldVerifyToken(){
     return request.get('/webssh/shouldVerifyToken')
 }

@@ -21,11 +21,17 @@ import {
     Tabs,
     TabPane,
     Divider,
-    Tooltip, Select, Option
+    Tooltip, Select, Option, Checkbox, Tag, InputNumber, Link
 } from 'element-ui'
+import VueClipboard from 'vue-clipboard2'
+
+
 const element = {
     install: function (Vue) {
         Vue.use(Input)
+        Vue.use(InputNumber)
+        Vue.use(Link)
+        Vue.use(Tag)
         Vue.use(Dialog)
         Vue.use(Row)
         Vue.use(Col)
@@ -48,6 +54,8 @@ const element = {
         Vue.use(Tooltip)
         Vue.use(Select)
         Vue.use(Option)
+        Vue.use(Checkbox)
+        Vue.use(VueClipboard)
         Vue.prototype.$message = Message
     }
 }

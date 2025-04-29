@@ -16,12 +16,22 @@ public class WebSshVue2PageConst {
     /**
      * webssh vue2 page index.
      */
-    public static final String WEB_SSH_VUE2_INDEX = WEB_SSH_PREFIX+ "/index";
+    public static final String WEB_SSH_VUE2_INDEX = WEB_SSH_PREFIX + "/index";
+
+    /**
+     * properJavaRDP download url
+     */
+    public static final String WEB_SSH_VUE2_PROPER_JAVA_RDP_URL = WEB_SSH_PREFIX + "/properJavaRDPDownload";
 
     /**
      * webssh vue2 page dist folder
      */
     public static final String WEB_SSH_VUE2_STATIC_FILE_ROOT = "webssh-dist";
+
+    /**
+     * java rdp standalone jar file path
+     */
+    public static final String WEB_SSH_JAVA_RDP_STATIC_FILE_ROOT = "webssh-javardp";
 
     /**
      * webssh vue2 page project exchange token name

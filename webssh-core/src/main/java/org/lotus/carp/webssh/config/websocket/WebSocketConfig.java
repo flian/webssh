@@ -19,7 +19,6 @@ import javax.annotation.Resource;
  * @date : 2024-02-01 14:49
  **/
 @Configuration
-@EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
     @Resource

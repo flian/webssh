@@ -1,9 +1,9 @@
 package org.lotus.carp.webssh.page;
 
 import lombok.extern.slf4j.Slf4j;
+import org.lotus.carp.webssh.config.service.WebSshJavaRdpService;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.page.common.WebSshVue2PageConst;
-import org.lotus.carp.webssh.page.config.WebSshWebMvcConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +47,9 @@ public class WebSshPageController implements InitializingBean {
     @Resource
     protected WebSshConfig webSshConfig;
 
+    @Resource
+    private WebSshJavaRdpService webSshJavaRdpService;
+
     private String prefixParameterName = "prefix";
 
     /**
@@ -52,6 +58,29 @@ public class WebSshPageController implements InitializingBean {
     private static String INDEX_STR = "index.html";
 
     protected Map<String, String> defaultIndexPageRedirectParams = new HashMap<>();
+
+    @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_PROPER_JAVA_RDP_URL)
+    public void downloadProperJavaRDPFullJar(HttpServletResponse response) throws IOException {
+        InputStream in = webSshJavaRdpService.getProperJavaRdpJarStream();
+        byte[] buffer = new byte[in.available()];
+        in.read(buffer);
+        in.close();
+
+        // 清空response
+        response.reset();
+        // 设置response的Header
+        response.setCharacterEncoding("UTF-8");
+        //Content-Disposition的作用：告知浏览器以何种方式显示响应返回的文件，用浏览器打开还是以附件的形式下载到本地保存
+        //attachment表示以附件方式下载   inline表示在线打开   "Content-Disposition: inline; filename=文件名.mp3"
+        // filename表示文件的默认名称，因为网络传输只支持URL编码的相关支付，因此需要将文件名URL编码后进行传输,前端收到后需要反编码才能获取到真正的名称
+        response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(webSshConfig.getProperJavaRdpJar(), "UTF-8"));
+        // 告知浏览器文件的大小
+        //response.addHeader("Content-Length", "" + file.length());
+        OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+        response.setContentType("application/octet-stream");
+        outputStream.write(buffer);
+        outputStream.flush();
+    }
 
     @GetMapping(WebSshVue2PageConst.WEB_SSH_VUE2_INDEX)
     public String index(HttpServletRequest request) {

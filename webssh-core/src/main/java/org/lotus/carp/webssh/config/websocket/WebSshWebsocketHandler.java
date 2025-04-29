@@ -7,6 +7,7 @@ import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.config.service.WebSshTermService;
 import org.lotus.carp.webssh.config.service.impl.JschSftpUploadProcessMonitor;
+import org.lotus.carp.webssh.config.utils.WebSshConstants;
 import org.lotus.carp.webssh.config.websocket.config.WebSshConfig;
 import org.lotus.carp.webssh.config.websocket.websshenum.WebSshUrlCommandEnum;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ import static org.lotus.carp.webssh.config.websocket.WebSshWebSocketHandshakeInt
  * @author : foy
  * @date : 2024-02-01 14:49
  **/
-@Component
+
 @Slf4j
 public class WebSshWebsocketHandler extends TextWebSocketHandler {
 
@@ -146,17 +147,17 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
         // 获得客户端传来的消息
         String payload = message.getPayload();
         Object token = session.getAttributes().get(webSshConfig.getTokenName());
-        log.debug("server 接收到 " + token + " 发送的 " + payload);
+        log.info("server received " + token + " send  " + payload);
         switch (cmd) {
             case TERM: {
                 //term command get
                 //ping
-                if ("ping".equalsIgnoreCase(message.getPayload())) {
+                if (WebSshConstants.PING_MSG.equalsIgnoreCase(message.getPayload())) {
                     //ping,should ignore
                     break;
                 }
                 //resize
-                if (message.getPayload().contains("resize")) {
+                if (message.getPayload().contains(WebSshConstants.RESIZE_MSG)) {
                     String[] temps = message.getPayload().split(":");
                     log.info("resize term,rows:{},cols:{}",Integer.parseInt(temps[1]), Integer.parseInt(temps[2]));
                     webSshTermService.handleTermWebSShResize(session, message,
@@ -171,7 +172,6 @@ public class WebSshWebsocketHandler extends TextWebSocketHandler {
                 break;
             }
         }
-        //session.sendMessage(message);
     }
 
     /**

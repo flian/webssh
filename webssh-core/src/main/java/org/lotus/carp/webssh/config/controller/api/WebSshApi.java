@@ -1,10 +1,7 @@
 package org.lotus.carp.webssh.config.controller.api;
 
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
-import org.lotus.carp.webssh.config.controller.vo.CheckRequestParamsVo;
-import org.lotus.carp.webssh.config.controller.vo.CheckResponseVo;
-import org.lotus.carp.webssh.config.controller.vo.LoginVo;
-import org.lotus.carp.webssh.config.controller.vo.LogoutVo;
+import org.lotus.carp.webssh.config.controller.vo.*;
 import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.vo.WebSshLoginResultVo;
 import org.lotus.carp.webssh.config.service.vo.WebSshLogoutResultVo;
@@ -25,13 +22,26 @@ public interface WebSshApi {
 
     /**
      * check sshinfo and token etc。
-     *
+     * should use
      * @param checkRequestParamsVo
-     * @return
+     *
+     * @return defaultConfig instead.
      */
     @GetMapping("/check")
     @ResponseBody
+    @Deprecated
     default WebSshResponse<CheckResponseVo> check(CheckRequestParamsVo checkRequestParamsVo) {
+        throw new WebSshBusinessException("Please implements me!");
+    }
+
+    /**
+     * default config for system
+     * @param defaultConfigRequestParamsVo
+     * @return
+     */
+    @GetMapping("/systemDefaultConfig")
+    @ResponseBody
+    default WebSshResponse<DefaultConfigVo> defaultConfig(HttpServletRequest request,DefaultConfigRequestParamsVo defaultConfigRequestParamsVo) {
         throw new WebSshBusinessException("Please implements me!");
     }
 
