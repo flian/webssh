@@ -37,9 +37,8 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
 
     @Override
     public WebSshResponse<FileListVo> listFiles(@Valid FileListRequestParamsVo requestParamsVo) {
-        if (!webSshLoginService.isTokenValid(requestParamsVo.getToken())) {
-            return WebSshResponse.fail("token is invalid.");
-        }
+        ensureToken(webSshLoginService,requestParamsVo.getToken());
+
         long startTms = System.currentTimeMillis();
         FileListVo result = webSshFileService.listFiles(requestParamsVo);
         long endTms = System.currentTimeMillis();
@@ -48,10 +47,8 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
 
     @Override
     public void downLoadFile(HttpServletResponse response, @Valid FileDownLoadParamsVo fileDownLoadParamsVo) throws IOException {
-        if (!webSshLoginService.isTokenValid(fileDownLoadParamsVo.getToken())) {
-            log.error("token invalid:token:{}", fileDownLoadParamsVo.getToken());
-            return;
-        }
+        ensureToken(webSshLoginService,fileDownLoadParamsVo.getToken());
+
         String[] fileMetas = fileDownLoadParamsVo.getPath().split("/");
         String fileName = fileMetas[fileMetas.length - 1];
         if (ObjectUtils.isEmpty(fileName)) {
@@ -65,9 +62,7 @@ public class DefaultWebSshFileController extends BaseController implements WebSs
 
     @Override
     public WebSshResponse<Boolean> uploadFileToServer(@Valid FileUploadDataVo fileUploadDataVo, @RequestParam("file") MultipartFile file) {
-        if (!webSshLoginService.isTokenValid(fileUploadDataVo.getToken())) {
-            return WebSshResponse.fail(Boolean.FALSE, "token is invalid.");
-        }
+        ensureToken(webSshLoginService,fileUploadDataVo.getToken());
         long startTms = System.currentTimeMillis();
         //upload files.
         FileUploadResultVo uploadResultVo = webSshFileService.uploadFile(fileUploadDataVo, file);

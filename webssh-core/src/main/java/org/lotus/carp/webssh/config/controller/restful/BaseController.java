@@ -36,7 +36,7 @@ public class BaseController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public WebSshResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public WebSshResponse<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         StringBuilder sb = new StringBuilder();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -49,7 +49,7 @@ public class BaseController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(WebSshBusinessException.class)
     @ResponseBody
-    public WebSshResponse handleBusinessException(WebSshBusinessException ex) {
+    public WebSshResponse<String>  handleBusinessException(WebSshBusinessException ex) {
         log.error("BusinessException got. ",ex);
         return WebSshResponse.fail(ex.getMessage());
     }

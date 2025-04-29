@@ -2,10 +2,8 @@ package org.lotus.carp.webssh.navicat.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.restful.BaseController;
-import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.navicat.config.WebSshNavicatTunnelConst;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,30 +23,25 @@ public class NavicatNTunnelController extends BaseController {
     @Resource
     private WebSshLoginService webSshLoginService;
 
-    void validateToken(String token){
-        if(!webSshLoginService.isTokenValid(token)){
-            log.error("token is not valid..");
-            throw  new WebSshBusinessException("invalid access. reason: invalid token.");
-        }
-    }
+
     @RequestMapping("/mysql")
     public String mysqlNTunnel(@RequestParam(value = "token",required = false) String token){
-        validateToken(token);
+        ensureToken(webSshLoginService,token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_MYSQL_FILE;
     }
     @RequestMapping("/pgsql")
     public String pgsqlNTunnel(@RequestParam(value = "token",required = false) String token){
-        validateToken(token);
+        ensureToken(webSshLoginService,token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_PGSQL_FILE;
     }
     @RequestMapping("/sqlite")
     public String sqliteNTunnel(@RequestParam(value = "token",required = false) String token){
-        validateToken(token);
+        ensureToken(webSshLoginService,token);
         return WebSshNavicatTunnelConst.WEB_SSH_NAVICAT_SQLITE_FILE;
     }
     @RequestMapping("/php_info")
     public String phpInfo(@RequestParam(value = "token",required = false) String token){
-        validateToken(token);
+        ensureToken(webSshLoginService,token);
         return WebSshNavicatTunnelConst.WEB_SSH_PHP_INFO_FILE;
     }
 }

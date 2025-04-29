@@ -3,7 +3,6 @@ package org.lotus.carp.webssh.proxy.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.lotus.carp.webssh.config.controller.common.WebSshResponse;
 import org.lotus.carp.webssh.config.controller.restful.BaseController;
-import org.lotus.carp.webssh.config.exception.WebSshBusinessException;
 import org.lotus.carp.webssh.config.service.WebSshLoginService;
 import org.lotus.carp.webssh.proxy.config.WebSshHttpProxyServerComponent;
 import org.lotus.carp.webssh.proxy.config.WebSshProxyConstants;
@@ -33,17 +32,12 @@ public class TunnelAndProxyInfoController extends BaseController {
 
     @Resource
     private WebSshSocketProxyServerComponent webSshSocketProxyServerConfig;
-    void validateToken(String token) {
-        if (!webSshLoginService.isTokenValid(token)) {
-            log.error("token is not valid..");
-            throw new WebSshBusinessException("invalid access. reason: invalid token.");
-        }
-    }
+
 
     @PostMapping("/updateProxy")
     public WebSshResponse<Boolean> updateProxyInfo(@RequestParam(value = "token", required = false) String token,
                                                    @RequestBody ProxyOpRequestVo requestVo){
-        validateToken(token);
+        ensureToken(webSshLoginService,token);
         webSshHttpProxyServerConfig.updateProxy(requestVo);
         webSshSocketProxyServerConfig.updateProxy(requestVo);
         return WebSshResponse.ok(Boolean.TRUE);
@@ -53,7 +47,7 @@ public class TunnelAndProxyInfoController extends BaseController {
     public WebSshResponse<TunnelAndProxyItemResultVo> tunnelAndProxyInfo(
             HttpServletRequest request,
             @RequestParam(value = "token", required = false) String token){
-        validateToken(token);
+        ensureToken(webSshLoginService,token);
         //http or https
         String schema = request.getScheme();
         //host info here
