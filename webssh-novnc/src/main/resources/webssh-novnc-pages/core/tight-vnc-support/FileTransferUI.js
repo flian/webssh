@@ -1,8 +1,4 @@
-import * as Log from '../core/util/logging.js';
-import * as Log from './TightVNCFileTransfer';
-
-
-function integrateFileTransferUI(rfb) {
+function integrateFileTransferUI(rfb,ft) {
     // 创建UI容器
     const ftContainer = document.createElement('div');
     ftContainer.className = 'noVNC-file-transfer';
@@ -16,14 +12,6 @@ function integrateFileTransferUI(rfb) {
 
     // 添加到noVNC界面
     document.querySelector('.noVNC-container').appendChild(ftContainer);
-    const queryParams = new URLSearchParams(location.search);
-
-    // 初始化文件传输
-    const ft = new TightVNCFileTransfer(rfb, {
-        host: queryParams.get('targetHost'),
-        port: 5901, // TightVNC文件传输端口. queryParams.get('targetPort')
-        token: queryParams.get('token')
-    });
 
     // 刷新文件列表
     const refreshList = () => {
@@ -66,24 +54,32 @@ function formatSize(bytes) {
 
 
 // 检测TightVNC文件传输支持
-function checkFileTransferSupport(rfb) {
+function checkFileTransferSupport(rfb,options) {
     return new Promise((resolve) => {
-        const ft = new TightVNCFileTransfer(rfb);
+        const ft = new TightVNCFileTransfer(rfb,options);
         ft.socket.onopen = () => {
             setTimeout(() => {
                 resolve(ft.socket.readyState === WebSocket.OPEN);
             }, 1000);
         };
         ft.socket.onerror = () => resolve(false);
+        return ft;
     });
 }
 
 
 //使用
 function letUsAddFileTransferUI(rfb){
-    checkFileTransferSupport(rfb).then(supported => {
-        if (supported) {
-            integrateFileTransferUI(rfb);
+    const queryParams = new URLSearchParams(location.search);
+    const options = {
+        host: queryParams.get('targetHost'),
+        port: 5901, // TightVNC文件传输端口. queryParams.get('targetPort')
+        token: queryParams.get('token')
+    };
+    // 初始化文件传输
+    checkFileTransferSupport(rfb,options).then(tft => {
+        if (tft) {
+            integrateFileTransferUI(rfb,tft);
         } else {
             console.log('TightVNC file transfer not available');
         }
