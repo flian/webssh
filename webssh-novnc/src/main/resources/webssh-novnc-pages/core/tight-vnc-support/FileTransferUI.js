@@ -1,3 +1,5 @@
+import {TightVNCFileTransfer} from "./TightVNCFileTransfer.js";
+
 function integrateFileTransferUI(rfb,ft) {
     // 创建UI容器
     const ftContainer = document.createElement('div');
@@ -73,7 +75,7 @@ export function letUsAddFileTransferUI(rfb){
     const queryParams = new URLSearchParams(location.search);
     const options = {
         host: queryParams.get('targetHost'),
-        port: 5901, // TightVNC文件传输端口. queryParams.get('targetPort')
+        port: 5900, // TightVNC文件传输端口. queryParams.get('targetPort')
         token: queryParams.get('token')
     };
     // 初始化文件传输

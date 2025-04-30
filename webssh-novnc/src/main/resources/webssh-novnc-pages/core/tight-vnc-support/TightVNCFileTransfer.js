@@ -1,4 +1,4 @@
-class TightVNCFileTransfer {
+export  class TightVNCFileTransfer {
     constructor(rfb, options = {}) {
         this.rfb = rfb;
         this.host = options.host;
@@ -14,9 +14,9 @@ class TightVNCFileTransfer {
         //FIXME need refactor
         const wsUrl = new URL(`wss://${window.location.hostname}:${window.location.port}/websockify/ftproxy`);
         const queryParams = new URLSearchParams(location.search);
-        url.searchParams.set('token',this.token);
-        url.searchParams.set('noVncTargetHost',this.host);
-        url.searchParams.set('noVncTargetPort', this.port );
+        wsUrl.searchParams.set('token',this.token);
+        wsUrl.searchParams.set('noVncTargetHost',this.host);
+        wsUrl.searchParams.set('noVncTargetPort', this.port );
 
 
         // 建立独立的WebSocket连接
