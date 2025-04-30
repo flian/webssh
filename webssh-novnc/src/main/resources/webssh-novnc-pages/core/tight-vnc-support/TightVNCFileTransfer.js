@@ -1,15 +1,26 @@
 class TightVNCFileTransfer {
     constructor(rfb, options = {}) {
         this.rfb = rfb;
+        this.host = options.host;
+        this.token = options.token;
         this.port = options.port || 5901; // TightVNC默认文件传输端口
+        this.maxFileSize = options.maxFileSize || 100 * 1024 * 1024; // 100MB
         this.socket = null;
         this.callbacks = {};
         this.initFileTransfer();
     }
 
     initFileTransfer() {
+        //FIXME need refactor
+        const wsUrl = new URL(`wss://${window.location.hostname}:${window.location.port}/websockify/ftproxy`);
+        const queryParams = new URLSearchParams(location.search);
+        url.searchParams.set('token',this.token);
+        url.searchParams.set('noVncTargetHost',this.host);
+        url.searchParams.set('noVncTargetPort', this.port );
+
+
         // 建立独立的WebSocket连接
-        const wsUrl = `wss://${window.location.hostname}:${window.location.port}/ftproxy?port=${this.port}`;
+
         this.socket = new WebSocket(wsUrl);
 
         this.socket.binaryType = 'arraybuffer';
@@ -54,7 +65,16 @@ class TightVNCFileTransfer {
         }
     }
 
+    validatePath(path) {
+        // 防止目录遍历攻击
+        return !path.includes('../') && !path.includes('..\\');
+    }
+
     listDirectory(path = "") {
+        if(!this.validatePath(path)){
+            return Promise.reject('File path is not valid.');
+        }
+
         return new Promise((resolve) => {
             const callbackId = this._generateCallbackId();
             this.callbacks[callbackId] = resolve;
@@ -154,6 +174,9 @@ class TightVNCFileTransfer {
     }
 
     uploadFile(localFile, remotePath) {
+        if (localFile.size > this.maxFileSize) {
+            return Promise.reject('File size exceeds limit');
+        }
         return new Promise((resolve, reject) => {
             const callbackId = this._generateCallbackId();
             this.callbacks[callbackId] = {resolve, reject};

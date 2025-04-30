@@ -1,16 +1,5 @@
-class FileTransferUIExtend {
-// 在文件传输类中添加限制
-    constructor(rfb, options = {}) {
-        this.maxFileSize = options.maxFileSize || 100 * 1024 * 1024; // 100MB
-    }
-
-    uploadFile(file, remotePath) {
-        if (file.size > this.maxFileSize) {
-            return Promise.reject('File size exceeds limit');
-        }
-        // ...原有实现
-    }
-}
+import * as Log from '../core/util/logging.js';
+import * as Log from './TightVNCFileTransfer';
 
 
 function integrateFileTransferUI(rfb) {
@@ -27,10 +16,13 @@ function integrateFileTransferUI(rfb) {
 
     // 添加到noVNC界面
     document.querySelector('.noVNC-container').appendChild(ftContainer);
+    const queryParams = new URLSearchParams(location.search);
 
     // 初始化文件传输
     const ft = new TightVNCFileTransfer(rfb, {
-        port: 5901 // TightVNC文件传输端口
+        host: queryParams.get('targetHost'),
+        port: 5901, // TightVNC文件传输端口. queryParams.get('targetPort')
+        token: queryParams.get('token')
     });
 
     // 刷新文件列表
@@ -71,10 +63,7 @@ function formatSize(bytes) {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
-function validatePath(path) {
-    // 防止目录遍历攻击
-    return !path.includes('../') && !path.includes('..\\');
-}
+
 
 // 检测TightVNC文件传输支持
 function checkFileTransferSupport(rfb) {
@@ -89,11 +78,15 @@ function checkFileTransferSupport(rfb) {
     });
 }
 
-// 使用示例
-checkFileTransferSupport(rfb).then(supported => {
-    if (supported) {
-        integrateFileTransferUI(rfb);
-    } else {
-        console.log('TightVNC file transfer not available');
-    }
-});
+
+//使用
+function letUsAddFileTransferUI(rfb){
+    checkFileTransferSupport(rfb).then(supported => {
+        if (supported) {
+            integrateFileTransferUI(rfb);
+        } else {
+            console.log('TightVNC file transfer not available');
+        }
+    });
+}
+
