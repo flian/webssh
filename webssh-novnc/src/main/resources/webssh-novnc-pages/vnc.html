@@ -51,6 +51,7 @@
     <script type="module">
         import UI from "./app/ui.js";
         import * as Log from './core/util/logging.js';
+        import * as TFT_UI from './core/tight-vnc-support/FileTransferUI.js';
 
         let response;
 
@@ -96,6 +97,8 @@
 
         UI.start({ settings: { defaults: defaults,
                                mandatory: mandatory } });
+        //FIXME test
+        letUsAddFileTransferUI(null);
     </script>
 </head>
 

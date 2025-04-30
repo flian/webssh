@@ -69,7 +69,7 @@ function checkFileTransferSupport(rfb,options) {
 
 
 //使用
-function letUsAddFileTransferUI(rfb){
+export function letUsAddFileTransferUI(rfb){
     const queryParams = new URLSearchParams(location.search);
     const options = {
         host: queryParams.get('targetHost'),
